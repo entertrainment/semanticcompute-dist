@@ -9,8 +9,8 @@ This is the **public distribution** repo: prebuilt macOS binaries, docs, and the
 closed (commercial licence; source review under NDA).
 
 - **Download:** the MCP server (`.mcpb`) + CLI binaries are on the [Releases](../../releases) page — grab the
-  `.mcpb` / `-arm64` asset, **not** the auto-generated "Source code" archive (that's just these docs).
-  Binaries are universal (Intel + Apple Silicon), **signed (Developer ID) and notarised**
+  `.mcpb` / `-universal` asset, **not** the auto-generated "Source code" archive (that's just these docs).
+  Binaries are universal (Intel + Apple Silicon), **signed (Developer ID) and notarised**.
 - **[QUICKSTART.md](QUICKSTART.md)** — run it on your own kernel in 10 minutes (no source needed).
 - **[TRUST.md](TRUST.md)** — how a closed-source verifier earns trust (and how you confirm it yourself).
 - **[EULA.md](EULA.md)** — the binary licence (free to evaluate; commercial for production).
