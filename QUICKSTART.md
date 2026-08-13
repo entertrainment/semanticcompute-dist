@@ -10,8 +10,8 @@ binary; the source stays closed. Verification is the product — it is deliberat
 1. Download `semanticcompute-mcp.mcpb` from the latest release, or the raw binary:
    ```bash
    curl -L -o semanticcompute-mcp.tar.gz \
-     https://github.com/entertrainment/semanticcompute-dist/releases/latest/download/semanticcompute-mcp-macos-universal.tar.gz
-   tar xzf semanticcompute-mcp.tar.gz            # → ./semanticcompute-mcp
+     https://github.com/entertrainment/semanticcompute-dist/releases/latest/download/semanticcompute-mcp-macos-arm64.tar.gz
+   tar xzf semanticcompute-mcp.tar.gz            # → ./semanticcompute-mcp   (Apple Silicon; universal build via CI)
    ```
 2. Register it (Claude Code shown; any MCP client works):
    ```bash
@@ -27,7 +27,7 @@ binary; the source stays closed. Verification is the product — it is deliberat
 
 ```bash
 curl -L -o semanticcompute-parity \
-  https://github.com/entertrainment/semanticcompute-dist/releases/latest/download/semanticcompute-parity-macos
+  https://github.com/entertrainment/semanticcompute-dist/releases/latest/download/semanticcompute-parity-macos-arm64
 chmod +x semanticcompute-parity
 
 # Prove two arrays agree under a stated tolerance (exit 0 agree / 1 diverged / 2 error):
