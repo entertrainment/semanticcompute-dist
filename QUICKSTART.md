@@ -1,10 +1,9 @@
 # SemanticCompute — Quickstart (binary, no source needed)
 
 Prove your GPU/ported result matches a CPU reference under a tolerance **you** state — and,
-where you have a higher-precision reference, measure how *accurate* it is. You run a prebuilt macOS
-binary (arm64; **not yet notarised** — Gatekeeper will ask you to confirm on first run, or run
-`xattr -d com.apple.quarantine <file>`); the source stays closed. Verification is the product — it is
-deliberately narrow (not a GPU framework, not a Swift→GPU transpiler).
+where you have a higher-precision reference, measure how *accurate* it is. You run a signed, notarised
+macOS binary (arm64); the source stays closed. Verification is the product — it is deliberately narrow
+(not a GPU framework, not a Swift→GPU transpiler).
 
 ## Option A — the MCP server (for agents / Claude Code / any MCP client)
 
