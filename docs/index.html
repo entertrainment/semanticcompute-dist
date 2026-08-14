@@ -300,8 +300,8 @@
   <div class="wrap row">
     <div class="brand"><span class="glyph" aria-hidden="true"></span> SemanticCompute</div>
     <nav>
-      <span class="pill sig">v1.3.0</span>
-      <span class="pill">BSL 1.1</span>
+      <span class="pill sig">v1.4.0</span>
+      <span class="pill">Commercial</span>
       <a class="ghost-link" href="#get">Get it →</a>
     </nav>
   </div>
@@ -584,7 +584,7 @@ github.com/entertrainment/<span class="s">semanticcompute-dist</span>/releases</
 <footer>
   <div class="wrap row">
     <span>© 2026 Douglas Horner (Entertrainment) · commercial licence</span>
-    <span>SemanticCompute v1.3.0 · Metal · Portable&nbsp;C · WebGPU</span>
+    <span>SemanticCompute v1.4.0 · Metal · Portable&nbsp;C · WebGPU</span>
   </div>
 </footer>
 
@@ -727,7 +727,7 @@ github.com/entertrainment/<span class="s">semanticcompute-dist</span>/releases</
   var tick = document.getElementById('copyTick');
   if (btn){
     btn.addEventListener('click', function(){
-      var text = '.package(url: "https://github.com/entertrainment/semanticcompute.git", from: "1.3.0")';
+      var text = '.package(url: "https://github.com/entertrainment/semanticcompute.git", from: "1.4.0")';
       var done = function(){ if(tick){ var old = tick.textContent; tick.textContent='✓ copied'; setTimeout(function(){ tick.textContent = old; }, 1600);} };
       if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, done); }
       else { done(); }
