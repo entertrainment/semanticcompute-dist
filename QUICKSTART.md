@@ -1,9 +1,10 @@
 # SemanticCompute — Quickstart (binary, no source needed)
 
-Prove your GPU/ported result matches a CPU reference under a tolerance **you** state — and,
-where you have a higher-precision reference, measure how *accurate* it is. You run a signed, notarised
-macOS binary (universal: Intel + Apple Silicon); the source stays closed. Verification is the product — it is deliberately narrow
-(not a GPU framework, not a Swift→GPU transpiler).
+Prove your GPU/CUDA/ported result matches a reference you trust under a tolerance **you** state — the doctor
+compares any two arrays, whatever produced them — and, where you have a higher-precision reference, measure how
+*accurate* it is. You run a signed, notarised macOS binary (universal: Intel + Apple Silicon); a Linux build is
+on request (the CLI/MCP build and pass their full suite on Linux). The source stays closed. Verification is the
+product — it is deliberately narrow (not a GPU framework, not a Swift→GPU transpiler).
 
 ## Option A — the MCP server (for agents / Claude Code / any MCP client)
 

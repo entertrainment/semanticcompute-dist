@@ -1,16 +1,19 @@
 # SemanticCompute — distribution
 
-**Numerical verification for heterogeneous compute.** Prove a Metal / portable-C / WGSL-WebGPU
-computation matches a deterministic CPU reference under a tolerance *you* state — and, where you
-have a higher-precision reference, measure how *accurate* it is. When they diverge, it tells you
-*why*. Verification is the product; it is deliberately narrow (not a GPU framework).
+**Numerical verification for heterogeneous compute.** Bring any two arrays — a CUDA, Metal, or hand-written
+kernel result and the reference you trust, whatever produced them — and prove they agree under a tolerance
+*you* state, or get told exactly *where* and *why* they diverge (FMA, FTZ, NaN, reduction order). Where you
+have a higher-precision reference, it also measures how *accurate* the result is. Verification is the product;
+it is deliberately narrow (not a GPU framework).
 
-This is the **public distribution** repo: prebuilt macOS binaries, docs, and the licence. The source is
-closed (commercial licence; source review under NDA).
+This is the **public distribution** repo: prebuilt macOS binaries, docs, and the licence. The CLI, MCP server,
+and library also build and pass their full test suite on **Linux** (Swift 6.2) — a prebuilt Linux binary is on
+request. The source is closed (commercial licence; source review under NDA).
 
 - **Download:** the MCP server (`.mcpb`) + CLI binaries are on the [Releases](../../releases) page — grab the
   `.mcpb` / `-universal` asset, **not** the auto-generated "Source code" archive (that's just these docs).
-  Binaries are universal (Intel + Apple Silicon), **signed (Developer ID) and notarised**.
+  Binaries are universal (Intel + Apple Silicon), **signed (Developer ID) and notarised**. Linux: request a
+  binary, or build from source (`swift build -c release`).
 - **[QUICKSTART.md](QUICKSTART.md)** — run it on your own kernel in 10 minutes (no source needed).
 - **[TRUST.md](TRUST.md)** — how a closed-source verifier earns trust (and how you confirm it yourself).
 - **[EULA.md](EULA.md)** — the binary licence (free to evaluate; commercial for production).
