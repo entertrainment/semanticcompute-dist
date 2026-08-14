@@ -546,14 +546,22 @@
 <span class="c"># MCP server + CLI — signed &amp; notarised macOS binaries (Linux build on request), no source needed</span>
 github.com/entertrainment/<span class="s">semanticcompute-dist</span>/releases</div>
           <p style="color:var(--text-dim); font-size:14px; margin-top:16px">
-            Run the MCP server so an agent can verify numerics — and diagnose <em>why</em> — mid-task:</p>
+            Run the MCP server so an agent can verify numerics — and diagnose <em>why</em> — mid-task. Tools return
+            <b>structured, typed results</b> the agent acts on directly (not prose), so a generate → verify → fix
+            loop is closed automatically:</p>
           <div class="tools">
             <span class="tool"><b>sc_check_parity</b></span>
             <span class="tool"><b>sc_diagnose_divergence</b></span>
             <span class="tool"><b>sc_zoo</b></span>
             <span class="tool"><b>sc_ulp_distance</b></span>
             <span class="tool"><b>sc_list_families</b></span>
+            <span class="tool"><b>sc_emit_kernel</b></span>
+            <span class="tool"><b>sc_suggest_families</b></span>
           </div>
+          <p style="color:var(--text-dim); font-size:13px; margin-top:12px">
+            Plus MCP <b>resources</b> — the family catalogue and the failure lab as browsable context
+            (<code>semanticcompute://families</code>, <code>semanticcompute://zoo</code>) — and <b>prompt</b>
+            workflows: <code>verify-kernel</code>, <code>diagnose-divergence</code>, <code>find-existing-family</code>.</p>
         </div>
         <div class="grid" style="gap:16px">
           <div class="card">
