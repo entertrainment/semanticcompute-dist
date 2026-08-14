@@ -2,9 +2,10 @@
 
 Prove your GPU/CUDA/ported result matches a reference you trust under a tolerance **you** state — the doctor
 compares any two arrays, whatever produced them — and, where you have a higher-precision reference, measure how
-*accurate* it is. You run a signed, notarised macOS binary (universal: Intel + Apple Silicon); a Linux build is
-on request (the CLI/MCP build and pass their full suite on Linux). The source stays closed. Verification is the
-product — it is deliberately narrow (not a GPU framework, not a Swift→GPU transpiler).
+*accurate* it is. You run a signed, notarised macOS binary (universal: Intel + Apple Silicon) or the prebuilt
+x86-64 Linux binary — both on the Releases page (the CLI/MCP build and pass their full suite on both). The
+source stays closed. Verification is the product — it is deliberately narrow (not a GPU framework, not a
+Swift→GPU transpiler).
 
 ## Option A — the MCP server (for agents / Claude Code / any MCP client)
 

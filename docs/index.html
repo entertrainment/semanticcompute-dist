@@ -168,6 +168,9 @@
   .btn.copy .cmd b { color: var(--text); font-weight: 600; }
   .btn .tick { color: var(--signal-ink); font-weight: 700; }
   :root[data-theme="dark"] .btn .tick { color: var(--signal); }
+  .platforms { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+  .pf { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; }
+  .pf b { color: var(--text); font-weight: 600; }
   .btn.ghost { color: var(--text-dim); border-color: var(--line-strong); background: transparent; }
   .btn.ghost:hover { color: var(--text); border-color: var(--text-faint); }
 
@@ -312,7 +315,7 @@
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <p class="eyebrow">Numerical verification for heterogeneous compute · CPU · Metal · WebGPU</p>
+        <p class="eyebrow">Numerical verification for heterogeneous compute · CPU · Metal · portable C · WebGPU</p>
         <h1>Prove the GPU agrees with the CPU. <span class="accent">To the ULP.</span></h1>
         <p class="lead">
           One typed intermediate representation lowers to <b>Metal</b>, <b>portable&nbsp;C</b>, and
@@ -325,6 +328,11 @@
         <div class="cta-row">
           <a class="btn primary" href="https://github.com/entertrainment/semanticcompute-dist/releases/latest">Download the binary →</a>
           <a class="btn ghost" href="#contract">The parity contract →</a>
+        </div>
+        <div class="platforms" aria-label="Platforms and availability">
+          <span class="pf"><b>macOS</b> — universal, signed + notarised</span>
+          <span class="pf"><b>Linux</b> — prebuilt x86-64 binary, tests green</span>
+          <span class="pf">emits <b>Metal · portable C · WebGPU</b></span>
         </div>
       </div>
       <div class="scope" aria-label="Divergence scope: a reference signal and a candidate signal, with drift flagged">
@@ -388,7 +396,7 @@
           <span class="kicker">Proven, not asserted</span>
           <h3>Passes are on-device parity tests</h3>
           <p>The compiler's optimisation passes are verified semantics-preserving by running before/after on the
-            GPU and comparing bit-for-bit. ~670 tests, three backends.</p>
+            GPU and comparing bit-for-bit. ~746 tests, three backends.</p>
         </div>
       </div>
     </div>
@@ -536,14 +544,14 @@
           <div class="sec-head" style="margin-bottom:24px">
             <p class="eyebrow">Signed &amp; notarised · free to evaluate</p>
             <h2>Hand it to your agent, or run the CLI.</h2>
-            <p class="lead">The MCP server and CLI ship as signed, notarised macOS binaries — and the CLI, MCP,
-              and library also build and pass their full test suite on Linux (a prebuilt Linux binary is on
-              request). Free to evaluate and for non-production use, plus a 7-day production trial; production
+            <p class="lead">The MCP server and CLI ship as signed, notarised macOS binaries and prebuilt x86-64
+              Linux binaries — the CLI, MCP, and library build and pass their full test suite on both.
+              Free to evaluate and for non-production use, plus a 7-day production trial; production
               beyond that needs a commercial licence. The source is closed; serious evaluators can review it
               under NDA. A hosted verification service — parity CI against your own kernels — is in early access.</p>
           </div>
           <div class="code-block">
-<span class="c"># MCP server + CLI — signed &amp; notarised macOS binaries (Linux build on request), no source needed</span>
+<span class="c"># MCP server + CLI — signed &amp; notarised macOS binaries (+ x86-64 Linux), no source needed</span>
 github.com/entertrainment/<span class="s">semanticcompute-dist</span>/releases</div>
           <p style="color:var(--text-dim); font-size:14px; margin-top:16px">
             Run the MCP server so an agent can verify numerics — and diagnose <em>why</em> — mid-task. Tools return
@@ -567,7 +575,7 @@ github.com/entertrainment/<span class="s">semanticcompute-dist</span>/releases</
           <div class="card">
             <span class="kicker">Binary</span>
             <h3>The MCP server + CLI</h3>
-            <p>The verification substrate as signed, notarised macOS binaries (Linux build on request) — the parity doctor, the cause classifier, ULP
+            <p>The verification substrate as signed, notarised macOS binaries (+ x86-64 Linux) — the parity doctor, the cause classifier, ULP
               tolerance, and measured accuracy vs a higher-precision truth. Free to evaluate; a commercial
               licence for production; source review under NDA.</p>
           </div>
@@ -730,17 +738,6 @@ github.com/entertrainment/<span class="s">semanticcompute-dist</span>/releases</
   mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){ refreshColors(); if (reduced) draw(0); });
 
-  // Copy button
-  var btn = document.getElementById('copyBtn');
-  var tick = document.getElementById('copyTick');
-  if (btn){
-    btn.addEventListener('click', function(){
-      var text = '.package(url: "https://github.com/entertrainment/semanticcompute.git", from: "1.5.0")';
-      var done = function(){ if(tick){ var old = tick.textContent; tick.textContent='✓ copied'; setTimeout(function(){ tick.textContent = old; }, 1600);} };
-      if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, done); }
-      else { done(); }
-    });
-  }
 })();
 </script>
 </body>
