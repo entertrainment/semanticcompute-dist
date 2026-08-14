@@ -18,6 +18,10 @@ request. The source is closed (commercial licence; source review under NDA).
 - **[QUICKSTART.md](QUICKSTART.md)** — run it on your own kernel in 10 minutes (no source needed).
 - **[TRUST.md](TRUST.md)** — how a closed-source verifier earns trust (and how you confirm it yourself).
 - **[EULA.md](EULA.md)** — the binary licence (free to evaluate; commercial for production).
+- **[NOTICE](NOTICE)** + **[SBOM](semanticcompute.cdx.json)** — third-party-component notice and a CycloneDX
+  descriptor for your SBOM / software-composition tooling. SemanticCompute is a **commercial** component
+  (`LicenseRef-SemanticCompute-Commercial`); production use and redistribution require a licence and must be
+  disclosed. Every binary carries a self-identifying licence marker (`semanticcompute-parity --marker`).
 - **Live demo:** the interactive divergence "kill-shot" — https://entertrainment.github.io/semanticcompute-dist/
 
 Pre-adoption, single author. Commercial licensing / design partnership: **douglas@entertrainment.co.uk**

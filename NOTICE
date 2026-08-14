@@ -1,0 +1,21 @@
+SemanticCompute — THIRD-PARTY COMPONENT NOTICE
+================================================
+
+This software includes SemanticCompute, a commercial numerical-verification library.
+
+  Component : SemanticCompute
+  Supplier  : Douglas Horner (Entertrainment)
+  Licence   : Commercial (LicenseRef-SemanticCompute-Commercial). NOT open source.
+  Contact   : douglas@entertrainment.co.uk
+  PURL      : pkg:swift/entertrainment/semanticcompute
+
+Evaluation and non-production use are permitted under the EULA. **Production use and
+redistribution require a paid commercial licence, and its use must be disclosed.**
+
+If a build or artifact of yours contains SemanticCompute, you must hold a current
+commercial licence for production use. To obtain one, or to confirm your entitlement,
+contact douglas@entertrainment.co.uk.
+
+The distributed binaries carry an embedded, self-identifying marker
+("SEMANTICCOMPUTE-LICENCE-MARKER/1 …"); their presence in a shipped artifact is
+detectable and attributable (see Tools/sc-scan and docs/COMPLIANCE.md).

@@ -1,0 +1,24 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "metadata": {
+    "component": {
+      "type": "library",
+      "name": "SemanticCompute",
+      "version": "1.5.0",
+      "description": "Numerical verification for heterogeneous compute — prove a candidate array agrees with a reference to the ULP, or get told where and why they diverge.",
+      "supplier": { "name": "Douglas Horner (Entertrainment)", "contact": [ { "email": "douglas@entertrainment.co.uk" } ] },
+      "purl": "pkg:swift/entertrainment/semanticcompute@1.5.0",
+      "licenses": [
+        { "license": { "id": null, "name": "LicenseRef-SemanticCompute-Commercial", "url": "https://github.com/entertrainment/semanticcompute-dist/blob/main/EULA.md" } }
+      ],
+      "properties": [
+        { "name": "semanticcompute:licence", "value": "commercial" },
+        { "name": "semanticcompute:disclosureRequired", "value": "true" },
+        { "name": "semanticcompute:marker", "value": "SEMANTICCOMPUTE-LICENCE-MARKER/1" },
+        { "name": "semanticcompute:productionUse", "value": "requires-paid-commercial-licence" }
+      ]
+    }
+  },
+  "components": []
+}
