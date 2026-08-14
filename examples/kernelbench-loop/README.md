@@ -14,11 +14,12 @@ softmax missing its max‑shift, one of the most common generated‑kernel mista
 CUDA kernel's output copied to the host (`out.detach().cpu().numpy()`).
 
 ## Run
+Download the released `semanticcompute-parity` binary from the [Releases](../../releases) page, then point
+`SC_PARITY` at it (omit it if `semanticcompute-parity` is on `PATH`):
 ```bash
-BIN="$(swift build -c release --product semanticcompute-parity --show-bin-path)/semanticcompute-parity"
-SC_PARITY="$BIN" python3 examples/kernelbench-loop/demo.py
+SC_PARITY=/path/to/semanticcompute-parity  python3 examples/kernelbench-loop/demo.py
 ```
-(or point `SC_PARITY` at a released binary; omit it if `semanticcompute-parity` is on `PATH`.)
+(With a source licence, `BIN="$(swift build -c release --product semanticcompute-parity --show-bin-path)/…"` builds it instead.)
 
 Output: **v1 DIVERGED** with the localised per‑element cause → fix applied → **v2 VERIFIED** → loop closed.
 
@@ -27,19 +28,10 @@ Output: **v1 DIVERGED** with the localised per‑element cause → fix applied �
 stdlib MCP client, reading the typed `structuredContent`: the agent branches on the `causeHistogram` and
 `compatible` **fields**, not on prose.
 ```bash
-MCP="$(swift build -c release --product semanticcompute-mcp --show-bin-path)/semanticcompute-mcp"
-SC_MCP="$MCP" python3 examples/kernelbench-loop/demo_mcp.py
+SC_MCP=/path/to/semanticcompute-mcp  python3 examples/kernelbench-loop/demo_mcp.py
 ```
+(The `semanticcompute-mcp` server ships on the [Releases](../../releases) page as an `.mcpb` bundle and a raw binary.)
 Output: `[diagnose] causeHistogram={"nanGeneration":14,…} → [decide] apply max‑shift → [verify] compatible=True → loop closed`.
 This is the closed loop as an MCP workflow — the shape KernelBench / SOL‑ExecBench are moving toward. (`demo.py`
-above is the CLI variant, via the stdlib wrapper in `Integrations/python/sc_verify.py`.)
+above is the CLI variant, via the stdlib wrapper `sc_verify.py`.)
 
-
----
-
-<!-- FINDER-STATUS:BEGIN (auto) -->
-> 📊 **Doc status:** 🟢 Complete · **100%** complete · CLI + MCP agent-loop KernelBench demos, both tested
-> <sub>Finder tags: `Complete`, `▓▓▓▓ 75–100%` · auto-assessed 2026-08-14</sub>
-<!-- AGENTS: after materially changing this module, refresh status+tag → `python3 Tools/MarkdownStatusQuickLook/tagkit.py set <THIS_FILE> <status> <percent> "<note>"` (status: complete|complete_improvable|in_progress|not_done|superseded|irrelevant). Protocol: Tools/MarkdownStatusQuickLook/DOC-STATUS-AGENTS.md -->
-<!-- FS-HASH:89625bb9 -->
-<!-- FINDER-STATUS:END -->

@@ -17,10 +17,12 @@ anywhere. On a real case, feed the actual output tensor (`out.detach().cpu().num
 a PyTorch reference vs a generated kernel, diagnosed and fixed in a loop.)
 
 ## Run
+Download the released `semanticcompute-parity` binary from the [Releases](../../releases) page (macOS universal,
+signed + notarised; or the Linux x86-64 tarball), then point `SC_PARITY` at it:
 ```bash
-BIN="$(swift build -c release --product semanticcompute-parity --show-bin-path)/semanticcompute-parity"
-SC_PARITY="$BIN" python3 examples/ecosystems/verify_output.py
+SC_PARITY=/path/to/semanticcompute-parity  python3 examples/ecosystems/verify_output.py
 ```
+(With a source licence, `BIN="$(swift build -c release --product semanticcompute-parity --show-bin-path)/…"` builds it instead.)
 
 ## What this backs — and what it doesn't
 - **Does:** SemanticCompute verifies output produced by these tools and classifies the exact failure each is
@@ -34,12 +36,3 @@ SC_PARITY="$BIN" python3 examples/ecosystems/verify_output.py
 [#581]: https://github.com/Dao-AILab/flash-attention/issues/581
 [#1772]: https://github.com/Dao-AILab/flash-attention/issues/1772
 
-
----
-
-<!-- FINDER-STATUS:BEGIN (auto) -->
-> 📊 **Doc status:** 🟢 Complete · **100%** complete · Triton/vLLM/FlashAttention worked examples, all tested
-> <sub>Finder tags: `Complete`, `▓▓▓▓ 75–100%` · auto-assessed 2026-08-14</sub>
-<!-- AGENTS: after materially changing this module, refresh status+tag → `python3 Tools/MarkdownStatusQuickLook/tagkit.py set <THIS_FILE> <status> <percent> "<note>"` (status: complete|complete_improvable|in_progress|not_done|superseded|irrelevant). Protocol: Tools/MarkdownStatusQuickLook/DOC-STATUS-AGENTS.md -->
-<!-- FS-HASH:c2b261ac -->
-<!-- FINDER-STATUS:END -->
