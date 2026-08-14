@@ -73,13 +73,15 @@ def verify(
     *,
     binary: str = "semanticcompute-parity",
     as_json: bool = False,
+    limit: int | None = None,
 ) -> dict:
     """
     Compare `reference` vs `candidate` under `tolerance` (`exact` | `ulp:N` | `absrel:ABS,REL` | `default`).
 
     Returns a dict: {agree, diverged, exit_code, report, stderr}. When `as_json=True`, `report` is the CLI's
-    machine-readable JSON string (pass it to json.loads). Raises ValueError on a length mismatch, and
-    FileNotFoundError if the CLI is not found.
+    machine-readable JSON string (pass it to json.loads). `limit` caps how many per-element mismatches the JSON
+    carries (the CLI default is small); pass `limit=len(reference)` when you need the *complete* mismatch list
+    (e.g. to render a per-element map). Raises ValueError on a length mismatch, FileNotFoundError if not found.
     """
     ref = _to_floats(reference)
     cand = _to_floats(candidate)
@@ -90,6 +92,8 @@ def verify(
     args = [exe, "--tolerance", tolerance]
     if as_json:
         args.append("--json")
+    if limit is not None:
+        args += ["--limit", str(limit)]
 
     payload = json.dumps({"reference": _json_safe(ref), "candidate": _json_safe(cand)})
     proc = subprocess.run(args, input=payload, text=True, capture_output=True)

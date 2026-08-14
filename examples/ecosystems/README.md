@@ -24,6 +24,9 @@ SC_PARITY=/path/to/semanticcompute-parity  python3 examples/ecosystems/verify_ou
 ```
 (With a source licence, `BIN="$(swift build -c release --product semanticcompute-parity --show-bin-path)/…"` builds it instead.)
 
+Add `--html report.html` to also write a self‑contained **verification report** (one section per ecosystem, each
+divergence mapped by cause) — a shareable audit artifact, no source or browser tooling needed.
+
 ## What this backs — and what it doesn't
 - **Does:** SemanticCompute verifies output produced by these tools and classifies the exact failure each is
   documented to hit. Provenance‑agnostic; no CUDA/Triton backend needed or implied. This is the honest basis for

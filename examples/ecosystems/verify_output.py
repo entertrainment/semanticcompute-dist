@@ -15,6 +15,7 @@ Run:
     SC_PARITY=/path/to/semanticcompute-parity  python3 examples/ecosystems/verify_output.py
 """
 
+import json
 import math
 import os
 import struct
@@ -23,8 +24,12 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 from sc_verify import verify  # noqa: E402
+from sc_report import write_html  # noqa: E402  (pure renderer: parity JSON -> self-contained HTML)
 
 BINARY = os.environ.get("SC_PARITY", "semanticcompute-parity")
+
+_WANT_DATA = False   # set by --html; when true, show() also collects structured data for the report
+CASES = []
 
 
 def show(title, cites, reference, candidate, tol, note=None):
@@ -39,6 +44,9 @@ def show(title, cites, reference, candidate, tol, note=None):
                 print("    " + line)
     if note:
         print(f"  note:        {note}")
+    if _WANT_DATA:  # one more call in --json mode to record the case (full mismatch list) for the HTML report
+        rj = verify(reference, candidate, tolerance=tol, binary=BINARY, as_json=True, limit=len(reference))
+        CASES.append({"label": title, "data": json.loads(rj["report"])})
     return r
 
 
@@ -98,11 +106,26 @@ def flashattention():
 
 
 def main():
+    global _WANT_DATA
+    argv = sys.argv[1:]
+    html_path = None
+    if "--html" in argv:
+        i = argv.index("--html")
+        html_path = argv[i + 1] if i + 1 < len(argv) else "ecosystems-report.html"
+        _WANT_DATA = True
+
     print("SemanticCompute — verifying output from Triton / vLLM / FlashAttention (provenance-agnostic, no GPU).")
     triton()
     vllm()
     flashattention()
     print("\nEach diverged and was classified. Feed a real captured tensor to run the actual case.")
+
+    if html_path:
+        write_html(html_path, "Ecosystem output verification", CASES,
+                   subtitle="SemanticCompute verifying the characteristic numerical failure each ecosystem is "
+                            "documented to hit — Triton (TF32), vLLM (reduction order), FlashAttention (masked NaN). "
+                            "Provenance-agnostic; no backend for any of them.")
+        print(f"Wrote verification report → {html_path}")
 
 
 if __name__ == "__main__":

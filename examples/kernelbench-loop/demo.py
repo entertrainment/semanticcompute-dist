@@ -16,8 +16,12 @@ copied to the host (e.g. `out.detach().cpu().numpy()`).
 Run:
     SC_PARITY=/path/to/semanticcompute-parity  python3 examples/kernelbench-loop/demo.py
 (omit SC_PARITY if `semanticcompute-parity` is on PATH.)
+
+Add `--html report.html` to also emit a shareable, self-contained HTML verification report showing the loop
+close — v1 diverged (per-element cause map) then v2 verified — an audit artifact you can attach or hand off.
 """
 
+import json
 import math
 import os
 import sys
@@ -25,6 +29,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 from sc_verify import verify  # noqa: E402  (the stdlib-only NumPy/PyTorch wrapper)
+from sc_report import write_html  # noqa: E402  (pure renderer: parity JSON -> self-contained HTML)
 
 BINARY = os.environ.get("SC_PARITY", "semanticcompute-parity")
 
@@ -63,7 +68,7 @@ def generated_v2(x):
     return softmax_reference(x)
 
 
-def run(label, candidate_fn):
+def run(label, candidate_fn, want_data=False):
     ref = softmax_reference(LOGITS)
     cand = candidate_fn(LOGITS)
     r = verify(ref, cand, tolerance="default", binary=BINARY)
@@ -73,14 +78,32 @@ def run(label, candidate_fn):
     else:
         print("DIVERGED — SemanticCompute diagnosis:")
         print(r["report"].rstrip())
-    return r["agree"]
+    data = None
+    if want_data:  # one more call in --json mode for the structured report data (full mismatch list)
+        rj = verify(ref, cand, tolerance="default", binary=BINARY, as_json=True, limit=len(ref))
+        data = json.loads(rj["report"])
+    return r["agree"], data
 
 
 def main():
+    argv = sys.argv[1:]
+    html_path = None
+    if "--html" in argv:
+        i = argv.index("--html")
+        html_path = argv[i + 1] if i + 1 < len(argv) else "kernelbench-report.html"
+
     print("KernelBench-style verify loop — SemanticCompute is the correctness layer (no CUDA backend needed).")
-    ok1 = run("generated kernel v1  (naive softmax, no max-shift)", generated_v1)
+    ok1, d1 = run("generated kernel v1  (naive softmax, no max-shift)", generated_v1, want_data=bool(html_path))
     # The diagnosis localises the overflow/NaN in exp(); the fix is the max-shift. The agent applies it:
-    ok2 = run("generated kernel v2  (max-shift applied, from the diagnosis)", generated_v2)
+    ok2, d2 = run("generated kernel v2  (max-shift applied, from the diagnosis)", generated_v2, want_data=bool(html_path))
+
+    if html_path:
+        write_html(html_path, "KernelBench softmax kernel", [
+            {"label": "v1 — naive softmax (generated)", "data": d1},
+            {"label": "v2 — max-shift fix (from the diagnosis)", "data": d2},
+        ], subtitle="A generated softmax kernel, diagnosed and fixed in a closed loop — before and after, "
+                    "verified against the numerically-stable reference.")
+        print(f"\nWrote verification report → {html_path}")
 
     print("\n--- loop ---")
     if (not ok1) and ok2:

@@ -23,6 +23,13 @@ SC_PARITY=/path/to/semanticcompute-parity  python3 examples/kernelbench-loop/dem
 
 Output: **v1 DIVERGED** with the localised per‑element cause → fix applied → **v2 VERIFIED** → loop closed.
 
+Add `--html report.html` to also write a self‑contained **verification report** — the loop as a before→after
+per‑element cause map (v1 diverged → v2 verified), an audit artifact you can open in any browser or attach to a
+compliance record. No source, no browser tooling; renders in light and dark. ([sample report](../../verification-report.html).)
+```bash
+SC_PARITY=/path/to/semanticcompute-parity  python3 examples/kernelbench-loop/demo.py --html report.html
+```
+
 ## The agent version — `demo_mcp.py` (structured MCP output)
 `demo_mcp.py` runs the same loop over the **`semanticcompute-mcp`** server (JSON‑RPC/stdio) with a tiny
 stdlib MCP client, reading the typed `structuredContent`: the agent branches on the `causeHistogram` and
