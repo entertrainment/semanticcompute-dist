@@ -10,6 +10,13 @@ This is the **public distribution** repo: prebuilt macOS binaries, docs, and the
 and library also build and pass their full test suite on **Linux** (Swift 6.2) — a prebuilt Linux binary is on
 request. The source is closed (commercial licence; source review under NDA).
 
+- **Install (one command)** — the signed MCP server, installed + registered with Claude Code if the `claude`
+  CLI is present:
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/entertrainment/semanticcompute-dist/main/install.sh | bash
+  ```
+  For Claude Desktop, just double-click `semanticcompute-mcp.mcpb`. Per-client setup (Desktop · Claude Code ·
+  Cursor) is in **[docs/INSTALL-MCP.md](docs/INSTALL-MCP.md)**.
 - **Download:** the MCP server (`.mcpb`) + CLI binaries are on the [Releases](../../releases) page — grab the
   `.mcpb` / `-universal` asset, **not** the auto-generated "Source code" archive (that's just these docs).
   macOS binaries are universal (Intel + Apple Silicon), **signed (Developer ID) and notarised**. Linux:

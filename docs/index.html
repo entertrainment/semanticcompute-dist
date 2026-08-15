@@ -560,8 +560,13 @@
               under NDA. A hosted verification service — parity CI against your own kernels — is in early access.</p>
           </div>
           <div class="code-block">
-<span class="c"># MCP server + CLI — signed &amp; notarised macOS binaries (+ x86-64 Linux), no source needed</span>
-github.com/entertrainment/<span class="s">semanticcompute-dist</span>/releases</div>
+<span class="c"># One command: install the signed MCP server + register it with Claude Code</span>
+curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcompute-dist</span>/main/install.sh | bash
+<span class="c"># Claude Desktop: just double-click semanticcompute-mcp.mcpb (Settings ▸ Extensions)</span></div>
+          <p style="color:var(--text-dim); font-size:13px; margin-top:10px">
+            Prefer a manual binary? Grab one from <a href="https://github.com/entertrainment/semanticcompute-dist/releases" style="color:var(--diverge)">Releases</a>.
+            Per-client setup (Claude Desktop · Claude Code · Cursor) is in the
+            <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/docs/INSTALL-MCP.md" style="color:var(--diverge)">install guide</a>.</p>
           <p style="color:var(--text-dim); font-size:14px; margin-top:16px">
             Run the MCP server so an agent can verify numerics — and diagnose <em>why</em> — mid-task. Tools return
             <b>structured, typed results</b> the agent acts on directly (not prose), so a generate → verify → fix
