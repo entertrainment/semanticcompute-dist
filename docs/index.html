@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SemanticCompute — prove the GPU agrees with the CPU</title>
-<meta name="description" content="Numerical verification for heterogeneous compute. Bring any two arrays — a CUDA, Metal, or hand-written kernel result and the reference you trust — and prove they agree to the ULP, or get told exactly where and why they diverge (FMA, FTZ, NaN, reduction order). macOS and Linux; CPU, Metal, portable C, WebGPU.">
+<title>SemanticCompute — prove your kernel agrees with your reference, to the ULP</title>
+<meta name="description" content="Your kernel and your reference disagree — SemanticCompute tells you where, by how many ULPs, and why (FMA, reduction order, denormal flush, NaN), and whether a tolerance makes sense. Any two arrays, whatever produced them: CPU↔GPU, GPU↔GPU, kernel↔reference, backend↔backend. macOS and Linux; free to evaluate.">
 
 <style>
   :root {
@@ -315,15 +315,17 @@
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <p class="eyebrow">Numerical verification for heterogeneous compute · CPU · Metal · portable C · WebGPU</p>
-        <h1>Prove the GPU agrees with the CPU. <span class="accent">To the ULP.</span></h1>
+        <p class="eyebrow">Numerical verification for heterogeneous compute · reference vs candidate</p>
+        <h1>Prove your kernel agrees with your reference. <span class="accent">To the ULP.</span></h1>
         <p class="lead">
-          One typed intermediate representation lowers to <b>Metal</b>, <b>portable&nbsp;C</b>, and
-          <b>WebGPU&nbsp;(WGSL)</b> — and every kernel is diffed against a deterministic CPU reference under an
-          <em>explicit, stated tolerance</em>. Not "looks close." Provable numerical parity, with the IEEE edge
-          cases that break float agreement modelled honestly. Parity is necessary, not sufficient: two backends can agree on the same
-          wrong answer. Where a family ships a higher-precision ground truth (as <code>CompensatedSum</code>
-          does), the same doctor checks the answer is <em>right</em>, not merely reproducible.
+          Two implementations of the same computation — a <b>CUDA, Metal, Triton</b> or hand-written kernel and the
+          reference you trust — and they disagree. SemanticCompute tells you <em>where</em>, by how many ULPs, and
+          <em>why</em> (FMA contraction, reduction order, denormal flush, NaN) — and whether a tolerance actually
+          makes sense. Any two arrays, whatever produced them:
+          <b>CPU&#8596;GPU&nbsp;· GPU&#8596;GPU&nbsp;· kernel&#8596;reference&nbsp;· backend&#8596;backend</b>.
+          And because two backends can agree on the same <em>wrong</em> answer, where a family ships a
+          higher-precision ground truth (as <code>CompensatedSum</code> does) the same doctor checks the answer is
+          <em>right</em>, not merely reproducible.
         </p>
         <div class="cta-row">
           <a class="btn primary" href="https://github.com/entertrainment/semanticcompute-dist/releases/latest">Download the binary →</a>
