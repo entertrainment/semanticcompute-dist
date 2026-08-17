@@ -350,61 +350,6 @@
   </section>
 
   <!-- CONTRACT -->
-  <section id="contract">
-    <div class="wrap">
-      <div class="sec-head">
-        <p class="eyebrow">One IR · three backends</p>
-        <h2>The same kernel, lowered three ways — and proven to agree.</h2>
-        <p class="lead">A single optimising front door feeds every backend; the target is chosen only at the
-          final emit. Metal and C execute on-host; WGSL is validated by a real WebGPU front end and executed on
-          a WebGPU device. All three are diffed against the CPU truth.</p>
-      </div>
-
-      <div class="pipe">
-        <div class="ir-node"><b>SLKernel</b><br>typed semantic IR<small>legalise · fold · CSE · DCE</small></div>
-        <div class="targets">
-          <div class="target">
-            <div class="t-name">→ Metal (MSL)</div>
-            <div class="t-sub">Apple GPUs, on-device.</div>
-            <div class="verdict">executed · agrees</div>
-          </div>
-          <div class="target">
-            <div class="t-name">→ Portable C</div>
-            <div class="t-sub">Any CPU, fixed ABI. The off-Apple oracle.</div>
-            <div class="verdict">executed · agrees</div>
-          </div>
-          <div class="target">
-            <div class="t-name">→ WGSL / WebGPU</div>
-            <div class="t-sub">Cross-vendor: browsers, Vulkan, D3D12.</div>
-            <div class="verdict">validated · executed · agrees</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid cols-3" style="margin-top:16px">
-        <div class="card">
-          <span class="kicker">The contract</span>
-          <h3>Tolerance is stated, never hidden</h3>
-          <p>Compare under <code>exact</code>, a default abs/rel bar, or <code>ulp(n)</code> — agreement to within
-            <em>n</em> representable floats, at any magnitude. The scale-free, gold-standard bar.</p>
-        </div>
-        <div class="card">
-          <span class="kicker">Modelled honestly</span>
-          <h3>The edge cases that break agreement</h3>
-          <p>FMA contraction, denormal flush-to-zero, NaN-skipping <code>fmin</code>/<code>fmax</code>, ties-away
-            rounding, signed zero — reproduced in the reference so the two sides <em>actually</em> agree.</p>
-        </div>
-        <div class="card">
-          <span class="kicker">Proven, not asserted</span>
-          <h3>Passes are on-device parity tests</h3>
-          <p>The compiler's optimisation passes are verified semantics-preserving by running before/after on the
-            GPU and comparing bit-for-bit. ~750 tests across 170 suites, three backends, green on macOS &amp; Linux.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- KILL SHOT -->
   <section id="diff">
     <div class="wrap">
       <div class="sec-head">
@@ -505,6 +450,61 @@
       apply('exact');
     })();
     </script>
+  </section>
+
+  <!-- KILL SHOT -->
+  <section id="contract">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">One IR · three backends</p>
+        <h2>The same kernel, lowered three ways — and proven to agree.</h2>
+        <p class="lead">A single optimising front door feeds every backend; the target is chosen only at the
+          final emit. Metal and C execute on-host; WGSL is validated by a real WebGPU front end and executed on
+          a WebGPU device. All three are diffed against the CPU truth.</p>
+      </div>
+
+      <div class="pipe">
+        <div class="ir-node"><b>SLKernel</b><br>typed semantic IR<small>legalise · fold · CSE · DCE</small></div>
+        <div class="targets">
+          <div class="target">
+            <div class="t-name">→ Metal (MSL)</div>
+            <div class="t-sub">Apple GPUs, on-device.</div>
+            <div class="verdict">executed · agrees</div>
+          </div>
+          <div class="target">
+            <div class="t-name">→ Portable C</div>
+            <div class="t-sub">Any CPU, fixed ABI. The off-Apple oracle.</div>
+            <div class="verdict">executed · agrees</div>
+          </div>
+          <div class="target">
+            <div class="t-name">→ WGSL / WebGPU</div>
+            <div class="t-sub">Cross-vendor: browsers, Vulkan, D3D12.</div>
+            <div class="verdict">validated · executed · agrees</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid cols-3" style="margin-top:16px">
+        <div class="card">
+          <span class="kicker">The contract</span>
+          <h3>Tolerance is stated, never hidden</h3>
+          <p>Compare under <code>exact</code>, a default abs/rel bar, or <code>ulp(n)</code> — agreement to within
+            <em>n</em> representable floats, at any magnitude. The scale-free, gold-standard bar.</p>
+        </div>
+        <div class="card">
+          <span class="kicker">Modelled honestly</span>
+          <h3>The edge cases that break agreement</h3>
+          <p>FMA contraction, denormal flush-to-zero, NaN-skipping <code>fmin</code>/<code>fmax</code>, ties-away
+            rounding, signed zero — reproduced in the reference so the two sides <em>actually</em> agree.</p>
+        </div>
+        <div class="card">
+          <span class="kicker">Proven, not asserted</span>
+          <h3>Passes are on-device parity tests</h3>
+          <p>The compiler's optimisation passes are verified semantics-preserving by running before/after on the
+            GPU and comparing bit-for-bit. ~750 tests across 170 suites, three backends, green on macOS &amp; Linux.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- NUMBERS -->
