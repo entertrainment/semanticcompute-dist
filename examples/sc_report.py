@@ -161,6 +161,24 @@ def _mismatch_table(d: dict, top: int = 30) -> str:
     return "".join(out)
 
 
+def _prescriptions(d: dict) -> str:
+    """Render the prescribed fix per cause (from the CLI's `remediesByCause`) — the developer's/agent's next step."""
+    rem = d.get("remediesByCause", {}) or {}
+    if not rem:
+        return ""
+    ordered = [c for c in _CAUSE if c in rem] + [c for c in rem if c not in _CAUSE]
+    out = ['<div class="rx"><div class="rxh">Prescribed fixes — apply, then re-verify</div>']
+    for c in ordered:
+        label, fill, text, border = _meta(c)
+        out.append(f'<div class="rxrow"><span class="rxc" style="background:{fill};color:{text};'
+                   f'border:1px solid {border}">{html.escape(label)}</span>'
+                   f'<span class="rxt">{html.escape(rem[c])}</span></div>')
+    out.append('<p class="note">SemanticCompute prescribes the standard fix and re-verifies — it does not '
+               'rewrite your kernel. Where a remedy notes legitimate approximation, state a tolerance instead.</p>')
+    out.append("</div>")
+    return "".join(out)
+
+
 def _case_section(case: dict, max_cells: int) -> str:
     d = case["data"]
     label = case.get("label", "case")
@@ -171,7 +189,7 @@ def _case_section(case: dict, max_cells: int) -> str:
     sub = f'under {html.escape(str(tol))}' if tol else ""
     return (f'<section class="case"><div class="chead"><h2>{html.escape(label)}</h2>{pill}'
             f'<span class="sub">{sub}</span></div>'
-            f'{_tiles(d)}{_cell_map(d, max_cells)}{_legend(d)}{_mismatch_table(d)}</section>')
+            f'{_tiles(d)}{_cell_map(d, max_cells)}{_legend(d)}{_prescriptions(d)}{_mismatch_table(d)}</section>')
 
 
 _STYLE = """
@@ -209,6 +227,11 @@ gap:2px;border-radius:7px;background:var(--cell);color:var(--celltext);border:1p
 .mm td{border-bottom:1px solid var(--cborder);padding:5px 8px}
 .mm .num{font-variant-numeric:tabular-nums;font-family:ui-monospace,Menlo,monospace}
 .note{color:var(--muted);font-size:12px;margin:.25rem 0 1rem}
+.rx{margin:.25rem 0 1rem;border:1px solid var(--cborder);border-radius:8px;padding:12px 14px;background:var(--card)}
+.rxh{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px}
+.rxrow{display:flex;gap:10px;align-items:flex-start;padding:5px 0;font-size:12.5px}
+.rxc{flex:none;font-size:11px;padding:2px 7px;border-radius:5px;white-space:nowrap}
+.rxt{color:var(--fg);line-height:1.5}
 footer{margin-top:2.5rem;border-top:1px solid var(--cborder);padding-top:1rem;color:var(--muted);font-size:12px}
 """
 
