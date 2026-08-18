@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SemanticCompute — prove your kernel agrees with your reference, to the ULP</title>
-<meta name="description" content="Your kernel and your reference disagree — SemanticCompute tells you where, by how many ULPs, and why (FMA, reduction order, denormal flush, NaN), and whether a tolerance makes sense. Any two arrays, whatever produced them: CPU↔GPU, GPU↔GPU, kernel↔reference, backend↔backend. macOS and Linux; free to evaluate.">
+<meta name="description" content="Your kernel and your reference disagree — SemanticCompute tells you where, by how many ULPs, and the likely cause (FMA, reduction order, denormal flush, NaN), classified with evidence, and whether a tolerance makes sense. It produces the evidence to fix it; it doesn't fix the kernel. Any two arrays, whatever produced them: CPU↔GPU, GPU↔GPU, kernel↔reference, backend↔backend. macOS and Linux; free to evaluate.">
 
 <style>
   :root {
@@ -320,12 +320,16 @@
         <p class="lead">
           Two implementations of the same computation — a <b>CUDA, Metal, Triton</b> or hand-written kernel and the
           reference you trust — and they disagree. SemanticCompute tells you <em>where</em>, by how many ULPs, and
-          <em>why</em> (FMA contraction, reduction order, denormal flush, NaN) — and whether a tolerance actually
-          makes sense. Any two arrays, whatever produced them:
+          the <em>likely cause</em> (FMA contraction, reduction order, denormal flush, NaN) — classified with
+          evidence, not guessed — and whether a tolerance actually makes sense. Any two arrays, whatever produced them:
           <b>CPU&#8596;GPU&nbsp;· GPU&#8596;GPU&nbsp;· kernel&#8596;reference&nbsp;· backend&#8596;backend</b>.
           And because two backends can agree on the same <em>wrong</em> answer, where a family ships a
           higher-precision ground truth (as <code>CompensatedSum</code> does) the same doctor checks the answer is
           <em>right</em>, not merely reproducible.
+        </p>
+        <p class="lead" style="margin-top:14px; font-size:.94em; color:var(--text-faint)">
+          It doesn't fix your kernel or rubber-stamp your output — it produces the reproducible <em>evidence</em>
+          you, or your agent, need to.
         </p>
         <div class="cta-row">
           <a class="btn primary" href="https://github.com/entertrainment/semanticcompute-dist/releases/latest">Download the binary →</a>
@@ -356,8 +360,9 @@
         <p class="eyebrow">The kill-shot</p>
         <h2>Silent divergence, caught — and localised.</h2>
         <p class="lead">Point it at <em>any two arrays</em> — a CUDA, Metal, or hand-written kernel result and
-          the reference you trust, whatever produced them. It tells you <em>where</em> and <em>why</em> they
-          diverge, and which tolerance tolerates what. Three canonical culprits:</p>
+          the reference you trust, whatever produced them. It tells you <em>where</em> they diverge, by how many
+          ULPs, and the <em>likely cause</em> (classified, with evidence), and which tolerance tolerates what.
+          Three canonical culprits:</p>
       </div>
 
       <style>
