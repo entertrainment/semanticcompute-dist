@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SemanticCompute — prove your kernel agrees with your reference, to the ULP</title>
-<meta name="description" content="Your kernel and your reference disagree — SemanticCompute tells you where, by how many ULPs, and the likely cause (FMA, reduction order, denormal flush, NaN), classified with evidence, and whether a tolerance makes sense. It produces the evidence to fix it; it doesn't fix the kernel. Any two arrays, whatever produced them: CPU↔GPU, GPU↔GPU, kernel↔reference, backend↔backend. macOS and Linux; free to evaluate.">
+<meta name="description" content="Your kernel and your reference disagree — SemanticCompute tells you where, by how many ULPs, and the likely cause (FMA, reduction order, denormal flush, NaN), classified with evidence, and whether a tolerance makes sense. It classifies the cause, prescribes the fix, and re-verifies yours worked — diagnose → prescribe → re-verify — without rewriting your kernel. Any two arrays, whatever produced them: CPU↔GPU, GPU↔GPU, kernel↔reference, backend↔backend. macOS and Linux; free to evaluate.">
 
 <style>
   :root {
@@ -328,8 +328,9 @@
           <em>right</em>, not merely reproducible.
         </p>
         <p class="lead" style="margin-top:14px; font-size:.94em; color:var(--text-faint)">
-          It doesn't fix your kernel or rubber-stamp your output — it produces the reproducible <em>evidence</em>
-          you, or your agent, need to.
+          It doesn't rewrite your kernel. It classifies the cause, <em>prescribes the fix</em>, and re-verifies
+          yours worked — <b>diagnose&nbsp;→&nbsp;prescribe&nbsp;→&nbsp;re-verify</b>. Where the divergence is
+          legitimate approximation, it prescribes a stated tolerance, not a change.
         </p>
         <div class="cta-row">
           <a class="btn primary" href="https://github.com/entertrainment/semanticcompute-dist/releases/latest">Download the binary →</a>
@@ -575,9 +576,9 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
             Per-client setup (Claude Desktop · Claude Code · Cursor) is in the
             <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/docs/INSTALL-MCP.md" style="color:var(--diverge)">install guide</a>.</p>
           <p style="color:var(--text-dim); font-size:14px; margin-top:16px">
-            Run the MCP server so an agent can verify numerics — and diagnose <em>why</em> — mid-task. Tools return
-            <b>structured, typed results</b> the agent acts on directly (not prose), so a generate → verify → fix
-            loop is closed automatically:</p>
+            Run the MCP server so an agent can verify numerics, classify the cause, and get the <em>prescribed
+            fix</em> — mid-task. Diagnosis returns a typed <code>remediesByCause</code> map, so the agent applies
+            the fix and re-verifies; a generate → verify → prescribe → re-verify loop closes automatically:</p>
           <div class="tools">
             <span class="tool"><b>sc_check_parity</b></span>
             <span class="tool"><b>sc_diagnose_divergence</b></span>
@@ -590,7 +591,8 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
           <p style="color:var(--text-dim); font-size:13px; margin-top:12px">
             Plus MCP <b>resources</b> — the family catalogue and the failure lab as browsable context
             (<code>semanticcompute://families</code>, <code>semanticcompute://zoo</code>) — and <b>prompt</b>
-            workflows: <code>verify-kernel</code>, <code>diagnose-divergence</code>, <code>find-existing-family</code>.</p>
+            workflows: <code>verify-kernel</code>, <code>diagnose-divergence</code>, <code>find-existing-family</code>,
+            <code>verify-and-prescribe</code>.</p>
         </div>
         <div class="grid" style="gap:16px">
           <div class="card">
