@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SemanticCompute — pricing</title>
+<meta name="description" content="SemanticCompute commercial pricing: free 7-day trial, Pro £49/mo per developer, Enterprise from £20,000/yr. Numerical verification for heterogeneous compute.">
+<style>
+  :root{
+    --bg:#f3f6f6;--bg-raised:#fff;--bg-inset:#eaefef;--line:#dbe4e4;--line-strong:#c1cfcf;
+    --text:#0d1618;--text-dim:#47585a;--text-faint:#6c8083;
+    --signal:#0c9a88;--signal-ink:#06584e;--signal-wash:#0c9a8814;--diverge:#b96712;--critical:#cf3f2e;
+    --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-mono:ui-monospace,"SF Mono",Menlo,monospace;--prose:64ch;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#0b1113;--bg-raised:#121a1d;--bg-inset:#0d1518;--line:#1d2a2e;--line-strong:#2c3d42;
+    --text:#e7f0f1;--text-dim:#9fb2b4;--text-faint:#67807f;
+    --signal:#2ee6c9;--signal-ink:#a9fff0;--signal-wash:#2ee6c914;--diverge:#f2b45a;--critical:#ff6b5c;}}
+  :root[data-theme="light"]{--bg:#f3f6f6;--bg-raised:#fff;--bg-inset:#eaefef;--line:#dbe4e4;--line-strong:#c1cfcf;--text:#0d1618;--text-dim:#47585a;--text-faint:#6c8083;--signal:#0c9a88;--signal-ink:#06584e;--diverge:#b96712;--critical:#cf3f2e;}
+  :root[data-theme="dark"]{--bg:#0b1113;--bg-raised:#121a1d;--bg-inset:#0d1518;--line:#1d2a2e;--line-strong:#2c3d42;--text:#e7f0f1;--text-dim:#9fb2b4;--text-faint:#67807f;--signal:#2ee6c9;--signal-ink:#a9fff0;--diverge:#f2b45a;--critical:#ff6b5c;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+  main{max-width:1000px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+  .top{display:flex;align-items:center;gap:12px;margin-bottom:2.5rem}
+  .mark{width:26px;height:26px;border-radius:7px;background:radial-gradient(120% 120% at 30% 20%,var(--signal),var(--signal-ink));color:var(--bg);font-family:var(--font-mono);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center}
+  .top b{font-weight:600}.top .sp{flex:1}
+  .top a{color:var(--text-dim);text-decoration:none;font-size:14px}.top a:hover{color:var(--text)}
+  .eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--signal-ink);display:flex;align-items:center;gap:8px;margin:0 0 .5rem}
+  @media (prefers-color-scheme:dark){.eyebrow{color:var(--signal)}}
+  h1{font-size:clamp(1.7rem,3.5vw,2.4rem);margin:0 0 .6rem;letter-spacing:-.01em}
+  .lead{font-size:1.05rem;color:var(--text-dim);max-width:var(--prose);margin:0 0 .5rem}
+  .note-earned{font-size:13px;color:var(--text-faint);max-width:var(--prose);margin:.25rem 0 2.25rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .tier{background:var(--bg-raised);border:1px solid var(--line);border-radius:14px;padding:1.5rem 1.4rem;display:flex;flex-direction:column}
+  .tier.feat{border:2px solid var(--signal)}
+  .badge{align-self:flex-start;font-family:var(--font-mono);font-size:11px;letter-spacing:.03em;text-transform:uppercase;color:var(--signal-ink);background:var(--signal-wash);border-radius:20px;padding:3px 10px;margin-bottom:10px}
+  @media (prefers-color-scheme:dark){.badge{color:var(--signal)}}
+  .tier h2{font-size:16px;margin:0 0 4px;font-weight:600}
+  .who{font-size:12.5px;color:var(--text-faint);margin:0 0 14px;min-height:2.4em}
+  .price{display:flex;align-items:baseline;gap:6px;margin-bottom:2px}
+  .price .amt{font-size:30px;font-weight:700;letter-spacing:-.02em}
+  .price .per{font-size:13px;color:var(--text-dim)}
+  .sub{font-size:12px;color:var(--text-faint);margin:0 0 16px}
+  ul{list-style:none;margin:0 0 20px;padding:0;font-size:13.5px;color:var(--text-dim)}
+  ul li{padding:5px 0 5px 22px;position:relative}
+  ul li::before{content:"";position:absolute;left:2px;top:11px;width:7px;height:7px;border-radius:2px;background:var(--signal)}
+  .cta{margin-top:auto;display:inline-block;text-align:center;text-decoration:none;font-weight:600;font-size:14px;padding:11px 16px;border-radius:9px;border:1px solid var(--line-strong);color:var(--text);transition:.15s}
+  .cta:hover{border-color:var(--signal);color:var(--signal-ink)}
+  @media (prefers-color-scheme:dark){.cta:hover{color:var(--signal)}}
+  .cta.primary{background:var(--signal);border-color:var(--signal);color:var(--bg)}
+  .cta.primary:hover{filter:brightness(1.06);color:var(--bg)}
+  .fine{margin-top:2.5rem;border-top:1px solid var(--line);padding-top:1.25rem;font-size:12.5px;color:var(--text-faint);max-width:var(--prose)}
+  .fine a{color:var(--diverge)}
+  .fine p{margin:.5rem 0}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <span class="mark">SC</span><b>SemanticCompute</b>
+    <span class="sp"></span>
+    <a href="index.html">← Home</a>
+  </div>
+
+  <p class="eyebrow">Pricing</p>
+  <h1>Free to evaluate. Commercial for production.</h1>
+  <p class="lead">Numerical verification for heterogeneous compute — prove a candidate array agrees with a
+    reference to the ULP, or get told exactly where and why it diverges.</p>
+  <p class="note-earned">List prices we're growing into: SemanticCompute is pre-adoption and single-author, so
+    early deals land at the low end and grow with proof. Prices exclude VAT, which is calculated at checkout.</p>
+
+  <div class="grid">
+    <div class="tier">
+      <span class="badge">Trial</span>
+      <h2>Evaluation</h2>
+      <p class="who">Anyone, to try it — including in production.</p>
+      <div class="price"><span class="amt">£0</span><span class="per">/ 7 days</span></div>
+      <p class="sub">then choose a paid tier</p>
+      <ul>
+        <li>Full library — three backends</li>
+        <li>Parity doctor + failure lab</li>
+        <li>CLI + MCP server</li>
+        <li>macOS (signed, notarised) &amp; Linux</li>
+      </ul>
+      <a class="cta" href="https://github.com/entertrainment/semanticcompute-dist/releases">Download &amp; evaluate</a>
+    </div>
+
+    <div class="tier feat">
+      <span class="badge">Pro</span>
+      <h2>Solo production</h2>
+      <p class="who">Individual / solo commercial production use.</p>
+      <div class="price"><span class="amt">£49</span><span class="per">/ month · per developer</span></div>
+      <p class="sub">production licence, billed monthly</p>
+      <ul>
+        <li>Everything in Evaluation</li>
+        <li>Production licence + updates</li>
+        <li>Email support</li>
+        <li>Licence key issued on purchase</li>
+      </ul>
+      <!-- LEMONSQUEEZY: replace this href with the Pro subscription checkout URL from your Lemon Squeezy store -->
+      <a class="cta primary" href="mailto:douglas@entertrainment.co.uk?subject=SemanticCompute%20Pro%20(%C2%A349%2Fmo)">Start Pro</a>
+    </div>
+
+    <div class="tier">
+      <span class="badge">Enterprise</span>
+      <h2>Regulated &amp; teams</h2>
+      <p class="who">Regulated / safety-critical work and larger teams.</p>
+      <div class="price"><span class="amt">from £20,000</span><span class="per">/ year</span></div>
+      <p class="sub">custom — invoiced, priced by risk reduction</p>
+      <ul>
+        <li>SLA + priority family requests</li>
+        <li>Parity-methodology + audit-trail artefacts</li>
+        <li>Indemnification, multiple seats</li>
+        <li>Private terms; source review under NDA</li>
+      </ul>
+      <a class="cta" href="mailto:douglas@entertrainment.co.uk?subject=SemanticCompute%20Enterprise">Contact sales</a>
+    </div>
+  </div>
+
+  <div class="fine">
+    <p><b>Production use requires a licence and must be disclosed.</b> Every build carries a self-identifying
+      licence marker; see the component <a href="NOTICE">NOTICE</a> and
+      <a href="EULA.md">EULA</a>.</p>
+    <p>Team / hosted (shared CI, cross-device parity) is not priced yet — <a href="mailto:douglas@entertrainment.co.uk?subject=SemanticCompute%20Team%2FHosted%20interest">register interest</a>.</p>
+    <p>Prices are indicative and subject to change. This page is not a contract; the EULA governs.</p>
+  </div>
+</main>
+</body>
+</html>

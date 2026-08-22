@@ -1,42 +1,123 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>KernelBench softmax kernel — SemanticCompute verification</title><style>
-:root{--bg:#fbfbf9;--fg:#1a1a19;--muted:#6b6a66;--card:#f6f5f1;--cell:#efeee8;
---celltext:#8a8880;--cborder:#e2e0d9;--danger:#a32d2d}
-@media (prefers-color-scheme:dark){:root{--bg:#191817;--fg:#ececec;--muted:#a3a29a;
---card:#232320;--cell:#2a2a27;--celltext:#78766f;--cborder:#33322e;--danger:#e24b4a}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);
-font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-padding:2rem 1.25rem}
-main{max-width:860px;margin:0 auto}
-h1{font-size:22px;font-weight:600;margin:0 0 .25rem}
-h2{font-size:17px;font-weight:600;margin:0}
-.lead{color:var(--muted);margin:.25rem 0 1.75rem}
-.case{border-top:1px solid var(--cborder);padding-top:1.5rem;margin-top:1.75rem}
-.chead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:1rem}
-.sub{color:var(--muted);font-size:13px}
-.pill{font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px}
-.pill.ok{background:#E1F5EE;color:#04342C}.pill.bad{background:#FCEBEB;color:#501313}
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.25rem}
-.tile{background:var(--card);border-radius:8px;padding:.7rem .9rem}
-.tl{font-size:12px;color:var(--muted)}.tv{font-size:22px;font-weight:600}
-.tile.danger .tv{color:var(--danger)}
-.grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
-.cell{width:46px;min-height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-gap:2px;border-radius:7px;background:var(--cell);color:var(--celltext);border:1px solid var(--cborder)}
-.ci{font-size:11px;font-weight:600}.cc{font-size:10px;line-height:1.1;text-align:center;padding:0 2px}
-.cell.agree{background:var(--cell);color:var(--celltext);border:1px solid var(--cborder)}
-.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin-bottom:1rem}
-.lg{display:flex;align-items:center;gap:6px}
-.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
-.mm{width:100%;border-collapse:collapse;font-size:12px;margin-top:.5rem}
-.mm th{text-align:left;color:var(--muted);font-weight:500;border-bottom:1px solid var(--cborder);padding:5px 8px}
-.mm td{border-bottom:1px solid var(--cborder);padding:5px 8px}
-.mm .num{font-variant-numeric:tabular-nums;font-family:ui-monospace,Menlo,monospace}
-.note{color:var(--muted);font-size:12px;margin:.25rem 0 1rem}
-.rx{margin:.25rem 0 1rem;border:1px solid var(--cborder);border-radius:8px;padding:12px 14px;background:var(--card)}
-.rxh{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px}
-.rxrow{display:flex;gap:10px;align-items:flex-start;padding:5px 0;font-size:12.5px}
-.rxc{flex:none;font-size:11px;padding:2px 7px;border-radius:5px;white-space:nowrap}
-.rxt{color:var(--fg);line-height:1.5}
-footer{margin-top:2.5rem;border-top:1px solid var(--cborder);padding-top:1rem;color:var(--muted);font-size:12px}
-</style></head><body><main><h1>KernelBench softmax kernel</h1><p class="lead">A generated softmax kernel, diagnosed and fixed in a closed loop — before and after, verified against the numerically-stable reference.</p><section class="case"><div class="chead"><h2>v1 — naive softmax (generated)</h2><span class="pill bad">✗ diverged</span><span class="sub">under default (abs 1e-6 or rel 1e-5)</span></div><div class="tiles"><div class="tile"><div class="tl">compared</div><div class="tv">24</div></div><div class="tile"><div class="tl">differ from ref</div><div class="tv">24</div></div><div class="tile danger"><div class="tl">fail default (abs 1e-6 or rel 1e-5)</div><div class="tv">14</div></div><div class="tile"><div class="tl">max abs error</div><div class="tv">1.8e+308</div></div></div><div class="grid"><div class="cell" title="index 0 — numeric divergence" style="background:#FAECE7;color:#4A1B0C;border:1.5px solid #993C1D"><span class="ci">0</span><span class="cc">≫ ULP</span></div><div class="cell" title="index 1 — numeric divergence" style="background:#FAECE7;color:#4A1B0C;border:1.5px solid #993C1D"><span class="ci">1</span><span class="cc">≫ ULP</span></div><div class="cell" title="index 2 — numeric divergence" style="background:#FAECE7;color:#4A1B0C;border:1.5px solid #993C1D"><span class="ci">2</span><span class="cc">≫ ULP</span></div><div class="cell" title="index 3 — numeric divergence" style="background:#FAECE7;color:#4A1B0C;border:1.5px solid #993C1D"><span class="ci">3</span><span class="cc">≫ ULP</span></div><div class="cell" title="index 4 — numeric divergence" style="background:#FAECE7;color:#4A1B0C;border:1.5px solid #993C1D"><span class="ci">4</span><span class="cc">≫ ULP</span></div><div class="cell" title="index 5 — numeric divergence" style="background:#FAECE7;color:#4A1B0C;border:1.5px solid #993C1D"><span class="ci">5</span><span class="cc">≫ ULP</span></div><div class="cell" title="index 6 — numeric divergence" style="background:#FAECE7;color:#4A1B0C;border:1.5px solid #993C1D"><span class="ci">6</span><span class="cc">≫ ULP</span></div><div class="cell" title="index 7 — numeric divergence" style="background:#FAECE7;color:#4A1B0C;border:1.5px solid #993C1D"><span class="ci">7</span><span class="cc">≫ ULP</span></div><div class="cell" title="index 8 — numeric divergence" style="background:#FAECE7;color:#4A1B0C;border:1.5px solid #993C1D"><span class="ci">8</span><span class="cc">≫ ULP</span></div><div class="cell" title="index 9 — numeric divergence" style="background:#FAECE7;color:#4A1B0C;border:1.5px solid #993C1D"><span class="ci">9</span><span class="cc">≫ ULP</span></div><div class="cell" title="index 10 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">10</span><span class="cc">NaN</span></div><div class="cell" title="index 11 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">11</span><span class="cc">NaN</span></div><div class="cell" title="index 12 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">12</span><span class="cc">NaN</span></div><div class="cell" title="index 13 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">13</span><span class="cc">NaN</span></div><div class="cell" title="index 14 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">14</span><span class="cc">NaN</span></div><div class="cell" title="index 15 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">15</span><span class="cc">NaN</span></div><div class="cell" title="index 16 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">16</span><span class="cc">NaN</span></div><div class="cell" title="index 17 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">17</span><span class="cc">NaN</span></div><div class="cell" title="index 18 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">18</span><span class="cc">NaN</span></div><div class="cell" title="index 19 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">19</span><span class="cc">NaN</span></div><div class="cell" title="index 20 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">20</span><span class="cc">NaN</span></div><div class="cell" title="index 21 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">21</span><span class="cc">NaN</span></div><div class="cell" title="index 22 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">22</span><span class="cc">NaN</span></div><div class="cell" title="index 23 — NaN generation" style="background:#FCEBEB;color:#501313;border:1.5px solid #A32D2D"><span class="ci">23</span><span class="cc">NaN</span></div></div><div class="legend"><span class="lg"><span class="sw" style="background:#FAECE7;border:1px solid #993C1D"></span>numeric divergence · 10</span><span class="lg"><span class="sw" style="background:#FCEBEB;border:1px solid #A32D2D"></span>NaN generation · 14</span></div><div class="rx"><div class="rxh">Prescribed fixes — apply, then re-verify</div><div class="rxrow"><span class="rxc" style="background:#FAECE7;color:#4A1B0C;border:1px solid #993C1D">numeric divergence</span><span class="rxt">A large gap beyond rounding: pin the reduction/accumulation order to the reference, use compensated or higher-precision accumulation, and check for an algorithmic difference (naive vs stable form). Re-verify — and if the gap is legitimate approximation, state it as an explicit tolerance instead of treating the kernel as wrong.</span></div><div class="rxrow"><span class="rxc" style="background:#FCEBEB;color:#501313;border:1px solid #A32D2D">NaN generation</span><span class="rxt">Guard the step that produces NaN: mask before the divide (avoid 0/0), clamp the domain of sqrt/log, or add the masked-position guard (the FlashAttention/vLLM masked-softmax fix). Then re-verify.</span></div><p class="note">SemanticCompute prescribes the standard fix and re-verifies — it does not rewrite your kernel. Where a remedy notes legitimate approximation, state a tolerance instead.</p></div><table class="mm"><thead><tr><th>idx</th><th>reference</th><th>candidate</th><th>ULP</th><th>cause</th></tr></thead><tbody><tr><td>0</td><td class="num">6.486745168787778e-11</td><td class="num">0.0</td><td class="num">781,100,321</td><td>numeric divergence</td></tr><tr><td>1</td><td class="num">1.763280077504703e-10</td><td class="num">0.0</td><td class="num">792,846,316</td><td>numeric divergence</td></tr><tr><td>2</td><td class="num">4.793092589494563e-10</td><td class="num">0.0</td><td class="num">805,552,228</td><td>numeric divergence</td></tr><tr><td>3</td><td class="num">1.302897567612149e-09</td><td class="num">0.0</td><td class="num">817,041,826</td><td>numeric divergence</td></tr><tr><td>4</td><td class="num">3.541642756843544e-09</td><td class="num">0.0</td><td class="num">829,645,117</td><td>numeric divergence</td></tr><tr><td>5</td><td class="num">9.627183494842484e-09</td><td class="num">0.0</td><td class="num">841,311,437</td><td>numeric divergence</td></tr><tr><td>6</td><td class="num">2.6169397315811693e-08</td><td class="num">0.0</td><td class="num">853,592,861</td><td>numeric divergence</td></tr><tr><td>7</td><td class="num">7.113579414408377e-08</td><td class="num">0.0</td><td class="num">865,649,489</td><td>numeric divergence</td></tr><tr><td>8</td><td class="num">1.933671427423178e-07</td><td class="num">0.0</td><td class="num">877,633,627</td><td>numeric divergence</td></tr><tr><td>9</td><td class="num">5.256263762021263e-07</td><td class="num">0.0</td><td class="num">890,050,757</td><td>numeric divergence</td></tr><tr><td>10</td><td class="num">1.4288007150753401e-06</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr><tr><td>11</td><td class="num">3.8838829823362175e-06</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr><tr><td>12</td><td class="num">1.0557488167250995e-05</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr><tr><td>13</td><td class="num">2.869822856155224e-05</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr><tr><td>14</td><td class="num">7.800987077644095e-05</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr><tr><td>15</td><td class="num">0.00021205282246228307</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr><tr><td>16</td><td class="num">0.0005764193483628333</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr><tr><td>17</td><td class="num">0.0015668702544644475</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr><tr><td>18</td><td class="num">0.00425919471308589</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr><tr><td>19</td><td class="num">0.01157769188284874</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr><tr><td>20</td><td class="num">0.031471431255340576</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr><tr><td>21</td><td class="num">0.08554821461439133</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr><tr><td>22</td><td class="num">0.2325441539287567</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr><tr><td>23</td><td class="num">0.6321205496788025</td><td class="num">nan</td><td class="num">—</td><td>NaN generation</td></tr></tbody></table></section><section class="case"><div class="chead"><h2>v2 — max-shift fix (from the diagnosis)</h2><span class="pill ok">✓ verified</span><span class="sub">under default (abs 1e-6 or rel 1e-5)</span></div><div class="tiles"><div class="tile"><div class="tl">compared</div><div class="tv">24</div></div><div class="tile"><div class="tl">differ from ref</div><div class="tv">0</div></div><div class="tile"><div class="tl">fail default (abs 1e-6 or rel 1e-5)</div><div class="tv">0</div></div><div class="tile"><div class="tl">max abs error</div><div class="tv">0</div></div></div><div class="grid"><div class="cell agree"><span class="ci">0</span></div><div class="cell agree"><span class="ci">1</span></div><div class="cell agree"><span class="ci">2</span></div><div class="cell agree"><span class="ci">3</span></div><div class="cell agree"><span class="ci">4</span></div><div class="cell agree"><span class="ci">5</span></div><div class="cell agree"><span class="ci">6</span></div><div class="cell agree"><span class="ci">7</span></div><div class="cell agree"><span class="ci">8</span></div><div class="cell agree"><span class="ci">9</span></div><div class="cell agree"><span class="ci">10</span></div><div class="cell agree"><span class="ci">11</span></div><div class="cell agree"><span class="ci">12</span></div><div class="cell agree"><span class="ci">13</span></div><div class="cell agree"><span class="ci">14</span></div><div class="cell agree"><span class="ci">15</span></div><div class="cell agree"><span class="ci">16</span></div><div class="cell agree"><span class="ci">17</span></div><div class="cell agree"><span class="ci">18</span></div><div class="cell agree"><span class="ci">19</span></div><div class="cell agree"><span class="ci">20</span></div><div class="cell agree"><span class="ci">21</span></div><div class="cell agree"><span class="ci">22</span></div><div class="cell agree"><span class="ci">23</span></div></div><p class="note">No element diverged from the reference.</p></section><footer>Generated by SemanticCompute — numerical verification for heterogeneous compute. Cause inference is a heuristic (leads to confirm, not proofs); the pass/fail verdict and tolerance are authoritative.</footer></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SemanticCompute — KernelBench loop closed</title>
+<style>
+  :root{
+    --bg:#f3f6f6;--raised:#fff;--inset:#eaefef;--line:#dbe4e4;--line2:#c1cfcf;
+    --text:#0d1618;--dim:#47585a;--faint:#6c8083;
+    --ok:#06584e;--okbg:#0c9a8814;--warn:#b96712;--bad:#cf3f2e;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media(prefers-color-scheme:dark){:root{
+    --bg:#0b1113;--raised:#121a1d;--inset:#0d1518;--line:#1d2a2e;--line2:#2c3d42;
+    --text:#e7f0f1;--dim:#9fb2b4;--faint:#67807f;
+    --ok:#2ee6c9;--okbg:#2ee6c914;--warn:#f2b45a;--bad:#ff6b5c;
+  }}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:40px 22px 64px}
+  .brand{display:inline-flex;align-items:center;gap:9px;font-weight:640;letter-spacing:-.02em;color:var(--dim);font-size:14px}
+  .brand .glyph{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:var(--ok);color:var(--bg);font-family:var(--mono);font-weight:800;font-size:13px}
+  h1{font-size:clamp(1.7rem,4vw,2.4rem);letter-spacing:-.03em;margin:16px 0 4px;line-height:1.1}
+  .caption{color:var(--dim);max-width:64ch;margin:6px 0 0}
+  .sub{font-family:var(--mono);font-size:12.5px;color:var(--faint);margin-top:12px;letter-spacing:.02em}
+  .ok{color:var(--ok)} .bad{color:var(--bad);font-weight:600} .warn{color:var(--warn)}
+  .rpt-head{border-bottom:1px solid var(--line);padding-bottom:24px;margin-bottom:8px}
+  section.check{border:1px solid var(--line);border-radius:12px;background:var(--raised);padding:20px;margin-top:24px}
+  .check-bar{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;flex-wrap:wrap}
+  .check-bar .idx{color:var(--faint);border:1px solid var(--line2);border-radius:999px;padding:1px 8px;font-size:11px}
+  .check-label{color:var(--text);font-weight:600}
+  .check-bar .spacer{flex:1}
+  .verdict{font-family:var(--mono);font-size:12.5px}
+  .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0 4px}
+  @media(max-width:640px){.metrics{grid-template-columns:repeat(2,1fr)}}
+  .metric{border:1px solid var(--line);border-radius:9px;padding:11px 12px;background:var(--inset)}
+  .mv{font-family:var(--mono);font-size:16px;font-variant-numeric:tabular-nums} .mv.warn{color:var(--warn)}
+  .ml{font-size:11px;color:var(--faint);margin-top:4px;text-transform:uppercase;letter-spacing:.08em}
+  table.diff{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px;margin-top:16px;overflow-x:auto;display:block}
+  table.diff th,table.diff td{text-align:left;padding:8px 12px;white-space:nowrap;border-bottom:1px solid var(--line)}
+  table.diff thead th{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);font-weight:500}
+  table.diff td.num{text-align:right;font-variant-numeric:tabular-nums}
+  table.diff tr.flag td{background:color-mix(in srgb,var(--warn) 9%,transparent)}
+  .cause{color:var(--dim)}
+  .dist{font-family:var(--mono);font-size:12.5px;color:var(--dim);margin:14px 0 0;padding-left:12px;border-left:2px solid var(--line2)}
+  .more{font-family:var(--mono);font-size:12px;color:var(--faint);margin:10px 0 0}
+  .clean{font-family:var(--mono);font-size:13px;color:var(--ok);margin:16px 0 0}
+  .rx{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
+  .rx h2{font-size:13px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ok);margin:0 0 12px}
+  .rx-item{border-left:2px solid var(--ok);padding:2px 0 2px 14px;margin-bottom:14px}
+  .rx-cause{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text)}
+  .rx-remedy{color:var(--dim);font-size:14px;margin:4px 0 0;max-width:72ch}
+  footer{margin-top:36px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header class="rpt-head">
+  <div class="brand"><span class="glyph">=</span> SemanticCompute</div>
+  <h1>SemanticCompute — KernelBench loop closed</h1>
+  <p class="caption">A generated softmax kernel diverged (∞/∞ → NaN); the prescribed max-shift fixed it, re-verified compatible.</p>
+  <p class="sub">verification report · 2 checks · <span class="bad">DIVERGENCE FOUND</span></p>
+</header>
+<section class="check">
+  <div class="check-bar">
+    <span class="idx">1/2</span>
+    <span class="check-label">Generated softmax kernel — naive form (before)</span>
+    <span class="spacer"></span>
+    <span class="verdict bad">DIVERGED ✗</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="mv">ulp(2)</div><div class="ml">tolerance</div></div>
+    <div class="metric"><div class="mv">3</div><div class="ml">compared</div></div>
+    <div class="metric"><div class="mv warn">3</div><div class="ml">diverged</div></div>
+    <div class="metric"><div class="mv">1.798e+308</div><div class="ml">max abs err</div></div>
+    <div class="metric"><div class="mv">1.798e+308</div><div class="ml">max rel err</div></div>
+  </div>
+  <p class="dist">2 special-value divergence(s) (NaN/∞ on one side) — structural, not a rounding tail.</p>
+  <table class="diff">
+    <thead><tr><th>index</th><th class="num">reference</th><th class="num">candidate</th><th>Δ</th><th>diagnosed cause</th></tr></thead>
+    <tbody>
+      <tr class="flag"><td>0</td><td class="num">0.09003057330846786</td><td class="num ">0.0</td><td class="warn">1035493875 ULP</td><td class="cause">numeric divergence (reassociation / precision / algorithmic)</td></tr>
+      <tr class="flag"><td>1</td><td class="num">0.2447284758090973</td><td class="num bad">NaN</td><td class="bad">special</td><td class="cause">NaN generation</td></tr>
+      <tr class="flag"><td>2</td><td class="num">0.6652409434318542</td><td class="num bad">NaN</td><td class="bad">special</td><td class="cause">NaN generation</td></tr>
+    </tbody>
+  </table>
+  <div class="rx">
+    <h2>Prescribed fixes</h2>
+    <div class="rx-item">
+      <div class="rx-cause">numeric divergence (reassociation / precision / algorithmic)</div>
+      <p class="rx-remedy">A large gap beyond rounding: pin the reduction/accumulation order to the reference, use compensated or higher-precision accumulation, and check for an algorithmic difference (naive vs stable form). Re-verify — and if the gap is legitimate approximation, state it as an explicit tolerance instead of treating the kernel as wrong.</p>
+    </div>
+    <div class="rx-item">
+      <div class="rx-cause">NaN generation</div>
+      <p class="rx-remedy">Guard the step that produces NaN: mask before the divide (avoid 0/0), clamp the domain of sqrt/log, or add the masked-position guard (the FlashAttention/vLLM masked-softmax fix). Then re-verify.</p>
+    </div>
+  </div>
+</section>
+<section class="check">
+  <div class="check-bar">
+    <span class="idx">2/2</span>
+    <span class="check-label">Same kernel — max-shift applied (after re-verify)</span>
+    <span class="spacer"></span>
+    <span class="verdict ok">COMPATIBLE ✓</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="mv">default (abs 1e-6 or rel 1e-5)</div><div class="ml">tolerance</div></div>
+    <div class="metric"><div class="mv">3</div><div class="ml">compared</div></div>
+    <div class="metric"><div class="mv">0</div><div class="ml">diverged</div></div>
+    <div class="metric"><div class="mv">0</div><div class="ml">max abs err</div></div>
+    <div class="metric"><div class="mv">0</div><div class="ml">max rel err</div></div>
+  </div>
+  <p class="clean">Every compared element agrees under this tolerance. Nothing to prescribe.</p>
+</section>
+<footer>
+  <span>Generated by SemanticCompute v1.6.0 — it diagnoses, prescribes, and re-verifies; it does not rewrite your kernel.</span>
+  <span>© Douglas Horner (Entertrainment)</span>
+</footer>
+</main>
+</body>
+</html>
