@@ -303,7 +303,7 @@
   <div class="wrap row">
     <div class="brand"><span class="glyph" aria-hidden="true"></span> SemanticCompute</div>
     <nav>
-      <span class="pill sig">v1.6.0</span>
+      <span class="pill sig">v1.6.1</span>
       <span class="pill">Commercial</span>
       <a class="ghost-link" href="#get">Get it →</a>
     </nav>
@@ -338,7 +338,7 @@
         </div>
         <div class="platforms" aria-label="Platforms and availability">
           <span class="pf"><b>macOS</b> — universal, signed + notarised</span>
-          <span class="pf"><b>Linux</b> — prebuilt x86-64 binary, tests green</span>
+          <span class="pf"><b>Linux</b> — prebuilt x86-64 + arm64 binaries, tests green</span>
           <span class="pf">emits <b>Metal · portable C · WebGPU</b></span>
         </div>
       </div>
@@ -363,7 +363,7 @@
         <p class="lead">Point it at <em>any two arrays</em> — a CUDA, Metal, or hand-written kernel result and
           the reference you trust, whatever produced them. It tells you <em>where</em> they diverge, by how many
           ULPs, and the <em>likely cause</em> (classified, with evidence), and which tolerance tolerates what.
-          Three canonical culprits:</p>
+          Four canonical culprits:</p>
       </div>
 
       <style>
@@ -379,7 +379,7 @@
           <span class="lamp a"></span>
           <span>SLCompatibilityDoctor.compareFloatBuffers — profile: <span id="killProfile" style="color:var(--diverge)">.exact</span></span>
           <span class="spacer"></span>
-          <span id="killCount">3 mismatches · first @ index 0</span>
+          <span id="killCount">4 mismatches · first @ index 0</span>
         </div>
         <div class="body">
           <table class="diff">
@@ -390,7 +390,8 @@
               <tr data-row="0"><td>0</td><td class="num">0.75481230</td><td class="num">0.75481236</td><td class="warn">1 ULP</td><td class="tag">FMA contraction (one rounding vs two)<br><span class="rx">→ force/disable FMA, or state ulp(1)</span></td><td class="verdict"></td></tr>
               <tr data-row="1"><td>1</td><td class="num">1.4e−45</td><td class="num">0.0</td><td class="warn">1 ULP</td><td class="tag">denormal flushed to zero<br><span class="rx">→ disable flush-to-zero, or widen the tolerance</span></td><td class="verdict"></td></tr>
               <tr data-row="2"><td>2</td><td class="num">0.00000000</td><td class="num bad">NaN</td><td class="bad">special</td><td class="tag">unguarded 0/0 (reference masks it)<br><span class="rx">→ guard the divide, then re-verify</span></td><td class="verdict"></td></tr>
-              <tr><td>3 +</td><td class="num">—</td><td class="num">—</td><td class="ok">0 ULP</td><td class="tag ok">the rest agree</td><td class="verdict ok">pass</td></tr>
+              <tr data-row="3"><td>3</td><td class="num">1000000.0</td><td class="num">1000000.125</td><td class="warn">2 ULP</td><td class="tag">ULP drift at magnitude 1e6 — abs err 0.125<br><span class="rx">→ the relative bar accepts it; ulp(1) flags it — pick the policy that fits</span></td><td class="verdict"></td></tr>
+              <tr><td>4 +</td><td class="num">—</td><td class="num">—</td><td class="ok">0 ULP</td><td class="tag ok">the rest agree</td><td class="verdict ok">pass</td></tr>
             </tbody>
           </table>
         </div>
@@ -404,16 +405,16 @@
         </button>
         <button type="button" class="card tol" data-tol="default" aria-pressed="false">
           <span class="kicker">.default</span>
-          <p>abs 1e-6 or rel 1e-5 — tolerates the drift and the denormal; still flags the <b style="color:var(--critical)">NaN</b>.</p>
+          <p>abs 1e-6 or rel 1e-5 — tolerates the 1-ULP drift, the denormal, and the 2-ULP drift at 1e6 (its <em>relative</em> check); still flags the <b style="color:var(--critical)">NaN</b>.</p>
         </button>
         <button type="button" class="card tol" data-tol="ulp1" aria-pressed="false">
           <span class="kicker">.ulp(1)</span>
-          <p>"One float apart, at any magnitude." The special value survives every numeric policy.</p>
+          <p>"One float apart, at any magnitude" — scale-free, so it also flags the <b style="color:var(--diverge)">2-ULP drift</b> that .default's relative bar waves through. The NaN survives every policy.</p>
         </button>
       </div>
       <p style="margin-top:12px;color:var(--text-faint);font-size:12px">Each <span style="color:var(--signal-ink)">→ prescribed fix</span> follows from the diagnosed cause — a code fix for the unguarded NaN, a stated tolerance for legitimate rounding; SemanticCompute prescribes it and re-verifies, it doesn't rewrite your kernel. (The smallest denormal and 0 are adjacent floats, so the flush is exactly 1 ULP.)</p>
 
-      <p style="margin-top:14px;color:var(--text-dim);font-size:13px">Same three culprits, live from the
+      <p style="margin-top:14px;color:var(--text-dim);font-size:13px">Same four culprits, live from the
         <a href="https://github.com/entertrainment/semanticcompute-dist" style="color:var(--diverge)">failure lab</a>,
         runnable from the CLI binary: <code>semanticcompute-parity --zoo 01-fma-contraction</code></p>
 
@@ -433,11 +434,11 @@
       // (LandingPageZooSyncTests) — it cannot silently drift from the shipped doctor. Canonical source of truth:
       //   swift run semanticcompute-parity --zoo export
       var pol = {
-        exact:  {name:'.exact',  pass:[false,false,false]},
-        default:{name:'.default',pass:[true, true, false]},
-        ulp1:   {name:'.ulp(1)', pass:[true, true, false]}
+        exact:  {name:'.exact',  pass:[false,false,false,false]},
+        default:{name:'.default',pass:[true, true, false, true ]},
+        ulp1:   {name:'.ulp(1)', pass:[true, true, false, false]}
       };
-      var rows = [0,1,2].map(function(i){return document.querySelector('tr[data-row="'+i+'"]');});
+      var rows = [0,1,2,3].map(function(i){return document.querySelector('tr[data-row="'+i+'"]');});
       var prof = document.getElementById('killProfile'), cnt = document.getElementById('killCount');
       var cards = Array.prototype.slice.call(document.querySelectorAll('.card.tol'));
       function apply(t){
@@ -627,7 +628,7 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
 <footer>
   <div class="wrap row">
     <span>© 2026 Douglas Horner (Entertrainment) · commercial licence</span>
-    <span>SemanticCompute v1.6.0 · Metal · Portable&nbsp;C · WebGPU</span>
+    <span>SemanticCompute v1.6.1 · Metal · Portable&nbsp;C · WebGPU</span>
   </div>
 </footer>
 
