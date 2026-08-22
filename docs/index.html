@@ -372,6 +372,7 @@
         .card.tol:hover{border-color:var(--diverge)}
         td.verdict{font-weight:600;font-size:12px}
         tr.okrow td:not(.verdict){opacity:.5}
+        table.diff .rx{display:inline-block;margin-top:3px;color:var(--signal-ink);font-size:11px}
       </style>
       <div class="panel">
         <div class="bar">
@@ -386,10 +387,10 @@
               <tr><th>idx</th><th class="num">reference</th><th class="num">candidate</th><th>Δ</th><th>cause</th><th>policy</th></tr>
             </thead>
             <tbody>
-              <tr data-row="0"><td>0</td><td class="num">0.75481230</td><td class="num">0.75481236</td><td class="warn">1 ULP</td><td class="tag">FMA contraction (one rounding vs two)</td><td class="verdict"></td></tr>
-              <tr data-row="1"><td>1</td><td class="num">1.4e−45</td><td class="num">0.0</td><td class="warn">1 ULP</td><td class="tag">denormal flushed to zero</td><td class="verdict"></td></tr>
-              <tr data-row="2"><td>2</td><td class="num">0.00000000</td><td class="num bad">NaN</td><td class="bad">special</td><td class="tag">unguarded 0 / 0</td><td class="verdict"></td></tr>
-              <tr><td>3…</td><td class="num">—</td><td class="num">—</td><td class="ok">0 ULP</td><td class="tag ok">agrees</td><td class="verdict ok">pass</td></tr>
+              <tr data-row="0"><td>0</td><td class="num">0.75481230</td><td class="num">0.75481236</td><td class="warn">1 ULP</td><td class="tag">FMA contraction (one rounding vs two)<br><span class="rx">→ force/disable FMA, or state ulp(1)</span></td><td class="verdict"></td></tr>
+              <tr data-row="1"><td>1</td><td class="num">1.4e−45</td><td class="num">0.0</td><td class="warn">1 ULP</td><td class="tag">denormal flushed to zero<br><span class="rx">→ disable flush-to-zero, or widen the tolerance</span></td><td class="verdict"></td></tr>
+              <tr data-row="2"><td>2</td><td class="num">0.00000000</td><td class="num bad">NaN</td><td class="bad">special</td><td class="tag">unguarded 0/0 (reference masks it)<br><span class="rx">→ guard the divide, then re-verify</span></td><td class="verdict"></td></tr>
+              <tr><td>3 +</td><td class="num">—</td><td class="num">—</td><td class="ok">0 ULP</td><td class="tag ok">the rest agree</td><td class="verdict ok">pass</td></tr>
             </tbody>
           </table>
         </div>
@@ -410,6 +411,8 @@
           <p>"One float apart, at any magnitude." The special value survives every numeric policy.</p>
         </button>
       </div>
+      <p style="margin-top:12px;color:var(--text-faint);font-size:12px">Each <span style="color:var(--signal-ink)">→ prescribed fix</span> follows from the diagnosed cause — a code fix for the unguarded NaN, a stated tolerance for legitimate rounding; SemanticCompute prescribes it and re-verifies, it doesn't rewrite your kernel. (The smallest denormal and 0 are adjacent floats, so the flush is exactly 1 ULP.)</p>
+
       <p style="margin-top:14px;color:var(--text-dim);font-size:13px">Same three culprits, live from the
         <a href="https://github.com/entertrainment/semanticcompute-dist" style="color:var(--diverge)">failure lab</a>,
         runnable from the CLI binary: <code>semanticcompute-parity --zoo 01-fma-contraction</code></p>
