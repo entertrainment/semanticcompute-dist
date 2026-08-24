@@ -80,18 +80,23 @@
      sliding under it. */
   html {
     -webkit-text-size-adjust: 100%;
-    scroll-snap-type: y proximity;
+    scroll-snap-type: y mandatory;
     scroll-padding-top: 61px;
     scroll-behavior: smooth;
   }
-  section, footer { scroll-snap-align: start; }
-  /* The hero is the one section that must never pull the reader back up to it. */
-  section.hero { scroll-snap-align: none; }
+  /* Mandatory is safe here because every section is TALLER than the viewport: the spec keeps
+     larger-than-snapport areas freely scrollable inside, so the lock engages only at the seams.
+     `scroll-snap-stop: always` is the brake — a hard flick cannot skip past a section start. */
+  section { scroll-snap-align: start; scroll-snap-stop: always; }
+  /* The footer is SHORTER than the viewport, so a snap stop there would fight the document's own end —
+     landing it at the header line with dead space beneath. The last brake is the final section; the
+     footer just arrives with it. */
+  footer { scroll-snap-align: none; }
 
   /* Anyone who asked for less motion gets none of it: no smooth easing, no snapping. */
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; scroll-snap-type: none; }
-    section, footer { scroll-snap-align: none; }
+    section { scroll-snap-align: none; scroll-snap-stop: normal; }
   }
   body {
     margin: 0;
@@ -457,7 +462,19 @@
         <p class="lead">Point it at <em>any two arrays</em> — a CUDA, Metal, or hand-written kernel result and
           the reference you trust, whatever produced them. It tells you <em>where</em> they diverge, by how many
           ULPs, and the <em>likely cause</em> (classified, with evidence), and which tolerance tolerates what.
-          Four canonical culprits:</p>
+          Four canonical culprits — and the classification is not a heuristic left unexamined: it is tested
+          against a failure lab of engineered specimens, each with a <em>declared</em> cause the doctor must
+          recover (<code>--zoo all</code>), in CI and in the free binary on your machine:</p>
+      </div>
+
+      <div class="card" style="max-width:var(--prose); margin:-14px 0 34px; border-left:3px solid var(--signal)">
+        <span class="kicker">Boundaries, stated</span>
+        <h3>Bring two arrays. Nothing to adopt.</h3>
+        <p style="color:var(--text-dim); margin-top:8px">
+          It never rewrites your kernel and never asks you to adopt a runtime or framework — it judges
+          <em>outputs</em>. Comparisons are float32, whole-buffer. And it is the oracle, not the input
+          generator: you supply the arrays, so pair it with your own shape and input sweep. It can emit
+          specimen kernels of its own, but parity diagnosis is the product.</p>
       </div>
 
       <style>
@@ -562,14 +579,18 @@
       <div class="sec-head">
         <p class="eyebrow">One IR · three executed targets in-core + a hardware-verified CUDA runner</p>
         <h2>The same kernel, lowered four ways — every way proven to agree.</h2>
-        <p class="lead">A single optimising front door feeds every backend; the target is chosen only at the final
-          emit. The parity contract, by target: <b>Metal and portable C</b> execute the full family suite on-host,
+        <p class="lead">The four backends are not a compiler pitch — they are how the doctor is tested against
+          <em>itself</em>: the same kernel, lowered four ways and executed, must agree with the CPU reference
+          before we ask you to trust a verdict about yours. A single optimising front door feeds every backend;
+          the target is chosen only at the final emit. The parity contract, by target: <b>Metal and portable C</b> execute the full family suite on-host,
           diffed against the CPU truth; <b>WGSL/WebGPU</b> is validated on every specimen by a real WebGPU front end
           and executed on-device for the affine and matmul kernels (full-family WGSL execution in progress);
           <b>CUDA</b> is emitted by the core and <em>executed by the optional NVIDIA runner</em> — 16 on-device
           parity comparisons per board (odd extents, the folded-4D dispatch, branches, NaN/±∞ semantics, uint
           marshalling, loops, and the float-vector layer with an association-discriminating dot), run twice on
-          independent GPUs under a stated no-fast-math contract, with the evidence log committed. Verified for
+          independent GPUs under a stated no-fast-math contract, with the
+          <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/docs/cuda-parity-evidence.txt" style="color:inherit">evidence log published</a>
+          (and the GPU-free <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/docs/cuda-compile-gate.txt" style="color:inherit">NVRTC compile-gate log</a> beside it). Verified for
           the covered specimens on recorded configurations — the core itself ships no CUDA runtime, and says so.</p>
       </div>
 
@@ -716,8 +737,9 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
           <div class="card">
             <span class="kicker">Something to break</span>
             <h3>The failure lab</h3>
-            <p>A runnable catalogue of the canonical silent CPU↔GPU divergences — <code>--zoo</code> reproduces
-              each one, so you can confirm what the doctor catches on your own machine, without the source.</p>
+            <p>A runnable catalogue of the canonical silent CPU↔GPU divergences — ships in the free download,
+              no licence needed: <code>--zoo</code> reproduces each one, so you can confirm what the doctor
+              catches on your own machine, without the source.</p>
           </div>
           <div class="card">
             <span class="kicker">Early access</span>
