@@ -88,6 +88,10 @@
      larger-than-snapport areas freely scrollable inside, so the lock engages only at the seams.
      `scroll-snap-stop: always` is the brake — a hard flick cannot skip past a section start. */
   section { scroll-snap-align: start; scroll-snap-stop: always; }
+  /* With JS available the eased engine below takes over — native mandatory snap animates at the UA's
+     abrupt pace and the two would fight. CSS snap remains as the no-JS fallback. */
+  html.js-snap { scroll-snap-type: none; }
+  html.js-snap section { scroll-snap-align: none; scroll-snap-stop: normal; }
   /* The footer is SHORTER than the viewport, so a snap stop there would fight the document's own end —
      landing it at the header line with dead space beneath. The last brake is the final section; the
      footer just arrives with it. */
@@ -759,6 +763,82 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
     <span>SemanticCompute v1.8.0 · Metal · Portable&nbsp;C · WebGPU · CUDA&nbsp;(verified runner)</span>
   </div>
 </footer>
+
+<script>
+/* Section brakes with an eased ramp. Native mandatory snap locks correctly but lands at the UA's abrupt
+   pace; this replaces the LANDING only: after a scroll ends near a section seam, glide to it on an
+   ease-out curve. Three rules, in priority order:
+     1. the user always wins — any wheel / touch / key input cancels the glide instantly;
+     2. engage only near a seam (±38% of the viewport) — mid-section reading is never hijacked;
+     3. anyone preferring reduced motion gets none of this (the CSS fallback is disabled too). */
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var doc = document.documentElement;
+  doc.classList.add('js-snap');
+
+  var HEADER = 61;
+  var seams = [];
+  function measure() {
+    seams = Array.prototype.map.call(document.querySelectorAll('section'), function (el) {
+      return el.getBoundingClientRect().top + window.pageYOffset - HEADER;
+    });
+  }
+  measure();
+  window.addEventListener('resize', measure);
+  window.addEventListener('load', measure);
+
+  var raf = null, animating = false;
+  function cancelGlide() { if (raf) cancelAnimationFrame(raf); raf = null; animating = false; }
+  ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (evt) {
+    window.addEventListener(evt, cancelGlide, { passive: true });
+  });
+
+  function glideTo(target) {
+    var from = window.pageYOffset;
+    var dist = target - from;
+    if (Math.abs(dist) < 2) return;
+    // Duration scales with distance, capped — long approaches ramp, short settles stay quick.
+    var dur = Math.min(700, Math.max(320, Math.abs(dist) * 0.9));
+    var t0 = null;
+    animating = true;
+    function step(ts) {
+      if (!animating) return;
+      if (t0 === null) t0 = ts;
+      var t = Math.min(1, (ts - t0) / dur);
+      var e = 1 - Math.pow(1 - t, 4);   // ease-out quart: brisk start, soft settle into the lock
+      window.scrollTo(0, from + dist * e);
+      if (t < 1) raf = requestAnimationFrame(step);
+      else { animating = false; raf = null; }
+    }
+    raf = requestAnimationFrame(step);
+  }
+
+  function settle() {
+    if (animating) return;
+    var y = window.pageYOffset;
+    var maxY = doc.scrollHeight - window.innerHeight;
+    if (y >= maxY - 4) return;               // resting at the document end is always allowed
+    var best = null, bestD = Infinity;
+    for (var i = 0; i < seams.length; i++) {
+      var d = Math.abs(seams[i] - y);
+      if (d < bestD) { bestD = d; best = seams[i]; }
+    }
+    if (best !== null && bestD > 2 && bestD < window.innerHeight * 0.38) glideTo(Math.min(best, maxY));
+  }
+
+  if ('onscrollend' in window) {
+    window.addEventListener('scrollend', settle);
+  } else {
+    // Safari without scrollend: a settled debounce approximates it.
+    var timer = null;
+    window.addEventListener('scroll', function () {
+      if (animating) return;
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(settle, 140);
+    }, { passive: true });
+  }
+})();
+</script>
 
 <script>
 (function () {
