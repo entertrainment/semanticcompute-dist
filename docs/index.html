@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SemanticCompute — prove your kernel agrees with your reference, to the ULP</title>
 <meta name="description" content="Your kernel and your reference disagree — SemanticCompute tells you where, by how many ULPs, and the likely cause (FMA, reduction order, denormal flush, NaN), classified with evidence, and whether a tolerance makes sense. It classifies the cause, prescribes the fix, and re-verifies yours worked — diagnose → prescribe → re-verify — without rewriting your kernel. Any two arrays, whatever produced them: CPU↔GPU, GPU↔GPU, kernel↔reference, backend↔backend. macOS and Linux; free to evaluate.">
 
@@ -81,7 +81,7 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-snap-type: y mandatory;
-    scroll-padding-top: 61px;
+    scroll-padding-top: var(--header-h, 61px);
     scroll-behavior: smooth;
   }
   /* Mandatory is safe here because every section is TALLER than the viewport: the spec keeps
@@ -107,7 +107,7 @@
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-sans);
-    font-size: 17px;
+    font-size: 1.0625rem;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -116,10 +116,14 @@
   a { color: inherit; }
   :focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; border-radius: 3px; }
 
-  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  /* Content clears the sensor housing / rounded corners on notched devices (landscape included). */
+  .wrap { max-width: var(--maxw); margin: 0 auto;
+          padding: 0 max(24px, env(safe-area-inset-left)) 0;
+          padding-right: max(24px, env(safe-area-inset-right));
+          padding-left: max(24px, env(safe-area-inset-left)); }
   .eyebrow {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 0.75rem;
     letter-spacing: .16em;
     text-transform: uppercase;
     color: var(--signal-ink);
@@ -143,11 +147,12 @@
   /* ---- top bar ---- */
   header.top {
     position: sticky; top: 0; z-index: 20;
+    padding-top: env(safe-area-inset-top);
     background: color-mix(in srgb, var(--bg) 82%, transparent);
     backdrop-filter: saturate(1.2) blur(10px);
     border-bottom: 1px solid var(--line);
   }
-  .top .row { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 16px; }
+  .top .row { display: flex; align-items: center; justify-content: space-between; min-height: 60px; gap: 16px; flex-wrap: nowrap; }
   .brand { display: flex; align-items: center; gap: 11px; font-weight: 640; letter-spacing: -0.02em; }
   .brand .glyph {
     width: 26px; height: 26px; border-radius: 7px; flex: none;
@@ -156,20 +161,29 @@
   }
   .brand .glyph::after {
     content: "="; position: absolute; inset: 0; display: grid; place-items: center;
-    color: var(--bg); font-family: var(--font-mono); font-weight: 800; font-size: 15px; line-height: 1;
+    color: var(--bg); font-family: var(--font-mono); font-weight: 800; font-size: 0.9375rem; line-height: 1;
   }
   .top nav { display: flex; align-items: center; gap: 6px; }
   .pill {
-    font-family: var(--font-mono); font-size: 12px; letter-spacing: .02em;
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: .02em;
     border: 1px solid var(--line-strong); color: var(--text-dim);
     padding: 4px 9px; border-radius: 999px; white-space: nowrap;
   }
   .pill.sig { color: var(--signal-ink); border-color: color-mix(in srgb, var(--signal) 45%, var(--line-strong)); }
   :root[data-theme="dark"] .pill.sig, .top .pill.sig { color: var(--signal); }
   .ghost-link {
-    font-family: var(--font-mono); font-size: 13px; text-decoration: none; color: var(--text-dim);
-    padding: 6px 10px; border-radius: 8px;
+    font-family: var(--font-mono); font-size: 0.8125rem; text-decoration: none; color: var(--text-dim);
+    padding: 6px 10px; border-radius: 8px; white-space: nowrap;
   }
+  /* 44pt minimum touch targets (HIG) without visual bulk: the VISIBLE control stays compact, the HIT
+     AREA extends invisibly to at least 44px in each direction. */
+  .top nav .pill, .top nav .ghost-link { position: relative; display: inline-flex; align-items: center; }
+  .top nav .pill::after, .top nav .ghost-link::after {
+    content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    min-width: 44px; min-height: 44px; width: 100%; height: 100%;
+  }
+  a.pill { text-decoration: none; }
+  a.pill:hover { color: var(--text); border-color: var(--line-strong); background: var(--bg-inset); }
   .ghost-link:hover { color: var(--text); background: var(--bg-inset); }
   @media (max-width: 620px){ .top nav .pill { display: none; } }
 
@@ -256,7 +270,7 @@
   .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; align-items: center; }
   .btn {
     display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
-    font-family: var(--font-mono); font-size: 13.5px; letter-spacing: .01em;
+    font-family: var(--font-mono); font-size: 0.84375rem; letter-spacing: .01em;
     border-radius: 10px; padding: 11px 15px; border: 1px solid transparent; text-decoration: none;
     transition: transform .12s ease, background .15s ease, border-color .15s ease;
   }
@@ -272,7 +286,7 @@
   .btn .tick { color: var(--signal-ink); font-weight: 700; }
   :root[data-theme="dark"] .btn .tick { color: var(--signal); }
   .platforms { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
-  .pf { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; }
+  .pf { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; }
   .pf b { color: var(--text); font-weight: 600; }
   .btn.ghost { color: var(--text-dim); border-color: var(--line-strong); background: transparent; }
   .btn.ghost:hover { color: var(--text); border-color: var(--text-faint); }
@@ -288,14 +302,14 @@
   .scope .readout {
     position: absolute; left: 12px; top: 11px; right: 12px;
     display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
-    font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .04em;
+    font-family: var(--font-mono); font-size: 0.71875rem; letter-spacing: .04em;
     color: var(--text-faint); text-transform: uppercase; pointer-events: none;
   }
   .scope .readout .live { color: var(--signal); }
   :root[data-theme="light"] .scope .readout .live { color: var(--signal-ink); }
   .scope .legend {
     position: absolute; left: 12px; bottom: 10px; display: flex; gap: 16px;
-    font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); pointer-events: none;
+    font-family: var(--font-mono); font-size: 0.6875rem; color: var(--text-dim); pointer-events: none;
   }
   .scope .legend span { display: inline-flex; align-items: center; gap: 6px; }
   .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
@@ -312,9 +326,9 @@
     background: var(--bg-raised); border: 1px solid var(--line); border-radius: var(--r);
     padding: 22px; display: flex; flex-direction: column; gap: 10px;
   }
-  .card .kicker { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-faint); }
-  .card p { color: var(--text-dim); font-size: 15px; line-height: 1.55; }
-  .card code { font-family: var(--font-mono); font-size: 13px; color: var(--signal-ink); background: var(--signal-wash); padding: 1px 5px; border-radius: 5px; }
+  .card .kicker { font-family: var(--font-mono); font-size: 0.71875rem; letter-spacing: .12em; text-transform: uppercase; color: var(--text-faint); }
+  .card p { color: var(--text-dim); font-size: 0.9375rem; line-height: 1.55; }
+  .card code { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--signal-ink); background: var(--signal-wash); padding: 1px 5px; border-radius: 5px; }
   :root[data-theme="dark"] .card code { color: var(--signal); }
 
   /* ---- pipeline ---- */
@@ -326,13 +340,13 @@
   }
   .ir-node b { color: var(--signal-ink); }
   :root[data-theme="dark"] .ir-node b { color: var(--signal); }
-  .ir-node small { display:block; color: var(--text-faint); font-size: 11px; letter-spacing:.1em; text-transform: uppercase; margin-top: 6px; }
+  .ir-node small { display:block; color: var(--text-faint); font-size: 0.6875rem; letter-spacing:.1em; text-transform: uppercase; margin-top: 6px; }
   .targets { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
   @media (max-width: 720px){ .targets { grid-template-columns: 1fr; } }
   .target { border: 1px solid var(--line); border-radius: 10px; padding: 14px 15px; background: var(--bg-raised); }
-  .target .t-name { font-family: var(--font-mono); font-weight: 600; font-size: 14px; }
-  .target .t-sub { font-size: 12.5px; color: var(--text-dim); margin-top: 3px; }
-  .target .verdict { margin-top: 10px; font-family: var(--font-mono); font-size: 11.5px; display:inline-flex; gap:6px; align-items:center; color: var(--signal-ink); }
+  .target .t-name { font-family: var(--font-mono); font-weight: 600; font-size: 0.875rem; }
+  .target .t-sub { font-size: 0.78125rem; color: var(--text-dim); margin-top: 3px; }
+  .target .verdict { margin-top: 10px; font-family: var(--font-mono); font-size: 0.71875rem; display:inline-flex; gap:6px; align-items:center; color: var(--signal-ink); }
   :root[data-theme="dark"] .target .verdict { color: var(--signal); }
   .target .verdict::before { content:""; width:7px; height:7px; border-radius:50%; background: currentColor; box-shadow: 0 0 0 3px var(--signal-wash); }
 
@@ -344,15 +358,15 @@
   .panel .bar {
     display: flex; align-items: center; gap: 8px; padding: 10px 14px;
     border-bottom: 1px solid var(--line); background: var(--bg-raised);
-    font-family: var(--font-mono); font-size: 12px; color: var(--text-dim);
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
   }
   .panel .bar .lamp { width: 9px; height: 9px; border-radius: 50%; background: var(--text-faint); }
   .panel .bar .lamp.a { background: var(--diverge); }
   .panel .bar .spacer { flex: 1; }
   .panel .body { padding: 4px 0; overflow-x: auto; }
-  table.diff { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 13px; }
+  table.diff { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.8125rem; }
   table.diff th, table.diff td { text-align: left; padding: 9px 16px; white-space: nowrap; }
-  table.diff thead th { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-faint); font-weight: 500; border-bottom: 1px solid var(--line); }
+  table.diff thead th { font-size: 0.6875rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-faint); font-weight: 500; border-bottom: 1px solid var(--line); }
   table.diff td.num { text-align: right; font-variant-numeric: tabular-nums; }
   table.diff tr td.tag { color: var(--text-dim); }
   table.diff tr.flag td { background: color-mix(in srgb, var(--diverge) 10%, transparent); }
@@ -370,27 +384,27 @@
   .metric .val.win { color: var(--signal-ink); }
   :root[data-theme="dark"] .metric .val.win { color: var(--signal); }
   .metric .val.wash { color: var(--diverge); }
-  .metric .label { font-size: 13px; color: var(--text-dim); margin-top: 6px; line-height: 1.4; }
-  .metric .sub { font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin-top: 8px; }
+  .metric .label { font-size: 0.8125rem; color: var(--text-dim); margin-top: 6px; line-height: 1.4; }
+  .metric .sub { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--text-faint); margin-top: 8px; }
 
   .note {
     border-left: 2px solid var(--signal); padding: 4px 0 4px 16px; margin-top: 26px;
-    color: var(--text-dim); font-size: 14.5px; max-width: var(--prose);
+    color: var(--text-dim); font-size: 0.90625rem; max-width: var(--prose);
   }
   .note b { color: var(--text); font-weight: 600; }
 
   /* ---- get it ---- */
   .code-block {
-    font-family: var(--font-mono); font-size: 13.5px; line-height: 1.7;
+    font-family: var(--font-mono); font-size: 0.84375rem; line-height: 1.7;
     background: var(--bg-inset); border: 1px solid var(--line); border-radius: var(--r);
     padding: 18px 18px; overflow-x: auto; color: var(--text);
   }
 
   /* ---- Evidence replay: the published CUDA parity log, animated as the run it records ---------------- */
   .evidence-replay { margin-top: 34px; }
-  .evidence-replay .bar-title { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); }
+  .evidence-replay .bar-title { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); }
   .replay-body {
-    font-family: var(--font-mono); font-size: 12.5px; line-height: 1.75;
+    font-family: var(--font-mono); font-size: 0.78125rem; line-height: 1.75;
     padding: 16px 18px; min-height: 300px; overflow: hidden;
   }
   .replay-body .ln { display: block; opacity: 0; transform: translateY(3px); transition: opacity .28s ease, transform .28s ease; white-space: pre-wrap; }
@@ -399,7 +413,10 @@
   .replay-body .ln.pass { color: var(--signal); }
   .replay-body .ln.head { color: var(--text-dim); }
   .replay-body .ln.final { color: var(--signal); font-weight: 700; }
-  .replay-caption { font-size: 13px; color: var(--text-dim); margin-top: 10px; }
+  .replay-caption { font-size: 0.8125rem; color: var(--text-dim); margin-top: 10px; }
+  @media (max-width: 640px) {
+    .replay-body { font-size: 0.72rem; line-height: 1.65; min-height: 0; padding: 14px; }
+  }
   /* Reduced motion: the replay renders as a plain static excerpt — same lines, no choreography. */
   @media (prefers-reduced-motion: reduce) { .replay-body .ln { opacity: 1; transform: none; transition: none; } }
 
@@ -411,12 +428,12 @@
   .code-block .s { color: var(--signal-ink); }
   :root[data-theme="dark"] .code-block .s { color: var(--signal); }
   .tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
-  .tool { font-family: var(--font-mono); font-size: 12.5px; border: 1px solid var(--line-strong); border-radius: 8px; padding: 6px 10px; color: var(--text-dim); }
+  .tool { font-family: var(--font-mono); font-size: 0.78125rem; border: 1px solid var(--line-strong); border-radius: 8px; padding: 6px 10px; color: var(--text-dim); }
   .tool b { color: var(--text); font-weight: 600; }
 
   /* ---- footer ---- */
   footer { border-top: 1px solid var(--line); padding: 40px 0 60px; color: var(--text-faint); }
-  footer .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: baseline; font-family: var(--font-mono); font-size: 12.5px; }
+  footer .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: baseline; font-family: var(--font-mono); font-size: 0.78125rem; }
   footer a { color: var(--text-dim); text-decoration: none; }
   footer a:hover { color: var(--text); }
 
@@ -429,7 +446,7 @@
     <div class="brand"><span class="glyph" aria-hidden="true"></span> SemanticCompute</div>
     <nav>
       <span class="pill sig">v1.8.0</span>
-      <span class="pill">Commercial</span>
+      <a class="pill" href="pricing.html">Commercial</a>
       <a class="ghost-link" href="#get">Get it →</a>
     </nav>
   </div>
@@ -493,7 +510,7 @@
           recover (<code>--zoo all</code>), in CI and in the free binary on your machine:</p>
       </div>
 
-      <div class="card" style="max-width:var(--prose); margin:-14px 0 34px; border-left:3px solid var(--signal)">
+      <div class="card" style="max-width:var(--prose); margin:0 0 36px; border-left:3px solid var(--signal)">
         <span class="kicker">Boundaries, stated</span>
         <h3>Bring two arrays. Nothing to adopt.</h3>
         <p style="color:var(--text-dim); margin-top:8px">
@@ -507,9 +524,9 @@
         .card.tol{cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;background:transparent;transition:border-color .15s,background .15s}
         .card.tol[aria-pressed="true"]{border-color:var(--diverge);background:rgba(110,168,254,.09)}
         .card.tol:hover{border-color:var(--diverge)}
-        td.verdict{font-weight:600;font-size:12px}
+        td.verdict{font-weight:600;font-size: 0.75rem}
         tr.okrow td:not(.verdict){opacity:.5}
-        table.diff .rx{display:inline-block;margin-top:3px;color:var(--signal-ink);font-size:11px}
+        table.diff .rx{display:inline-block;margin-top:3px;color:var(--signal-ink);font-size: 0.6875rem}
       </style>
       <div class="panel">
         <div class="bar">
@@ -534,7 +551,7 @@
         </div>
       </div>
 
-      <p class="lead" style="margin-top:16px;font-size:15px">Click a tolerance policy — watch what it tolerates:</p>
+      <p class="lead" style="margin-top:16px;font-size: 0.9375rem">Click a tolerance policy — watch what it tolerates:</p>
       <div class="grid cols-3" style="margin-top:8px">
         <button type="button" class="card tol" data-tol="exact" aria-pressed="true">
           <span class="kicker">.exact</span>
@@ -549,18 +566,18 @@
           <p>"One float apart, at any magnitude" — scale-free, so it also flags the <b style="color:var(--diverge)">2-ULP drift</b> that .default's relative bar waves through. The NaN survives every policy.</p>
         </button>
       </div>
-      <p style="margin-top:12px;color:var(--text-faint);font-size:12px">Each <span style="color:var(--signal-ink)">→ prescribed fix</span> follows from the diagnosed cause — a code fix for the unguarded NaN, a stated tolerance for legitimate rounding; SemanticCompute prescribes it and re-verifies, it doesn't rewrite your kernel. (The smallest denormal and 0 are adjacent floats, so the flush is exactly 1 ULP.)</p>
+      <p style="margin-top:12px;color:var(--text-faint);font-size: 0.75rem">Each <span style="color:var(--signal-ink)">→ prescribed fix</span> follows from the diagnosed cause — a code fix for the unguarded NaN, a stated tolerance for legitimate rounding; SemanticCompute prescribes it and re-verifies, it doesn't rewrite your kernel. (The smallest denormal and 0 are adjacent floats, so the flush is exactly 1 ULP.)</p>
 
-      <p style="margin-top:14px;color:var(--text-dim);font-size:13px">Same four culprits, live from the
+      <p style="margin-top:14px;color:var(--text-dim);font-size: 0.8125rem">Same four culprits, live from the
         <a href="https://github.com/entertrainment/semanticcompute-dist" style="color:var(--diverge)">failure lab</a>,
         runnable from the CLI binary: <code>semanticcompute-parity --zoo 01-fma-contraction</code></p>
 
-      <p style="margin-top:14px;color:var(--text-dim);font-size:13px">Provenance-agnostic array comparison: it compares
+      <p style="margin-top:14px;color:var(--text-dim);font-size: 0.8125rem">Provenance-agnostic array comparison: it compares
         <em>any producer's output</em> — <b>Triton · PyTorch · CUDA · vLLM · FlashAttention</b> — against your reference; no
         integration with, or backend for, any of them is claimed. <a href="https://github.com/entertrainment/semanticcompute-dist/tree/main/examples" style="color:var(--diverge)">Worked&nbsp;examples</a>
         reproduce each one's documented numerical failure mode — diagnosed and classified.</p>
 
-      <p style="margin-top:10px;color:var(--text-dim);font-size:13px">Any check can emit a self-contained
+      <p style="margin-top:10px;color:var(--text-dim);font-size: 0.8125rem">Any check can emit a self-contained
         <a href="verification-report.html" style="color:var(--diverge)">HTML verification report</a> — a shareable
         audit artifact. This one is the KernelBench loop closing: a generated softmax kernel diverged, then verified after the fix.</p>
     </div>
@@ -738,11 +755,11 @@
 <span class="c"># One command: install the signed MCP server + register it with Claude Code</span>
 curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcompute-dist</span>/main/install.sh | bash
 <span class="c"># Claude Desktop: just double-click semanticcompute-mcp.mcpb (Settings ▸ Extensions)</span></div>
-          <p style="color:var(--text-dim); font-size:13px; margin-top:10px">
+          <p style="color:var(--text-dim); font-size: 0.8125rem; margin-top:10px">
             Prefer a manual binary? Grab one from <a href="https://github.com/entertrainment/semanticcompute-dist/releases" style="color:var(--diverge)">Releases</a>.
             Per-client setup (Claude Desktop · Claude Code · Cursor) is in the
             <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/docs/INSTALL-MCP.md" style="color:var(--diverge)">install guide</a>.</p>
-          <p style="color:var(--text-dim); font-size:14px; margin-top:16px">
+          <p style="color:var(--text-dim); font-size: 0.875rem; margin-top:16px">
             Run the MCP server so an agent can verify numerics, classify the cause, and get the <em>prescribed
             fix</em> — mid-task. Diagnosis returns a typed <code>remediesByCause</code> map, so the agent applies
             the fix and re-verifies; a generate → verify → prescribe → re-verify loop closes automatically:</p>
@@ -755,7 +772,7 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
             <span class="tool"><b>sc_emit_kernel</b></span>
             <span class="tool"><b>sc_suggest_families</b></span>
           </div>
-          <p style="color:var(--text-dim); font-size:13px; margin-top:12px">
+          <p style="color:var(--text-dim); font-size: 0.8125rem; margin-top:12px">
             Plus MCP <b>resources</b> — the family catalogue and the failure lab as browsable context
             (<code>semanticcompute://families</code>, <code>semanticcompute://zoo</code>) — and <b>prompt</b>
             workflows: <code>verify-kernel</code>, <code>diagnose-divergence</code>, <code>find-existing-family</code>,
@@ -943,6 +960,9 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
   var HEADER = 61;
   var seams = [];
   function measure() {
+    var bar = document.querySelector('header.top');
+    HEADER = (bar ? bar.offsetHeight : 60) + 1;
+    document.documentElement.style.setProperty('--header-h', HEADER + 'px');
     seams = Array.prototype.map.call(document.querySelectorAll('section'), function (el) {
       return el.getBoundingClientRect().top + window.pageYOffset - HEADER;
     });
