@@ -66,7 +66,33 @@
   }
 
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
+
+  /* ---- Scroll brakes ------------------------------------------------------------------------------
+     Sections take hold as you approach them and settle to the top edge, so the page advances argument
+     by argument instead of drifting.
+
+     PROXIMITY, never mandatory: these sections run well past a viewport height, and mandatory snap on
+     tall sections fights the reader — it hijacks a deliberate short scroll, traps find-in-page, and
+     strands anyone reading the middle of a long panel. Proximity only engages when a scroll ENDS near
+     a boundary, which is the braking feel without the trap.
+
+     scroll-padding-top clears the 60px sticky header, so a section locks BELOW the bar rather than
+     sliding under it. */
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-snap-type: y proximity;
+    scroll-padding-top: 61px;
+    scroll-behavior: smooth;
+  }
+  section, footer { scroll-snap-align: start; }
+  /* The hero is the one section that must never pull the reader back up to it. */
+  section.hero { scroll-snap-align: none; }
+
+  /* Anyone who asked for less motion gets none of it: no smooth easing, no snapping. */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; scroll-snap-type: none; }
+    section, footer { scroll-snap-align: none; }
+  }
   body {
     margin: 0;
     background: var(--bg);
@@ -139,8 +165,76 @@
   @media (max-width: 620px){ .top nav .pill { display: none; } }
 
   /* ---- section rhythm ---- */
-  section { padding: clamp(56px, 9vw, 108px) 0; border-top: 1px solid var(--line); }
-  section:first-of-type { border-top: 0; }
+  /* `color` is re-declared here, not just inherited: a band redefines --text on ITSELF, but children
+     inherit body's already-computed colour unless the section resolves the token again. Without this,
+     the inverted band renders near-black text on its near-black ground. */
+  section { padding: clamp(56px, 9vw, 108px) 0; background: var(--bg); color: var(--text); }
+
+  /* ---- Section bands -------------------------------------------------------------------------------
+     The page alternates ground → tint → ink → ground → tint, so no two neighbouring sections share a
+     surface and the eye gets a beat between arguments. Bands re-declare the SURFACE tokens locally
+     rather than restyling components: every card, panel, table and button inside a band reads the
+     nearest ancestor's tokens, so it re-grounds itself automatically and nothing needs a band variant.
+
+     Why tinted rather than saturated: teal is a SEMANTIC colour here — it means "agrees", against amber
+     "drift" and red "mismatch". Flooding a section with full-strength teal would spend the signal on
+     decoration and leave the diff tables arguing with their own background. The tint carries the brand;
+     the signal keeps its meaning. */
+  .band-tint {
+    --bg: #e4f2ec; --bg-raised: #ffffff; --bg-inset: #d5eae3;
+    --line: #c5ded6; --line-strong: #a6c9bf;
+    --shadow: 0 1px 2px rgba(6,34,32,.05), 0 8px 30px rgba(6,34,32,.07);
+  }
+  /* The one inverted band: the lowering contract — the page's central claim, and the section whose
+     verdict readouts ("executed · agrees") are meant to look like instrument lamps. Dark ground is what
+     makes them read as lit rather than printed. */
+  .band-ink {
+    --bg: #062220; --bg-raised: #0c2e2b; --bg-inset: #041a18;
+    --line: #173f3a; --line-strong: #255c54;
+    --text: #e9f7f4; --text-dim: #a4c7c1; --text-faint: #7ba49d;
+    --signal: #2ee6c9; --signal-ink: #8ff5e4; --signal-wash: rgba(46,230,201,.10);
+    --diverge: #f2b45a; --critical: #ff6b5c;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 18px 50px rgba(0,0,0,.45);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    /* Dark mode inverts the relationship: the ground is already dark, so the bands separate by teal
+       CAST and elevation instead of by lightness. */
+    .band-tint {
+      --bg: #101f1d; --bg-raised: #1a2b28; --bg-inset: #0c1918;
+      --line: #22403b; --line-strong: #2f5850;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 40px rgba(0,0,0,.35);
+    }
+    .band-ink {
+      --bg: #06231f; --bg-raised: #0d302c; --bg-inset: #051c19;
+      --line: #1b463f; --line-strong: #2a6159;
+      --text: #e9f7f4; --text-dim: #a4c7c1; --text-faint: #7ba49d;
+      --signal: #2ee6c9; --signal-ink: #8ff5e4; --signal-wash: rgba(46,230,201,.10);
+      --shadow: 0 1px 2px rgba(0,0,0,.5), 0 18px 50px rgba(0,0,0,.5);
+    }
+  }
+  /* Explicit toggle wins in both directions, same as the root tokens above. */
+  :root[data-theme="light"] .band-tint {
+    --bg: #e4f2ec; --bg-raised: #ffffff; --bg-inset: #d5eae3;
+    --line: #c5ded6; --line-strong: #a6c9bf;
+    --shadow: 0 1px 2px rgba(6,34,32,.05), 0 8px 30px rgba(6,34,32,.07);
+  }
+  :root[data-theme="light"] .band-ink {
+    --bg: #062220; --bg-raised: #0c2e2b; --bg-inset: #041a18;
+    --line: #173f3a; --line-strong: #255c54;
+  }
+  :root[data-theme="dark"] .band-tint {
+    --bg: #101f1d; --bg-raised: #1a2b28; --bg-inset: #0c1918;
+    --line: #22403b; --line-strong: #2f5850;
+  }
+  :root[data-theme="dark"] .band-ink {
+    --bg: #06231f; --bg-raised: #0d302c; --bg-inset: #051c19;
+    --line: #1b463f; --line-strong: #2a6159;
+  }
+
+  /* Inside the inverted band the eyebrow's light-mode ink colour would vanish into the ground; the
+     band's own --signal-ink (a light teal) is nearer in the cascade, so this just re-points at it. */
+  .band-ink .eyebrow, :root[data-theme="light"] .band-ink .eyebrow { color: var(--signal-ink); }
   .sec-head { display: flex; flex-direction: column; gap: 14px; max-width: var(--prose); margin-bottom: 40px; }
 
   /* ---- hero ---- */
@@ -355,7 +449,7 @@
   </section>
 
   <!-- CONTRACT -->
-  <section id="diff">
+  <section id="diff" class="band-tint">
     <div class="wrap">
       <div class="sec-head">
         <p class="eyebrow">The kill-shot</p>
@@ -463,7 +557,7 @@
   </section>
 
   <!-- KILL SHOT -->
-  <section id="contract">
+  <section id="contract" class="band-ink">
     <div class="wrap">
       <div class="sec-head">
         <p class="eyebrow">One IR · three executed targets in-core + a hardware-verified CUDA runner</p>
@@ -571,7 +665,7 @@
   </section>
 
   <!-- GET IT -->
-  <section id="get">
+  <section id="get" class="band-tint">
     <div class="wrap">
       <div class="grid cols-2" style="align-items:start">
         <div>
