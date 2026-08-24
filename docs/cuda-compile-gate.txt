@@ -1,0 +1,110 @@
+=== provenance ===
+git: 9a56c72-dirty
+NVRTC options: --fmad=false --prec-sqrt=true --prec-div=true --ftz=false; --use_fast_math NOT passed (SLCUDARuntimeAdapter default — the IEEE-safe contract)
+=== host ===
+Linux 7.0.12-linuxkit x86_64
+Swift version 6.2.4 (swift-6.2.4-RELEASE)
+Target: x86_64-unknown-linux-gnu
+CUDA_HOME=/usr/local/cuda
+nvcc not installed (not required: NVRTC compiles at run time)
+=== GPU / driver ===
+no NVIDIA device visible here
+=== build (CUDA runtime adapter + on-device parity gate) ===
+[0/1] Planning build
+Building for debugging...
+[0/3] Write sources
+[2/3] Write swift-version-24593BA9C3E375BF.txt
+[4/6] Compiling SemanticCompute SLWGSLEmitter.swift
+[5/6] Compiling SemanticCompute SLCUDAEmitter.swift
+[6/6] Emitting module SemanticCompute
+[7/53] Compiling SemanticCompute SLPassPipeline.swift
+[8/57] Compiling SemanticCompute ISTFTFamily.swift
+[9/57] Compiling SemanticCompute KuramotoFamily.swift
+[10/57] Compiling SemanticCompute LabelwiseReductionFamily.swift
+[11/57] Compiling SemanticCompute LevelSetReinitFamily.swift
+[12/57] Compiling SemanticCompute NearestFeatureTransformFamily.swift
+[13/57] Compiling SemanticCompute PLLTrackerFamily.swift
+[14/57] Compiling SemanticCompute PennesBioheatFamily.swift
+[15/57] Compiling SemanticCompute PeronaMalikFamily.swift
+[16/57] Compiling SemanticCompute ForceDirectedLayoutFamily.swift
+[17/57] Compiling SemanticCompute GLCMHaralickFamily.swift
+[18/57] Compiling SemanticCompute GeodesicDistanceFamily.swift
+[19/57] Compiling SemanticCompute HarmonicFreqEKFFamily.swift
+[20/57] Compiling SemanticCompute ConjugateGradientFamily.swift
+[21/57] Compiling SemanticCompute ConnectedComponents3DFamily.swift
+[22/57] Compiling SemanticCompute ConnectedComponentsFamily.swift
+[23/57] Compiling SemanticCompute ConnectedComponentsGradientRegionGrow.swift
+[24/57] Compiling SemanticCompute CorrelationFamily.swift
+[25/57] Compiling SemanticCompute FFTFamily.swift
+[26/57] Compiling SemanticCompute FamilyCodeDetector.swift
+[27/57] Compiling SemanticCompute FamilyUsageGuide.swift
+[28/57] Compiling SemanticCompute FisherKPPFamily.swift
+[29/57] Compiling SemanticCompute MarchingCubesFamily.swift
+[30/57] Compiling SemanticCompute MarchingCubesMesh.swift
+[31/57] Compiling SemanticCompute MoireGratingFamily.swift
+[32/57] Compiling SemanticCompute NMS3D.swift
+[33/57] Compiling SemanticCompute SLCompatibilityDoctor.swift
+[34/57] Compiling SemanticCompute SLDivergenceCause.swift
+[35/57] Compiling SemanticCompute SLErrorBound.swift
+[36/57] Compiling SemanticCompute SLKernelCSE.swift
+[37/57] Compiling SemanticCompute AudioEditReference.swift
+[38/57] Compiling SemanticCompute BatchedSPDSolveFamily.swift
+[39/57] Compiling SemanticCompute CLAHEFamily.swift
+[40/57] Compiling SemanticCompute CPUReferenceExecution.swift
+[41/57] Compiling SemanticCompute ChromagramGoertzelFamily.swift
+[42/57] Compiling SemanticCompute SymmetricEigen3x3Family.swift
+[43/57] Compiling SemanticCompute WallCrossingFamily.swift
+[44/57] Compiling SemanticCompute YINFamily.swift
+[45/57] Compiling SemanticCompute ZeroCrossingRateFamily.swift
+[46/57] Compiling SemanticCompute SLKernelOptimiser.swift
+[47/57] Compiling SemanticCompute SLKernelPrinter.swift
+[48/57] Compiling SemanticCompute SLReferenceExecutor.swift
+[49/57] Compiling SemanticCompute SLVerificationReport.swift
+[50/57] Compiling SemanticCompute PoissonRelaxationFamily.swift
+[51/57] Compiling SemanticCompute RegionAdjacencyMatrixFamily.swift
+[52/57] Compiling SemanticCompute ResampleAffineFamily.swift
+[53/57] Compiling SemanticCompute SCMetricsReader.swift
+[54/57] Compiling SemanticCompute SLVersion.swift
+[55/57] Compiling SemanticCompute STFTFamily.swift
+[56/57] Compiling SemanticCompute SemanticCompute.swift
+[57/57] Compiling SemanticCompute SpectrogramDisplayFamily.swift
+[59/60] Compiling SemanticComputeCUDA SLCUDARuntimeAdapter.swift
+[60/60] Emitting module SemanticComputeCUDA
+[61/61] Compiling SemanticComputeCUDA SLCUDAParityHarness.swift
+Build complete! (21.52s)
+=== compile-check the test target too (no GPU: nothing is executed, no parity claim is earned) ===
+Building for debugging...
+[0/3] Write sources
+[1/3] Write swift-version-24593BA9C3E375BF.txt
+[2/11] Wrapping AST for SemanticComputeCUDA for debugging
+[3/11] Wrapping AST for SemanticCompute for debugging
+[5/14] Emitting module SemanticComputeCUDATests
+[6/14] Compiling SemanticComputeCUDATests CUDAParityTests.swift
+[7/14] Compiling SemanticComputeCUDATests CUDAExecutionMatrixTests.swift
+[8/15] /build/x86_64-unknown-linux-gnu/debug/SemanticComputeCUDAPackageDiscoveredTests.derived/all-discovered-tests.swift
+[9/16] Write sources
+[10/16] Wrapping AST for SemanticComputeCUDATests for debugging
+[12/19] Compiling SemanticComputeCUDAPackageDiscoveredTests SemanticComputeCUDATests.swift
+[13/19] Emitting module SemanticComputeCUDAPackageDiscoveredTests
+[14/19] Compiling SemanticComputeCUDAPackageDiscoveredTests all-discovered-tests.swift
+[15/17] Write Objects.LinkFileList
+[16/17] Linking SemanticComputeCUDAPackageTests.xctest
+Build complete! (13.28s)
+=== NVRTC compile gate (real NVIDIA compiler; no device needed) ===
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version-24593BA9C3E375BF.txt
+Build complete! (4.37s)
+Test Suite 'Selected tests' started at 2026-08-24 20:03:22.537
+Test Suite 'Selected tests' passed at 2026-08-24 20:03:22.614
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+◇ Test run started.
+↳ Testing Library Version: 6.2.4 (5ee435b15ad40ec)
+↳ Target Platform: x86_64-unknown-linux-gnu
+◇ Suite "NVRTC compile gate (toolkit hosts; no GPU required)" started.
+◇ Test "Every matrix specimen compiles under NVRTC with the runtime's exact options" started.
+NVRTC compile gate: 7 kernel shapes (loops and synthesised vector helpers included) compiled with --fmad=false, no host includes.
+✔ Test "Every matrix specimen compiles under NVRTC with the runtime's exact options" passed after 1.379 seconds.
+✔ Suite "NVRTC compile gate (toolkit hosts; no GPU required)" passed after 1.387 seconds.
+✔ Test run with 1 test in 1 suite passed after 1.395 seconds.
+COMPILE-ONLY: adapter compiled + NVRTC gate executed. CPU<->CUDA EXECUTION parity remains unproven here.
