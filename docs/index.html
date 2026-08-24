@@ -385,6 +385,28 @@
     background: var(--bg-inset); border: 1px solid var(--line); border-radius: var(--r);
     padding: 18px 18px; overflow-x: auto; color: var(--text);
   }
+
+  /* ---- Evidence replay: the published CUDA parity log, animated as the run it records ---------------- */
+  .evidence-replay { margin-top: 34px; }
+  .evidence-replay .bar-title { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); }
+  .replay-body {
+    font-family: var(--font-mono); font-size: 12.5px; line-height: 1.75;
+    padding: 16px 18px; min-height: 300px; overflow: hidden;
+  }
+  .replay-body .ln { display: block; opacity: 0; transform: translateY(3px); transition: opacity .28s ease, transform .28s ease; white-space: pre-wrap; }
+  .replay-body .ln.on { opacity: 1; transform: none; }
+  .replay-body .ln.dim { color: var(--text-faint); }
+  .replay-body .ln.pass { color: var(--signal); }
+  .replay-body .ln.head { color: var(--text-dim); }
+  .replay-body .ln.final { color: var(--signal); font-weight: 700; }
+  .replay-caption { font-size: 13px; color: var(--text-dim); margin-top: 10px; }
+  /* Reduced motion: the replay renders as a plain static excerpt — same lines, no choreography. */
+  @media (prefers-reduced-motion: reduce) { .replay-body .ln { opacity: 1; transform: none; transition: none; } }
+
+  /* Verdict lamps light up as their card enters view (one-time). */
+  .target .verdict::before { transition: box-shadow .5s ease, opacity .5s ease; }
+  .target:not(.lit) .verdict::before { opacity: .25; box-shadow: none; }
+  @media (prefers-reduced-motion: reduce) { .target:not(.lit) .verdict::before { opacity: 1; box-shadow: 0 0 0 3px var(--signal-wash); } }
   .code-block .c { color: var(--text-faint); }
   .code-block .s { color: var(--signal-ink); }
   :root[data-theme="dark"] .code-block .s { color: var(--signal); }
@@ -646,6 +668,15 @@
             run on two boards, evidence committed.</p>
         </div>
       </div>
+
+      <div class="panel evidence-replay">
+        <div class="bar"><span class="lamp" id="replayLamp"></span><span class="lamp"></span>
+          <span class="bar-title">cuda-parity-evidence.txt — the NVIDIA run, replayed</span></div>
+        <div class="replay-body" id="evidenceReplay" aria-label="Replay of the published CUDA parity evidence log"></div>
+      </div>
+      <p class="replay-caption">Every line above is verbatim from the
+        <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/docs/cuda-parity-evidence.txt" style="color:var(--diverge)">published evidence log</a> —
+        nothing staged, nothing summarised. The same file the CUDA claims on this page link to.</p>
     </div>
   </section>
 
@@ -763,6 +794,139 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
     <span>SemanticCompute v1.8.0 · Metal · Portable&nbsp;C · WebGPU · CUDA&nbsp;(verified runner)</span>
   </div>
 </footer>
+
+<script>
+/* Evidence replay + reveal animations. The replay lines are VERBATIM from the published
+   docs/cuda-parity-evidence.txt (timing labels trimmed) — the animation choreographs, it never invents.
+   All of it: starts when scrolled into view, loops with a rest, and collapses to a static excerpt under
+   prefers-reduced-motion. */
+(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- 1. The CUDA run, replayed ------------------------------------------------------------------
+  var host = document.getElementById('evidenceReplay');
+  if (host) {
+    // [css-class, text] — every line verbatim from the published log.
+    var LINES = [
+      ['head', '=== provenance ==='],
+      ['dim',  'git: 9a56c72 · NVRTC: --fmad=false --prec-sqrt=true --prec-div=true --ftz=false'],
+      ['head', '=== GPU / driver ==='],
+      ['dim',  'GPU 0: NVIDIA GeForce RTX 5080    GPU 1: NVIDIA GeForce RTX 5080'],
+      ['dim',  'CUDA-BOUND-DEVICE: ordinal 0'],
+      ['pass', '✔ affine: CPU↔CUDA parity is bit-exact (.exact)'],
+      ['pass', '✔ 4D 3×4×2×5: the depth×time fold recovers the RIGHT (z,t) for all 120 elements (.exact)'],
+      ['pass', '✔ if + early return: negative lanes take the branch and return, the rest fall through (.exact)'],
+      ['pass', '✔ round is ties-away on device, matching the CPU reference (.exact)'],
+      ['pass', '✔ fmin/fmax skip NaN operands on device exactly as the CPU reference does (.exact)'],
+      ['pass', '✔ float3 dot association is pinned ON DEVICE: 2²⁴+1+1 discriminates fused/reassociated evaluation (.exact)'],
+      ['pass', '✔ float3 normalize on device: v/sqrtf(dot(v,v)) is bit-exact — every op correctly rounded (.exact)'],
+      ['pass', '✔ Test run with 17 tests in 3 suites'],
+      ['head', '=== independent second-device check: full matrix again on ordinal 1 of 2 ==='],
+      ['dim',  'CUDA-BOUND-DEVICE: ordinal 1'],
+      ['pass', '✔ Test run with 17 tests in 3 suites'],
+      ['final','=== CUDA parity EXECUTED on device ===']
+    ];
+    var els = LINES.map(function (l) {
+      var el = document.createElement('span');
+      el.className = 'ln ' + l[0];
+      el.textContent = l[1];
+      host.appendChild(el);
+      return el;
+    });
+    var lamp = document.getElementById('replayLamp');
+
+    if (reduced) {
+      els.forEach(function (el) { el.classList.add('on'); });
+      if (lamp) lamp.style.background = 'var(--signal)';
+    } else {
+      // Pause/RESUME on visibility, never reset mid-run — the section-lock glide can nudge the panel
+      // across the observer threshold, and a reset there restarts the log halfway through a pass.
+      var i = 0, timer = null, running = false;
+      function step() {
+        if (i >= els.length) {
+          if (lamp) lamp.style.background = 'var(--signal)';
+          timer = setTimeout(function () {           // rest with the verdict lit, then run again
+            i = 0;
+            els.forEach(function (el) { el.classList.remove('on'); });
+            if (lamp) lamp.style.background = 'var(--diverge)';
+            timer = setTimeout(step, 500);
+          }, 8000);
+          return;
+        }
+        els[i].classList.add('on');
+        var cls = els[i].className;
+        i++;
+        // Pacing: headers pause, passes tick briskly, the verdict lands immediately after.
+        timer = setTimeout(step, cls.indexOf('head') >= 0 ? 650 : 340);
+      }
+      var seen = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting && !running) {
+            running = true;
+            if (lamp && i === 0) lamp.style.background = 'var(--diverge)';
+            step();
+          } else if (!e.isIntersecting && running) {
+            running = false; clearTimeout(timer);    // pause where it is; resume from the same line
+          }
+        });
+      }, { threshold: 0.2 });
+      seen.observe(host);
+    }
+  }
+
+  // ---- 2. Metric tiles count up as they arrive ----------------------------------------------------
+  if (!reduced && 'IntersectionObserver' in window) {
+    var mObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        mObs.unobserve(e.target);
+        var el = e.target;
+        // A batched observer can deliver the same element twice in one callback; a second pass would
+        // capture the MID-ANIMATION text as its target and count down to it. One start, ever.
+        if (el.dataset.counted) return;
+        el.dataset.counted = '1';
+        var final = el.textContent;
+        var m = final.match(/^([^0-9]*)([0-9.]+)(.*)$/);
+        if (!m) return;
+        var target = parseFloat(m[2]), dec = (m[2].split('.')[1] || '').length;
+        var t0 = null, done = false;
+        function tick(ts) {
+          if (done) return;
+          if (t0 === null) t0 = ts;
+          var t = Math.min(1, (ts - t0) / 900);
+          var v = target * (1 - Math.pow(1 - t, 3));
+          el.textContent = m[1] + v.toFixed(dec) + m[3];
+          if (t < 1) requestAnimationFrame(tick); else { done = true; el.textContent = final; }
+        }
+        requestAnimationFrame(tick);
+        // Animation frames can be throttled or dropped (background pane, low-power mode). The number is a
+        // CLAIM — it must never rest on a half-counted value, so the true text lands on a wall-clock too.
+        setTimeout(function () { done = true; el.textContent = final; }, 1100);
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('.metric .val').forEach(function (el) { mObs.observe(el); });
+  }
+
+  // ---- 3. Verdict lamps light as their card enters view -------------------------------------------
+  var targets = document.querySelectorAll('.target');
+  if (reduced || !('IntersectionObserver' in window)) {
+    targets.forEach(function (el) { el.classList.add('lit'); });
+  } else {
+    var order = Array.prototype.slice.call(targets);
+    var tObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          // Stagger by the card's PLACE IN THE GRID, not its position in the entries batch.
+          var k = order.indexOf(e.target);
+          setTimeout(function () { e.target.classList.add('lit'); }, 160 * Math.max(0, k));
+          tObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    order.forEach(function (el) { tObs.observe(el); });
+  }
+})();
+</script>
 
 <script>
 /* Section brakes with an eased ramp. Native mandatory snap locks correctly but lands at the UA's abrupt
