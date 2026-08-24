@@ -303,7 +303,7 @@
   <div class="wrap row">
     <div class="brand"><span class="glyph" aria-hidden="true"></span> SemanticCompute</div>
     <nav>
-      <span class="pill sig">v1.6.1</span>
+      <span class="pill sig">v1.7.0</span>
       <span class="pill">Commercial</span>
       <a class="ghost-link" href="#get">Get it →</a>
     </nav>
@@ -339,7 +339,7 @@
         <div class="platforms" aria-label="Platforms and availability">
           <span class="pf"><b>macOS</b> — universal, signed + notarised</span>
           <span class="pf"><b>Linux</b> — prebuilt x86-64 + arm64 binaries, tests green</span>
-          <span class="pf">emits <b>Metal · portable C · WebGPU</b></span>
+          <span class="pf">emits <b>Metal · portable C · WebGPU · CUDA&nbsp;(emission)</b></span>
         </div>
       </div>
       <div class="scope" aria-label="Divergence scope: a reference signal and a candidate signal, with drift flagged">
@@ -466,7 +466,7 @@
   <section id="contract">
     <div class="wrap">
       <div class="sec-head">
-        <p class="eyebrow">One IR · three backends</p>
+        <p class="eyebrow">One IR · four lowering targets</p>
         <h2>The same kernel, lowered three ways — and proven to agree.</h2>
         <p class="lead">A single optimising front door feeds every backend; the target is chosen only at the
           final emit. Metal and C execute the full family suite on-host and are diffed against the CPU truth; WGSL
@@ -512,7 +512,7 @@
           <span class="kicker">Proven, not asserted</span>
           <h3>Passes are on-device parity tests</h3>
           <p>The compiler's optimisation passes are verified semantics-preserving by running before/after on the
-            GPU and comparing bit-for-bit. ~820 tests across 186 suites, three backends, green on macOS &amp; Linux.</p>
+            GPU and comparing bit-for-bit. ~844 tests across 193 suites; three executed backends (Metal, C, WebGPU) plus CUDA emission, green on macOS &amp; Linux.</p>
         </div>
       </div>
     </div>
@@ -628,7 +628,7 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
 <footer>
   <div class="wrap row">
     <span>© 2026 Douglas Horner (Entertrainment) · commercial licence</span>
-    <span>SemanticCompute v1.6.1 · Metal · Portable&nbsp;C · WebGPU</span>
+    <span>SemanticCompute v1.7.0 · Metal · Portable&nbsp;C · WebGPU · CUDA&nbsp;(emission)</span>
   </div>
 </footer>
 
