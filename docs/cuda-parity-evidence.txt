@@ -1,0 +1,328 @@
+=== provenance ===
+git: 9a56c72-dirty
+NVRTC options: --fmad=false --prec-sqrt=true --prec-div=true --ftz=false; --use_fast_math NOT passed (SLCUDARuntimeAdapter default — the IEEE-safe contract)
+=== host ===
+Linux 6.8.0-100-generic x86_64
+Swift version 6.2 (swift-6.2-RELEASE)
+Target: x86_64-unknown-linux-gnu
+CUDA_HOME=/usr/local/cuda
+Cuda compilation tools, release 12.8, V12.8.93
+Build cuda_12.8.r12.8/compiler.35583870_0
+=== GPU / driver ===
+GPU 0: NVIDIA GeForce RTX 5080
+GPU 1: NVIDIA GeForce RTX 5080
+name, driver_version, compute_cap, memory.total [MiB]
+NVIDIA GeForce RTX 5080, 570.211.01, 12.0, 16303 MiB
+NVIDIA GeForce RTX 5080, 570.211.01, 12.0, 16303 MiB
+=== build (CUDA runtime adapter + on-device parity gate) ===
+Building for debugging...
+[0/3] Write sources
+[2/3] Write swift-version-6A52383ED409C6A7.txt
+[4/170] Compiling SemanticCompute TrimmedQuantileFamily.swift
+[5/170] Compiling SemanticCompute VolumeProjection.swift
+[6/172] Compiling SemanticCompute PointwiseLerpFamily.swift
+[7/172] Compiling SemanticCompute PointwiseUnaryFamily.swift
+[8/172] Compiling SemanticCompute PoissonRelaxationFamily.swift
+[9/172] Compiling SemanticCompute WindowFamily.swift
+[10/172] Compiling SemanticCompute WongWangFamily.swift
+[11/172] Compiling SemanticCompute MoireGratingFamily.swift
+[12/172] Compiling SemanticCompute MorphologyFamily.swift
+[13/172] Compiling SemanticCompute NLMSFamily.swift
+[14/172] Compiling SemanticCompute MVDRCovarianceFamily.swift
+[15/172] Compiling SemanticCompute MVDRWeightsFamily.swift
+[16/172] Compiling SemanticCompute MarchingCubesFamily.swift
+[17/172] Compiling SemanticCompute MarchingCubesMesh.swift
+[18/172] Compiling SemanticCompute MatMulFamily.swift
+[19/172] Compiling SemanticCompute MelMFCCFamily.swift
+[20/172] Compiling SemanticCompute SLKernelPrinter.swift
+[21/172] Compiling SemanticCompute SLMetalEmitter.swift
+[22/172] Compiling SemanticCompute SLKernelCSE.swift
+[23/172] Compiling SemanticCompute SLKernelOptimiser.swift
+[24/172] Emitting module SemanticCompute
+[25/172] Compiling SemanticCompute TransposeFamily.swift
+[26/172] Compiling SemanticCompute TriangularSolveFamily.swift
+[27/172] Compiling SemanticCompute SLNormalisedShape.swift
+[28/172] Compiling SemanticCompute SLNumericProfile.swift
+[29/172] Compiling SemanticCompute SpringElectricalLayoutFamily.swift
+[30/172] Compiling SemanticCompute Stencil2DFamily.swift
+[31/172] Compiling SemanticCompute SLCUDAEmitter.swift
+[32/172] Compiling SemanticCompute SLCompatibilityDoctor.swift
+[33/172] Compiling SemanticCompute SLDSL.swift
+[34/172] Compiling SemanticCompute SLDivergenceCause.swift
+[35/172] Compiling SemanticCompute SLDivergenceConcentration.swift
+[36/172] Compiling SemanticCompute SLEffectSet.swift
+[37/172] Compiling SemanticCompute ReservoirFamily.swift
+[38/172] Compiling SemanticCompute ResizeFamily.swift
+[39/172] Compiling SemanticCompute RobustStandardiseFamily.swift
+[40/172] Compiling SemanticCompute SLPassPipeline.swift
+[41/172] Compiling SemanticCompute SLReferenceExecutor.swift
+[42/172] Compiling SemanticCompute DisplayEnhancementFamily.swift
+[43/172] Compiling SemanticCompute DistanceTransform.swift
+[44/172] Compiling SemanticCompute DivergenceZoo.swift
+[45/172] Compiling SemanticCompute IntegerHistogramOtsu.swift
+[46/172] Compiling SemanticCompute KernelFamilyCatalog.swift
+[47/172] Compiling SemanticCompute KuramotoFamily.swift
+[48/172] Compiling SemanticCompute EdgeGeometryFamily.swift
+[49/172] Compiling SemanticCompute ExtendedPointwiseEmitterKernels.swift
+[50/172] Compiling SemanticCompute FFTFamily.swift
+[51/172] Compiling SemanticCompute NormalisationFamily.swift
+[52/172] Compiling SemanticCompute ODEBankFamily.swift
+[53/172] Compiling SemanticCompute PLLTrackerFamily.swift
+[54/172] Compiling SemanticCompute SLIntrinsics.swift
+[55/172] Compiling SemanticCompute SLKernelBuilder.swift
+[56/172] Compiling SemanticCompute SpMVFamily.swift
+[57/172] Compiling SemanticCompute SpatialGridFamily.swift
+[58/172] Compiling SemanticCompute SLErrorBound.swift
+[59/172] Compiling SemanticCompute SLExecution.swift
+[60/172] Compiling SemanticCompute SLExecutionDerivation.swift
+[61/172] Compiling SemanticCompute RegionAdjacencyMatrixFamily.swift
+[62/172] Compiling SemanticCompute RegistrationMetrics.swift
+[63/172] Compiling SemanticCompute ResampleAffineFamily.swift
+[64/172] Compiling SemanticCompute HUBandClassifyFamily.swift
+[65/172] Compiling SemanticCompute HarmonicF0EKFFamily.swift
+[66/172] Compiling SemanticCompute HarmonicFreqEKFFamily.swift
+[67/172] Compiling SemanticCompute Pointwise1DLowering.swift
+[68/172] Compiling SemanticCompute Pointwise2DKernelFamily.swift
+[69/172] Compiling SemanticCompute Pointwise2DLowering.swift
+[70/172] Compiling SemanticCompute GLCMHaralickFamily.swift
+[71/172] Compiling SemanticCompute GaussianMixtureFamily.swift
+[72/172] Compiling SemanticCompute GeodesicDistanceFamily.swift
+[73/172] Compiling SemanticCompute SymmetricEigen3x3Family.swift
+[74/172] Compiling SemanticCompute Temporal4DFamily.swift
+[75/172] Compiling SemanticCompute Stencil2DLowering.swift
+[76/172] Compiling SemanticCompute Stencil3DFamily.swift
+[77/172] Compiling SemanticCompute SemanticCompute.swift
+[78/172] Compiling SemanticCompute SeparableConvFamily.swift
+[79/172] Compiling SemanticCompute WallCrossingFamily.swift
+[80/172] Compiling SemanticCompute WaveformEnvelopeFamily.swift
+[81/172] Compiling SemanticCompute SLGPURunner.swift
+[82/172] Compiling SemanticCompute SLInputBattery.swift
+[83/172] Compiling SemanticCompute SCLicenceMarker.swift
+[84/172] Compiling SemanticCompute SCMetricsReader.swift
+[85/172] Compiling SemanticCompute SCUsageMetrics.swift
+[86/172] Compiling SemanticCompute PairwiseDistanceFamily.swift
+[87/172] Compiling SemanticCompute PennesBioheatFamily.swift
+[88/172] Compiling SemanticCompute PeronaMalikFamily.swift
+[89/172] Compiling SemanticCompute SeparableMedianFamily.swift
+[90/172] Compiling SemanticCompute SoftMaskRatioFamily.swift
+[91/172] Compiling SemanticCompute LabelwiseReductionFamily.swift
+[92/172] Compiling SemanticCompute LevelSetReinitFamily.swift
+[93/172] Compiling SemanticCompute LocalStatisticsFamily.swift
+[94/172] Compiling SemanticCompute SLVersion.swift
+[95/172] Compiling SemanticCompute SLWGSLEmitter.swift
+[96/172] Compiling SemanticCompute MeshLaplacianTaubinFamily.swift
+[97/172] Compiling SemanticCompute MetalRuntimeAdapter.swift
+[98/172] Compiling SemanticCompute MirrorSymmetryFamily.swift
+[99/172] Compiling SemanticCompute SLResources.swift
+[100/172] Compiling SemanticCompute SLSemanticContract.swift
+[101/172] Compiling SemanticCompute BiquadDesignFamily.swift
+[102/172] Compiling SemanticCompute BoundsReduceFamily.swift
+[103/172] Compiling SemanticCompute BoxIoU3DFamily.swift
+[104/172] Compiling SemanticCompute SpectralMedianMask.swift
+[105/172] Compiling SemanticCompute SpectrogramDisplayFamily.swift
+[106/172] Compiling SemanticCompute Stencil3DLowering.swift
+[107/172] Compiling SemanticCompute SymmetricEigen2x2Family.swift
+[108/172] Compiling SemanticCompute SpectralFeatureFamilies.swift
+[109/172] Compiling SemanticCompute SpectralKalmanFamily.swift
+[110/172] Compiling SemanticCompute ROIAlign3DFamily.swift
+[111/172] Compiling SemanticCompute ReductionFamily.swift
+[112/172] Compiling SemanticCompute ReductionLowering.swift
+[113/172] Compiling SemanticCompute RBFInterpolationFamily.swift
+[114/172] Compiling SemanticCompute RBFKernelFamily.swift
+[115/172] Compiling SemanticCompute RLSFamily.swift
+[116/172] Compiling SemanticCompute AnisotropicEDT3DFamily.swift
+[117/172] Compiling SemanticCompute AudioEditReference.swift
+[118/172] Compiling SemanticCompute BatchedSPDSolveFamily.swift
+[119/172] Compiling SemanticCompute LogSumExpFamily.swift
+[120/172] Compiling SemanticCompute MPSAcceleratedFamilies.swift
+[121/172] Compiling SemanticCompute MSLKernelBuilder.swift
+[122/172] Compiling SemanticCompute ISTFTFamily.swift
+[123/172] Compiling SemanticCompute Indexing1DLowering.swift
+[124/172] Compiling SemanticCompute Indexing2D3DFamily.swift
+[125/172] Compiling SemanticCompute Pointwise3DKernelFamily.swift
+[126/172] Compiling SemanticCompute Pointwise3DLowering.swift
+[127/172] Compiling SemanticCompute PointwiseBinaryFamily.swift
+[128/172] Compiling SemanticCompute ComplexPolarFamily.swift
+[129/172] Compiling SemanticCompute ConjugateGradientFamily.swift
+[130/172] Compiling SemanticCompute ConnectedComponents3DFamily.swift
+[131/172] Compiling SemanticCompute FamilyCodeDetector.swift
+[132/172] Compiling SemanticCompute FamilyUsageGuide.swift
+[133/172] Compiling SemanticCompute FisherKPPFamily.swift
+[134/172] Compiling SemanticCompute NMS3D.swift
+[135/172] Compiling SemanticCompute NearestFeatureTransformFamily.swift
+[136/172] Compiling SemanticCompute NewFamilyContracts.swift
+[137/172] Compiling SemanticCompute GoertzelFamily.swift
+[138/172] Compiling SemanticCompute GramMatrixFamily.swift
+[139/172] Compiling SemanticCompute GraphAdjacencyCSRFamily.swift
+[140/172] Compiling SemanticCompute ConnectedComponentsFamily.swift
+[141/172] Compiling SemanticCompute ConnectedComponentsGradientRegionGrow.swift
+[142/172] Compiling SemanticCompute CorrelationFamily.swift
+[143/172] Compiling SemanticCompute SLValueTypes.swift
+[144/172] Compiling SemanticCompute SLVerificationReport.swift
+[145/172] Compiling SemanticCompute BroadcastFamily.swift
+[146/172] Compiling SemanticCompute CLAHEFamily.swift
+[147/172] Compiling SemanticCompute CPUReferenceExecution.swift
+[148/172] Compiling SemanticCompute SLAccuracy.swift
+[149/172] Compiling SemanticCompute SLBackendABI.swift
+[150/172] Compiling SemanticCompute SLBackendAvailability.swift
+[151/172] Compiling SemanticCompute HarmonicSumFamily.swift
+[152/172] Compiling SemanticCompute HistogramFamily.swift
+[153/172] Compiling SemanticCompute IIRFilterFamily.swift
+[154/172] Compiling SemanticCompute STFTFamily.swift
+[155/172] Compiling SemanticCompute ScanFamily.swift
+[156/172] Compiling SemanticCompute SLBackendIdentity.swift
+[157/172] Compiling SemanticCompute SLBenchmarkHarness.swift
+[158/172] Compiling SemanticCompute SLCEmitter.swift
+[159/172] Compiling SemanticCompute ForceDirectedLayoutFamily.swift
+[160/172] Compiling SemanticCompute FrameRMSFamily.swift
+[161/172] Compiling SemanticCompute FrangiVesselnessFamily.swift
+[162/172] Compiling SemanticCompute CovariancePCAFamily.swift
+[163/172] Compiling SemanticCompute CrossfadeFamily.swift
+[164/172] Compiling SemanticCompute DICOMValueTransforms.swift
+[165/172] Compiling SemanticCompute ChromagramGoertzelFamily.swift
+[166/172] Compiling SemanticCompute ColorConversionFamily.swift
+[167/172] Compiling SemanticCompute CompensatedSumFamily.swift
+[168/172] Compiling SemanticCompute YINFamily.swift
+[169/172] Compiling SemanticCompute ZeroCrossingRateFamily.swift
+[170/172] Compiling SemanticCompute PolarResampleFamily.swift
+[171/172] Compiling SemanticCompute PoolingFamily.swift
+[172/172] Compiling SemanticCompute QuantiseTransitionFamily.swift
+[174/176] Emitting module SemanticComputeCUDA
+[175/176] Compiling SemanticComputeCUDA SLCUDARuntimeAdapter.swift
+[176/176] Compiling SemanticComputeCUDA SLCUDAParityHarness.swift
+Build complete! (30.53s)
+=== CPU<->CUDA on-device parity + execution matrix (device 0) ===
+[0/1] Planning build
+Building for debugging...
+[0/12] Write sources
+[1/13] Write swift-version-6A52383ED409C6A7.txt
+[2/13] Wrapping AST for SemanticCompute for debugging
+[3/13] Wrapping AST for SemanticComputeCUDA for debugging
+[5/16] Compiling SemanticComputeCUDATests CUDAExecutionMatrixTests.swift
+[6/16] Compiling SemanticComputeCUDATests CUDAParityTests.swift
+[7/16] Emitting module SemanticComputeCUDATests
+[8/17] /root/semanticcompute-cuda-verify/Integrations/SemanticComputeCUDA/.build-cuda/x86_64-unknown-linux-gnu/debug/SemanticComputeCUDAPackageDiscoveredTests.derived/all-discovered-tests.swift
+[9/17] Write sources
+[10/17] Wrapping AST for SemanticComputeCUDATests for debugging
+[12/20] Emitting module SemanticComputeCUDAPackageDiscoveredTests
+[13/20] Compiling SemanticComputeCUDAPackageDiscoveredTests SemanticComputeCUDATests.swift
+[14/20] Compiling SemanticComputeCUDAPackageDiscoveredTests all-discovered-tests.swift
+[15/21] /root/semanticcompute-cuda-verify/Integrations/SemanticComputeCUDA/.build-cuda/x86_64-unknown-linux-gnu/debug/SemanticComputeCUDAPackageTests.derived/runner.swift
+[16/21] Write sources
+[17/21] Wrapping AST for SemanticComputeCUDAPackageDiscoveredTests for debugging
+[19/23] Compiling SemanticComputeCUDAPackageTests runner.swift
+[20/23] Emitting module SemanticComputeCUDAPackageTests
+[21/24] Wrapping AST for SemanticComputeCUDAPackageTests for debugging
+[22/24] Write Objects.LinkFileList
+[23/24] Linking SemanticComputeCUDAPackageTests.xctest
+Build complete! (11.53s)
+Test Suite 'All tests' started at 2026-08-24 20:12:19.895
+Test Suite 'debug.xctest' started at 2026-08-24 20:12:19.897
+Test Suite 'debug.xctest' passed at 2026-08-24 20:12:19.897
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'All tests' passed at 2026-08-24 20:12:19.897
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+◇ Test run started.
+↳ Testing Library Version: 6.2 (3fdabe5392108d8)
+↳ Target Platform: x86_64-unknown-linux-gnu
+◇ Suite "CUDA execution matrix (adversarial specimens; NVIDIA host only, skips cleanly elsewhere)" started.
+◇ Suite "NVRTC compile gate (toolkit hosts; no GPU required)" started.
+◇ Suite "CUDA on-device parity (NVIDIA host only; skips cleanly elsewhere)" started.
+◇ Test "float2 construct + broadcast arithmetic + dot: synthesised helpers agree bit-exact (.exact)" started.
+◇ Test "uint gather: a uint index buffer plus a uint scalar drive the read address (.exact)" started.
+◇ Test "matmul M=5,N=7,K=3: loop accumulation at odd extents (float profile)" started.
+◇ Test "round is ties-away on device, matching the CPU reference (.exact)" started.
+◇ Test "infinity and NaN production: ∞·k, 0·∞→NaN, propagate identically to the CPU (.exact)" started.
+◇ Test "fmin/fmax skip NaN operands on device exactly as the CPU reference does (.exact)" started.
+◇ Test "Every matrix specimen compiles under NVRTC with the runtime's exact options" started.
+◇ Test "Without a CUDA device the harness skips (never a false green)" started.
+◇ Test "affine at 1×1, 7×13 and 257×3: every element covered exactly once, none out of bounds (.exact)" started.
+◇ Test "float3 normalize on device: v/sqrtf(dot(v,v)) is bit-exact — every op correctly rounded (.exact)" started.
+◇ Test "float3 dot association is pinned ON DEVICE: 2²⁴+1+1 discriminates fused/reassociated evaluation (.exact)" started.
+◇ Test "if + early return: negative lanes take the branch and return, the rest fall through (.exact)" started.
+◇ Test "matmul: CPU↔CUDA parity under an explicit float tolerance" started.
+◇ Test "3D 5×3×7: fmin/fmax arithmetic across a z extent that does not divide the block (.exact)" started.
+◇ Test "affine: CPU↔CUDA parity is bit-exact (.exact)" started.
+◇ Test "4D 3×4×2×5: the depth×time fold recovers the RIGHT (z,t) for all 120 elements (.exact)" started.
+◇ Test "Reports the device ordinal this process is bound to (log evidence for the second-device pass)" started.
+CUDA-BOUND-DEVICE: ordinal 0
+✔ Test "Reports the device ordinal this process is bound to (log evidence for the second-device pass)" passed after 0.002 seconds.
+NVRTC compile gate: 7 kernel shapes (loops and synthesised vector helpers included) compiled with --fmad=false, no host includes.
+✔ Test "Every matrix specimen compiles under NVRTC with the runtime's exact options" passed after 0.264 seconds.
+✔ Suite "NVRTC compile gate (toolkit hosts; no GPU required)" passed after 0.265 seconds.
+✔ Test "Without a CUDA device the harness skips (never a false green)" passed after 0.267 seconds.
+✔ Test "matmul: CPU↔CUDA parity under an explicit float tolerance" passed after 2.565 seconds.
+✔ Test "if + early return: negative lanes take the branch and return, the rest fall through (.exact)" passed after 2.636 seconds.
+✔ Test "float2 construct + broadcast arithmetic + dot: synthesised helpers agree bit-exact (.exact)" passed after 2.878 seconds.
+✔ Test "affine: CPU↔CUDA parity is bit-exact (.exact)" passed after 3.017 seconds.
+✔ Suite "CUDA on-device parity (NVIDIA host only; skips cleanly elsewhere)" passed after 3.018 seconds.
+✔ Test "4D 3×4×2×5: the depth×time fold recovers the RIGHT (z,t) for all 120 elements (.exact)" passed after 3.104 seconds.
+✔ Test "round is ties-away on device, matching the CPU reference (.exact)" passed after 3.177 seconds.
+✔ Test "infinity and NaN production: ∞·k, 0·∞→NaN, propagate identically to the CPU (.exact)" passed after 3.649 seconds.
+✔ Test "float3 dot association is pinned ON DEVICE: 2²⁴+1+1 discriminates fused/reassociated evaluation (.exact)" passed after 3.718 seconds.
+✔ Test "fmin/fmax skip NaN operands on device exactly as the CPU reference does (.exact)" passed after 3.761 seconds.
+✔ Test "3D 5×3×7: fmin/fmax arithmetic across a z extent that does not divide the block (.exact)" passed after 3.833 seconds.
+✔ Test "matmul M=5,N=7,K=3: loop accumulation at odd extents (float profile)" passed after 3.839 seconds.
+✔ Test "uint gather: a uint index buffer plus a uint scalar drive the read address (.exact)" passed after 3.854 seconds.
+✔ Test "float3 normalize on device: v/sqrtf(dot(v,v)) is bit-exact — every op correctly rounded (.exact)" passed after 3.904 seconds.
+✔ Test "affine at 1×1, 7×13 and 257×3: every element covered exactly once, none out of bounds (.exact)" passed after 4.268 seconds.
+✔ Suite "CUDA execution matrix (adversarial specimens; NVIDIA host only, skips cleanly elsewhere)" passed after 4.268 seconds.
+✔ Test run with 17 tests in 3 suites passed after 4.269 seconds.
+=== independent second-device check: full matrix again on ordinal 1 of 2 ===
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version-6A52383ED409C6A7.txt
+Build complete! (0.81s)
+Test Suite 'All tests' started at 2026-08-24 20:12:25.827
+Test Suite 'debug.xctest' started at 2026-08-24 20:12:25.829
+Test Suite 'debug.xctest' passed at 2026-08-24 20:12:25.829
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'All tests' passed at 2026-08-24 20:12:25.829
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+◇ Test run started.
+↳ Testing Library Version: 6.2 (3fdabe5392108d8)
+↳ Target Platform: x86_64-unknown-linux-gnu
+◇ Suite "CUDA on-device parity (NVIDIA host only; skips cleanly elsewhere)" started.
+◇ Suite "CUDA execution matrix (adversarial specimens; NVIDIA host only, skips cleanly elsewhere)" started.
+◇ Suite "NVRTC compile gate (toolkit hosts; no GPU required)" started.
+◇ Test "matmul: CPU↔CUDA parity under an explicit float tolerance" started.
+◇ Test "Without a CUDA device the harness skips (never a false green)" started.
+◇ Test "affine: CPU↔CUDA parity is bit-exact (.exact)" started.
+◇ Test "round is ties-away on device, matching the CPU reference (.exact)" started.
+◇ Test "Reports the device ordinal this process is bound to (log evidence for the second-device pass)" started.
+◇ Test "fmin/fmax skip NaN operands on device exactly as the CPU reference does (.exact)" started.
+◇ Test "infinity and NaN production: ∞·k, 0·∞→NaN, propagate identically to the CPU (.exact)" started.
+◇ Test "float3 normalize on device: v/sqrtf(dot(v,v)) is bit-exact — every op correctly rounded (.exact)" started.
+◇ Test "float2 construct + broadcast arithmetic + dot: synthesised helpers agree bit-exact (.exact)" started.
+◇ Test "affine at 1×1, 7×13 and 257×3: every element covered exactly once, none out of bounds (.exact)" started.
+◇ Test "if + early return: negative lanes take the branch and return, the rest fall through (.exact)" started.
+◇ Test "matmul M=5,N=7,K=3: loop accumulation at odd extents (float profile)" started.
+◇ Test "uint gather: a uint index buffer plus a uint scalar drive the read address (.exact)" started.
+◇ Test "3D 5×3×7: fmin/fmax arithmetic across a z extent that does not divide the block (.exact)" started.
+◇ Test "4D 3×4×2×5: the depth×time fold recovers the RIGHT (z,t) for all 120 elements (.exact)" started.
+◇ Test "float3 dot association is pinned ON DEVICE: 2²⁴+1+1 discriminates fused/reassociated evaluation (.exact)" started.
+CUDA-BOUND-DEVICE: ordinal 1
+◇ Test "Every matrix specimen compiles under NVRTC with the runtime's exact options" started.
+✔ Test "Reports the device ordinal this process is bound to (log evidence for the second-device pass)" passed after 0.002 seconds.
+NVRTC compile gate: 7 kernel shapes (loops and synthesised vector helpers included) compiled with --fmad=false, no host includes.
+✔ Test "Every matrix specimen compiles under NVRTC with the runtime's exact options" passed after 0.188 seconds.
+✔ Suite "NVRTC compile gate (toolkit hosts; no GPU required)" passed after 0.190 seconds.
+✔ Test "Without a CUDA device the harness skips (never a false green)" passed after 0.280 seconds.
+✔ Test "affine: CPU↔CUDA parity is bit-exact (.exact)" passed after 2.714 seconds.
+✔ Test "infinity and NaN production: ∞·k, 0·∞→NaN, propagate identically to the CPU (.exact)" passed after 3.077 seconds.
+✔ Test "round is ties-away on device, matching the CPU reference (.exact)" passed after 3.081 seconds.
+✔ Test "4D 3×4×2×5: the depth×time fold recovers the RIGHT (z,t) for all 120 elements (.exact)" passed after 3.179 seconds.
+✔ Test "if + early return: negative lanes take the branch and return, the rest fall through (.exact)" passed after 3.328 seconds.
+✔ Test "3D 5×3×7: fmin/fmax arithmetic across a z extent that does not divide the block (.exact)" passed after 3.408 seconds.
+✔ Test "matmul M=5,N=7,K=3: loop accumulation at odd extents (float profile)" passed after 3.509 seconds.
+✔ Test "float2 construct + broadcast arithmetic + dot: synthesised helpers agree bit-exact (.exact)" passed after 3.655 seconds.
+✔ Test "float3 dot association is pinned ON DEVICE: 2²⁴+1+1 discriminates fused/reassociated evaluation (.exact)" passed after 3.847 seconds.
+✔ Test "matmul: CPU↔CUDA parity under an explicit float tolerance" passed after 3.911 seconds.
+✔ Suite "CUDA on-device parity (NVIDIA host only; skips cleanly elsewhere)" passed after 3.911 seconds.
+✔ Test "uint gather: a uint index buffer plus a uint scalar drive the read address (.exact)" passed after 3.964 seconds.
+✔ Test "float3 normalize on device: v/sqrtf(dot(v,v)) is bit-exact — every op correctly rounded (.exact)" passed after 4.064 seconds.
+✔ Test "fmin/fmax skip NaN operands on device exactly as the CPU reference does (.exact)" passed after 4.069 seconds.
+✔ Test "affine at 1×1, 7×13 and 257×3: every element covered exactly once, none out of bounds (.exact)" passed after 4.452 seconds.
+✔ Suite "CUDA execution matrix (adversarial specimens; NVIDIA host only, skips cleanly elsewhere)" passed after 4.452 seconds.
+✔ Test run with 17 tests in 3 suites passed after 4.453 seconds.
+=== CUDA parity EXECUTED on device ===
