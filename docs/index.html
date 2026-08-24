@@ -418,10 +418,10 @@
         <a href="https://github.com/entertrainment/semanticcompute-dist" style="color:var(--diverge)">failure lab</a>,
         runnable from the CLI binary: <code>semanticcompute-parity --zoo 01-fma-contraction</code></p>
 
-      <p style="margin-top:14px;color:var(--text-dim);font-size:13px">Because it's provenance-agnostic, it verifies the
-        <em>output</em> of <b>Triton · PyTorch · CUDA · vLLM · FlashAttention</b> — any source; no CUDA backend, no
-        integration claimed. <a href="https://github.com/entertrainment/semanticcompute-dist/tree/main/examples" style="color:var(--diverge)">Worked&nbsp;examples</a>
-        reproduce each one's documented numerical failure — diagnosed and classified.</p>
+      <p style="margin-top:14px;color:var(--text-dim);font-size:13px">Provenance-agnostic array comparison: it compares
+        <em>any producer's output</em> — <b>Triton · PyTorch · CUDA · vLLM · FlashAttention</b> — against your reference; no
+        integration with, or backend for, any of them is claimed. <a href="https://github.com/entertrainment/semanticcompute-dist/tree/main/examples" style="color:var(--diverge)">Worked&nbsp;examples</a>
+        reproduce each one's documented numerical failure mode — diagnosed and classified.</p>
 
       <p style="margin-top:10px;color:var(--text-dim);font-size:13px">Any check can emit a self-contained
         <a href="verification-report.html" style="color:var(--diverge)">HTML verification report</a> — a shareable
@@ -466,12 +466,14 @@
   <section id="contract">
     <div class="wrap">
       <div class="sec-head">
-        <p class="eyebrow">One IR · four lowering targets</p>
-        <h2>The same kernel, lowered three ways — and proven to agree.</h2>
-        <p class="lead">A single optimising front door feeds every backend; the target is chosen only at the
-          final emit. Metal and C execute the full family suite on-host and are diffed against the CPU truth; WGSL
-          is validated on every specimen by a real WebGPU front end and executed on a device for the affine and
-          matmul kernels — broadening WGSL execution to every family is in progress.</p>
+        <p class="eyebrow">One IR · three executed targets + CUDA emission</p>
+        <h2>The same kernel, lowered four ways — three executed and proven to agree.</h2>
+        <p class="lead">A single optimising front door feeds every backend; the target is chosen only at the final
+          emit. The parity contract, by target: <b>Metal and portable C</b> execute the full family suite on-host,
+          diffed against the CPU truth; <b>WGSL/WebGPU</b> is validated on every specimen by a real WebGPU front end
+          and executed on-device for the affine and matmul kernels (full-family WGSL execution in progress);
+          <b>CUDA</b> is source emission only — its body arithmetic is proven byte-identical to the executed C
+          backend, but it does not run until an NVIDIA runtime adapter lands.</p>
       </div>
 
       <div class="pipe">
@@ -491,6 +493,11 @@
             <div class="t-name">→ WGSL / WebGPU</div>
             <div class="t-sub">Cross-vendor: browsers, Vulkan, D3D12.</div>
             <div class="verdict">validated · specimen-executed · agrees</div>
+          </div>
+          <div class="target">
+            <div class="t-name">→ CUDA C++</div>
+            <div class="t-sub">NVIDIA GPUs. Source emission only.</div>
+            <div class="verdict">emitted · not executed</div>
           </div>
         </div>
       </div>
@@ -566,8 +573,8 @@
           <div class="sec-head" style="margin-bottom:24px">
             <p class="eyebrow">Signed &amp; notarised · free to evaluate</p>
             <h2>Hand it to your agent, or run the CLI.</h2>
-            <p class="lead">The MCP server and CLI ship as signed, notarised macOS binaries and prebuilt x86-64
-              Linux binaries — the CLI, MCP, and library build and pass their full test suite on both.
+            <p class="lead">The MCP server and CLI ship as signed, notarised macOS binaries and prebuilt x86-64 + arm64
+              Linux binaries — the CLI, MCP, and library build and pass their test suite on both platforms.
               Free to evaluate and for non-production use, plus a 7-day production trial; production
               beyond that needs a commercial licence. The source is closed; serious evaluators can review it
               under NDA. A hosted verification service — parity CI against your own kernels — is in early access.</p>
@@ -603,7 +610,7 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
           <div class="card">
             <span class="kicker">Binary</span>
             <h3>The MCP server + CLI</h3>
-            <p>The verification substrate as signed, notarised macOS binaries (+ x86-64 Linux) — the parity doctor, the cause classifier, ULP
+            <p>The verification substrate as signed, notarised macOS binaries (+ x86-64 &amp; arm64 Linux) — the parity doctor, the cause classifier, ULP
               tolerance, and measured accuracy vs a higher-precision truth. Free to evaluate; a commercial
               licence for production; source review under NDA.</p>
           </div>
