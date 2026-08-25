@@ -52,6 +52,17 @@
   .rx-item{border-left:2px solid var(--ok);padding:2px 0 2px 14px;margin-bottom:14px}
   .rx-cause{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text)}
   .rx-remedy{color:var(--dim);font-size:14px;margin:4px 0 0;max-width:72ch}
+  .hint{color:var(--dim);font-size:13px;margin:0 0 8px}
+  table.diff tr.flag{cursor:pointer}
+  table.diff tr.flag:hover td{background:rgba(127,127,127,.08)}
+  table.diff tr.flag:focus-visible{outline:2px solid currentColor;outline-offset:-2px}
+  .chev{display:inline-block;margin-left:6px;opacity:.55;transition:transform .15s ease}
+  tr.flag[aria-expanded="true"] .chev{transform:rotate(90deg)}
+  tr.detail td{background:rgba(127,127,127,.06);padding:14px 12px}
+  .det-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px 22px}
+  .det-k{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+  .det-grid p{margin:0;font-size:14px;max-width:60ch}
+  @media (prefers-reduced-motion: reduce){ .chev{transition:none} }
   footer{margin-top:36px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--faint)}
 </style>
 </head>
@@ -78,12 +89,34 @@
     <div class="metric"><div class="mv">1.798e+308</div><div class="ml">max rel err</div></div>
   </div>
   <p class="dist">2 special-value divergence(s) (NaN/∞ on one side) — structural, not a rounding tail.</p>
+  <p class="hint">Select any row to see its diagnosis and the prescribed fix.</p>
   <table class="diff">
     <thead><tr><th>index</th><th class="num">reference</th><th class="num">candidate</th><th>Δ</th><th>diagnosed cause</th></tr></thead>
     <tbody>
-      <tr class="flag"><td>0</td><td class="num">0.09003057330846786</td><td class="num ">0.0</td><td class="warn">1035493875 ULP</td><td class="cause">numeric divergence (reassociation / precision / algorithmic)</td></tr>
-      <tr class="flag"><td>1</td><td class="num">0.2447284758090973</td><td class="num bad">NaN</td><td class="bad">special</td><td class="cause">NaN generation</td></tr>
-      <tr class="flag"><td>2</td><td class="num">0.6652409434318542</td><td class="num bad">NaN</td><td class="bad">special</td><td class="cause">NaN generation</td></tr>
+      <tr class="flag" tabindex="0" role="button" aria-expanded="false" aria-controls="d1-0" data-panel="d1-0"><td>0</td><td class="num">0.09003057330846786</td><td class="num ">0.0</td><td class="warn">1035493875 ULP</td><td class="cause">numeric divergence (reassociation / precision / algorithmic) <span class="chev" aria-hidden="true">▸</span></td></tr>
+      <tr class="detail" id="d1-0" hidden><td colspan="5">
+        <div class="det-grid">
+          <div><span class="det-k">diagnosis</span><p>1035493875 ULP apart — beyond a rounding residual; likely reassociation (reduction order), precision loss, or an algorithmic difference.</p></div>
+          <div><span class="det-k">prescribed fix</span><p>A large gap beyond rounding: pin the reduction/accumulation order to the reference, use compensated or higher-precision accumulation, and check for an algorithmic difference (naive vs stable form). Re-verify — and if the gap is legitimate approximation, state it as an explicit tolerance instead of treating the kernel as wrong.</p></div>
+          <div><span class="det-k">then</span><p>Re-run this check against the same reference. SemanticCompute re-verifies the fix; it does not apply it.</p></div>
+        </div>
+      </td></tr>
+      <tr class="flag" tabindex="0" role="button" aria-expanded="false" aria-controls="d1-1" data-panel="d1-1"><td>1</td><td class="num">0.2447284758090973</td><td class="num bad">NaN</td><td class="bad">special</td><td class="cause">NaN generation <span class="chev" aria-hidden="true">▸</span></td></tr>
+      <tr class="detail" id="d1-1" hidden><td colspan="5">
+        <div class="det-grid">
+          <div><span class="det-k">diagnosis</span><p>The candidate is NaN while the other is finite — likely an unguarded 0/0, sqrt of a negative, or inf−inf.</p></div>
+          <div><span class="det-k">prescribed fix</span><p>Guard the step that produces NaN: mask before the divide (avoid 0/0), clamp the domain of sqrt/log, or add the masked-position guard (the FlashAttention/vLLM masked-softmax fix). Then re-verify.</p></div>
+          <div><span class="det-k">then</span><p>Re-run this check against the same reference. SemanticCompute re-verifies the fix; it does not apply it.</p></div>
+        </div>
+      </td></tr>
+      <tr class="flag" tabindex="0" role="button" aria-expanded="false" aria-controls="d1-2" data-panel="d1-2"><td>2</td><td class="num">0.6652409434318542</td><td class="num bad">NaN</td><td class="bad">special</td><td class="cause">NaN generation <span class="chev" aria-hidden="true">▸</span></td></tr>
+      <tr class="detail" id="d1-2" hidden><td colspan="5">
+        <div class="det-grid">
+          <div><span class="det-k">diagnosis</span><p>The candidate is NaN while the other is finite — likely an unguarded 0/0, sqrt of a negative, or inf−inf.</p></div>
+          <div><span class="det-k">prescribed fix</span><p>Guard the step that produces NaN: mask before the divide (avoid 0/0), clamp the domain of sqrt/log, or add the masked-position guard (the FlashAttention/vLLM masked-softmax fix). Then re-verify.</p></div>
+          <div><span class="det-k">then</span><p>Re-run this check against the same reference. SemanticCompute re-verifies the fix; it does not apply it.</p></div>
+        </div>
+      </td></tr>
     </tbody>
   </table>
   <div class="rx">
@@ -114,7 +147,26 @@
   </div>
   <p class="clean">Every compared element agrees under this tolerance. Nothing to prescribe.</p>
 </section>
-<footer>
+<script>
+/* Progressive enhancement only. With JS the diagnosis panels collapse and open on demand; WITHOUT it they
+   are all left visible by the `hidden` removal below, so a printed or archived report loses nothing. */
+(function () {
+  var rows = document.querySelectorAll('table.diff tr.flag[data-panel]');
+  Array.prototype.forEach.call(rows, function (row) {
+    var panel = document.getElementById(row.getAttribute('data-panel'));
+    if (!panel) return;
+    function toggle() {
+      var open = row.getAttribute('aria-expanded') === 'true';
+      row.setAttribute('aria-expanded', open ? 'false' : 'true');
+      panel.hidden = open;
+    }
+    row.addEventListener('click', toggle);
+    row.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+  });
+})();
+</script><footer>
   <span>Generated by SemanticCompute v1.8.0 — it diagnoses, prescribes, and re-verifies; it does not rewrite your kernel.</span>
   <span>© Douglas Horner (Entertrainment)</span>
 </footer>
