@@ -5,7 +5,7 @@
     "component": {
       "type": "library",
       "name": "SemanticCompute",
-      "version": "1.8.0",
+      "version": "1.9.0",
       "description": "Numerical verification for heterogeneous compute — prove a candidate array agrees with a reference to the ULP, or get told where and why they diverge.",
       "supplier": { "name": "Douglas Horner (Entertrainment)", "contact": [ { "email": "douglas@entertrainment.co.uk" } ] },
       "purl": "pkg:swift/entertrainment/semanticcompute@1.7.0",
