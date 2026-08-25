@@ -1057,15 +1057,37 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
   resize();
   window.addEventListener('resize', resize);
 
-  // Divergence sites: x-fraction, type
+  // The FOUR culprits the doctor classifies — the same four the kill-shot table names below, in the same
+  // order. The hero visual and the diff table describe one product, not two.
   var sites = [
-    { x: 0.30, type: 'ulp' },
-    { x: 0.54, type: 'denorm' },
-    { x: 0.76, type: 'nan' }
+    { x: 0.20, type: 'fma',    label: 'FMA contraction — one rounding vs two' },
+    { x: 0.43, type: 'denorm', label: 'denormal flushed to zero' },
+    { x: 0.65, type: 'nan',    label: 'unguarded 0/0 — reference masks it' },
+    { x: 0.85, type: 'ulp',    label: 'ULP drift at magnitude' }
   ];
+  var SPAN = 0.030;   // half-width of a divergence site, in x-fraction
+
   function baseWave(t, phase){
     // smooth quasi-signal
     return 0.55*Math.sin(t*1.8 + phase) + 0.28*Math.sin(t*3.7 + phase*1.3) + 0.14*Math.sin(t*6.1 + phase*0.7);
+  }
+
+  // Candidate = reference + deviation. ONE function, used by both the trace and the markers, so a marker
+  // can never sit somewhere the line doesn't actually go (it used to mark the reference, not the candidate).
+  function deviate(fx, refY, midY, amp, el){
+    for (var s=0; s<sites.length; s++){
+      var d = Math.abs(fx - sites[s].x);
+      if (d < SPAN){
+        var k = 1 - d/SPAN;                     // triangular falloff: departures ease in and out
+        switch (sites[s].type){
+          case 'fma':    return { y: refY - amp*0.11*k, gap:false, site:s };
+          case 'denorm': return { y: refY + (midY-refY)*k, gap:false, site:s };
+          case 'nan':    return { y: refY, gap: d < SPAN*0.55, site:s };
+          case 'ulp':    return { y: refY + amp*0.14*k*(1+0.12*Math.sin(el*6)), gap:false, site:s };
+        }
+      }
+    }
+    return { y: refY, gap:false, site:-1 };
   }
 
   var t0 = 0;
@@ -1076,6 +1098,7 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
 
     var midY = H*0.52, amp = H*0.26, pad = 16;
     var plotW = W - pad*2;
+    function refAt(fx){ return midY - amp*baseWave(fx*7, el*0.6); }
 
     // faint grid
     ctx.strokeStyle = colors.line; ctx.lineWidth = 1;
@@ -1086,66 +1109,86 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
     }
     ctx.globalAlpha = 1;
 
-    // reference (thin, muted)
-    ctx.strokeStyle = colors.ref; ctx.lineWidth = 1.4; ctx.globalAlpha = 0.85;
+    // REFERENCE — drawn as a soft corridor plus a thin core line. The corridor is not decoration: a
+    // tolerance IS a corridor, so the candidate visibly rides inside it and visibly leaves it. Previously
+    // the reference used identical maths to the candidate and was painted over completely — the legend
+    // named a trace nobody could see.
+    ctx.strokeStyle = colors.ref; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.lineWidth = 9; ctx.globalAlpha = 0.16;
     ctx.beginPath();
     for (var i=0;i<=plotW;i+=2){
-      var fx = i/plotW; var tt = fx*7;
-      var y = midY - amp*baseWave(tt, el*0.6);
+      var y = refAt(i/plotW);
       i===0 ? ctx.moveTo(pad+i,y) : ctx.lineTo(pad+i,y);
+    }
+    ctx.stroke();
+    ctx.lineWidth = 1.25; ctx.globalAlpha = 0.8;
+    ctx.beginPath();
+    for (var i3=0;i3<=plotW;i3+=2){
+      var y3 = refAt(i3/plotW);
+      i3===0 ? ctx.moveTo(pad+i3,y3) : ctx.lineTo(pad+i3,y3);
     }
     ctx.stroke();
     ctx.globalAlpha = 1;
 
-    // candidate (signal color) with divergences
+    // CANDIDATE — crisp, on top, departing the corridor at each culprit.
     ctx.strokeStyle = colors.sig; ctx.lineWidth = 2;
     ctx.beginPath();
-    var broke = false;
+    var pen = false;
     for (var i2=0;i2<=plotW;i2+=2){
-      var fx2 = i2/plotW; var tt2 = fx2*7;
-      var y2 = midY - amp*baseWave(tt2, el*0.6);
-      var drew = false;
-      for (var s=0;s<sites.length;s++){
-        var d = Math.abs(fx2 - sites[s].x);
-        if (d < 0.02){
-          if (sites[s].type==='nan'){ // break the line (gap)
-            ctx.stroke(); ctx.beginPath(); broke = true; drew = true; break;
-          } else if (sites[s].type==='denorm'){
-            y2 = midY; // flushed toward zero baseline
-          } else if (sites[s].type==='ulp'){
-            y2 += 3.2*Math.sin(el*8); // tiny wobble
-          }
-        }
-      }
-      if (drew) continue;
-      (i2===0||broke) ? (ctx.moveTo(pad+i2,y2), broke=false) : ctx.lineTo(pad+i2,y2);
+      var fx2 = i2/plotW;
+      var dv = deviate(fx2, refAt(fx2), midY, amp, el);
+      if (dv.gap){ if (pen){ ctx.stroke(); ctx.beginPath(); pen = false; } continue; }
+      pen ? ctx.lineTo(pad+i2, dv.y) : (ctx.moveTo(pad+i2, dv.y), pen = true);
     }
     ctx.stroke();
 
-    // divergence markers
+    // Markers sit where the CANDIDATE is (or on the reference for the NaN gap, where the candidate has
+    // no value at all — which is precisely the point).
     for (var m=0;m<sites.length;m++){
       var mx = pad + sites[m].x*plotW;
       var col = sites[m].type==='nan' ? colors.crit : colors.div;
-      ctx.strokeStyle = col; ctx.globalAlpha = 0.35; ctx.lineWidth = 1;
+      ctx.strokeStyle = col; ctx.globalAlpha = 0.32; ctx.lineWidth = 1;
       ctx.setLineDash([3,4]);
       ctx.beginPath(); ctx.moveTo(mx, pad); ctx.lineTo(mx, H-pad); ctx.stroke();
       ctx.setLineDash([]); ctx.globalAlpha = 1;
-      var my = midY - amp*baseWave(sites[m].x*7, el*0.6);
+      var refY = refAt(sites[m].x);
+      var my = sites[m].type==='nan' ? refY : deviate(sites[m].x, refY, midY, amp, el).y;
+      // A hairline from the reference to the candidate: the delta, drawn.
+      if (sites[m].type !== 'nan' && Math.abs(my-refY) > 1.5){
+        ctx.strokeStyle = col; ctx.globalAlpha = 0.55; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(mx, refY); ctx.lineTo(mx, my); ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
       ctx.fillStyle = col;
-      ctx.beginPath(); ctx.arc(mx, sites[m].type==='denorm'?midY:my, 3.6, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(mx, my, 3.6, 0, Math.PI*2); ctx.fill();
+      if (sites[m].type === 'nan'){        // hollow ring: a value that isn't there
+        ctx.fillStyle = colors.bg;
+        ctx.beginPath(); ctx.arc(mx, my, 1.6, 0, Math.PI*2); ctx.fill();
+      }
     }
 
-    // sweep line
+    // sweep line — and the readout NAMES THE CAUSE as it crosses each site. Detection is table stakes;
+    // classification is the product, so the readout should show classification.
     if (!reduced){
-      var sweep = pad + ((el*0.16)%1)*plotW;
+      var swf = (el*0.16)%1;
+      var sweep = pad + swf*plotW;
       var grad = ctx.createLinearGradient(sweep-40,0,sweep,0);
       grad.addColorStop(0,'rgba(0,0,0,0)'); grad.addColorStop(1, colors.sig);
       ctx.strokeStyle = grad; ctx.globalAlpha = 0.5; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(sweep, pad); ctx.lineTo(sweep, H-pad); ctx.stroke();
       ctx.globalAlpha = 1;
-      var idx = Math.floor(((el*0.16)%1)*4096);
-      if (stat) stat.textContent = 'idx ' + idx + ' · Δ ≤ 1 ULP';
-    } else if (stat) { stat.textContent = '3 divergences flagged'; }
+      var hit = -1;
+      for (var q=0;q<sites.length;q++){ if (Math.abs(swf - sites[q].x) < SPAN*1.6) hit = q; }
+      if (stat){
+        if (hit >= 0){
+          stat.textContent = sites[hit].label;
+          stat.style.color = sites[hit].type==='nan' ? colors.crit : colors.div;
+        } else {
+          stat.textContent = 'idx ' + Math.floor(swf*4096) + ' · agrees';
+          stat.style.color = '';
+        }
+      }
+    } else if (stat) { stat.textContent = '4 divergences flagged and classified'; }
 
     if (!reduced) requestAnimationFrame(draw);
   }
