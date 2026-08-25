@@ -308,7 +308,8 @@
   .scope .readout .live { color: var(--signal); }
   :root[data-theme="light"] .scope .readout .live { color: var(--signal-ink); }
   .scope .legend {
-    position: absolute; left: 12px; bottom: 10px; display: flex; gap: 16px;
+    position: absolute; left: 12px; right: 12px; bottom: 10px;
+    display: flex; flex-wrap: wrap; gap: 4px 14px;
     font-family: var(--font-mono); font-size: 0.6875rem; color: var(--text-dim); pointer-events: none;
   }
   .scope .legend span { display: inline-flex; align-items: center; gap: 6px; }
@@ -316,6 +317,7 @@
   .dot.ref { background: var(--text-faint); }
   .dot.gpu { background: var(--signal); }
   .dot.div { background: var(--diverge); }
+  .dot.crit { background: var(--critical); box-shadow: inset 0 0 0 2.5px var(--bg-inset); }
 
   /* ---- generic card grid ---- */
   .grid { display: grid; gap: 16px; }
@@ -484,13 +486,14 @@
           <span class="pf">emits <b>Metal · portable C · WebGPU · CUDA&nbsp;(hardware-verified runner)</b></span>
         </div>
       </div>
-      <div class="scope" aria-label="Divergence scope: a reference signal and a candidate signal, with drift flagged">
+      <div class="scope" aria-label="Divergence scope: a reference corridor and a candidate trace, with four classified divergences — FMA contraction, denormal flush, a NaN gap, and ULP drift">
         <div class="readout"><span>REF vs CANDIDATE</span><span class="live" id="scopeStat">scanning…</span></div>
         <canvas id="scope" width="520" height="300"></canvas>
         <div class="legend">
           <span><i class="dot ref"></i> reference</span>
-          <span><i class="dot gpu"></i> backend (agrees)</span>
+          <span><i class="dot gpu"></i> candidate (agrees)</span>
           <span><i class="dot div"></i> divergence</span>
+          <span><i class="dot crit"></i> special value (NaN/∞)</span>
         </div>
       </div>
     </div>
