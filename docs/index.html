@@ -8,15 +8,15 @@
 
 <style>
   :root {
-    /* Light theme (default ground) */
-    --bg: #f3f6f6;
-    --bg-raised: #ffffff;
-    --bg-inset: #eaefef;
-    --line: #dbe4e4;
-    --line-strong: #c1cfcf;
-    --text: #0d1618;
-    --text-dim: #47585a;
-    --text-faint: #6c8083;
+    /* Light theme: warm technical paper — a lab notebook, not a SaaS gradient */
+    --bg: #f5f4ee;
+    --bg-raised: #fffefa;
+    --bg-inset: #edebe1;
+    --line: #dddacb;
+    --line-strong: #c5c1ae;
+    --text: #131b17;
+    --text-dim: #4b5854;
+    --text-faint: #75817a;
     --signal: #0c9a88;      /* teal = agrees */
     --signal-ink: #06584e;
     --signal-wash: #0c9a8814;
@@ -35,9 +35,9 @@
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #0b1113;
-      --bg-raised: #121a1d;
-      --bg-inset: #0d1518;
+      --bg: #071012;
+      --bg-raised: #10191c;
+      --bg-inset: #0a1417;
       --line: #1d2a2e;
       --line-strong: #2c3d42;
       --text: #e7f0f1;
@@ -53,13 +53,13 @@
   }
   /* Viewer toggle wins in both directions */
   :root[data-theme="light"] {
-    --bg: #f3f6f6; --bg-raised: #ffffff; --bg-inset: #eaefef; --line: #dbe4e4; --line-strong: #c1cfcf;
-    --text: #0d1618; --text-dim: #47585a; --text-faint: #6c8083;
+    --bg: #f5f4ee; --bg-raised: #fffefa; --bg-inset: #edebe1; --line: #dddacb; --line-strong: #c5c1ae;
+    --text: #131b17; --text-dim: #4b5854; --text-faint: #75817a;
     --signal: #0c9a88; --signal-ink: #06584e; --signal-wash: #0c9a8814; --diverge: #b96712; --critical: #cf3f2e;
     --shadow: 0 1px 2px rgba(13,22,24,.06), 0 8px 30px rgba(13,22,24,.06);
   }
   :root[data-theme="dark"] {
-    --bg: #0b1113; --bg-raised: #121a1d; --bg-inset: #0d1518; --line: #1d2a2e; --line-strong: #2c3d42;
+    --bg: #071012; --bg-raised: #10191c; --bg-inset: #0a1417; --line: #1d2a2e; --line-strong: #2c3d42;
     --text: #e7f0f1; --text-dim: #9fb2b4; --text-faint: #67807f;
     --signal: #2ee6c9; --signal-ink: #a9fff0; --signal-wash: #2ee6c914; --diverge: #f2b45a; --critical: #ff6b5c;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 40px rgba(0,0,0,.35);
@@ -80,14 +80,17 @@
      sliding under it. */
   html {
     -webkit-text-size-adjust: 100%;
-    scroll-snap-type: y mandatory;
+    scroll-snap-type: y proximity;
     scroll-padding-top: var(--header-h, 61px);
     scroll-behavior: smooth;
   }
-  /* Mandatory is safe here because every section is TALLER than the viewport: the spec keeps
-     larger-than-snapport areas freely scrollable inside, so the lock engages only at the seams.
-     `scroll-snap-stop: always` is the brake — a hard flick cannot skip past a section start. */
-  section { scroll-snap-align: start; scroll-snap-stop: always; }
+  /* PROXIMITY, deliberately permissive: the brake only takes hold when a scroll already ends close
+     to a seam — a flick sails through, a mid-section stop stays exactly where the reader put it,
+     and long text panels are never yanked to a page boundary. */
+  section { scroll-snap-align: start; }
+  /* On short viewports a section boundary and readable text compete for the same pixels — the text
+     wins. No snapping at all below 700px of height (the JS engine makes the same check). */
+  @media (max-height: 700px) { html { scroll-snap-type: none; } section { scroll-snap-align: none; } }
   /* With JS available the eased engine below takes over — native mandatory snap animates at the UA's
      abrupt pace and the two would fight. CSS snap remains as the no-JS fallback. */
   html.js-snap { scroll-snap-type: none; }
@@ -204,8 +207,8 @@
      decoration and leave the diff tables arguing with their own background. The tint carries the brand;
      the signal keeps its meaning. */
   .band-tint {
-    --bg: #e4f2ec; --bg-raised: #ffffff; --bg-inset: #d5eae3;
-    --line: #c5ded6; --line-strong: #a6c9bf;
+    --bg: #e6f1e9; --bg-raised: #fffefa; --bg-inset: #d8e9de;
+    --line: #c7dccf; --line-strong: #a8c8b7;
     --shadow: 0 1px 2px rgba(6,34,32,.05), 0 8px 30px rgba(6,34,32,.07);
   }
   /* The one inverted band: the lowering contract — the page's central claim, and the section whose
@@ -238,8 +241,8 @@
   }
   /* Explicit toggle wins in both directions, same as the root tokens above. */
   :root[data-theme="light"] .band-tint {
-    --bg: #e4f2ec; --bg-raised: #ffffff; --bg-inset: #d5eae3;
-    --line: #c5ded6; --line-strong: #a6c9bf;
+    --bg: #e6f1e9; --bg-raised: #fffefa; --bg-inset: #d8e9de;
+    --line: #c7dccf; --line-strong: #a8c8b7;
     --shadow: 0 1px 2px rgba(6,34,32,.05), 0 8px 30px rgba(6,34,32,.07);
   }
   :root[data-theme="light"] .band-ink {
@@ -261,7 +264,11 @@
   .sec-head { display: flex; flex-direction: column; gap: 14px; max-width: var(--prose); margin-bottom: 40px; }
 
   /* ---- hero ---- */
-  .hero { padding-top: clamp(48px, 7vw, 84px); padding-bottom: clamp(40px, 6vw, 72px); }
+  .hero { padding-top: clamp(48px, 7vw, 84px); padding-bottom: clamp(40px, 6vw, 72px);
+    background-image:
+      radial-gradient(52% 62% at 76% 18%, var(--signal-wash), transparent 70%),
+      radial-gradient(color-mix(in srgb, var(--line-strong) 55%, transparent) 1px, transparent 1px);
+    background-size: auto, 26px 26px; }
   .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(28px, 5vw, 64px); align-items: center; }
   @media (max-width: 900px){ .hero-grid { grid-template-columns: 1fr; } }
   .hero h1 { margin-top: 20px; }
@@ -275,7 +282,8 @@
     transition: transform .12s ease, background .15s ease, border-color .15s ease;
   }
   .btn:active { transform: translateY(1px); }
-  .btn.primary { background: var(--signal); color: #05201c; border-color: var(--signal); font-weight: 600; }
+  .btn.primary { background: var(--signal); color: #05201c; border-color: var(--signal); font-weight: 600;
+    box-shadow: 0 6px 22px color-mix(in srgb, var(--signal) 30%, transparent); }
   .btn.primary:hover { filter: brightness(1.06); }
   :root[data-theme="light"] .btn.primary { color: #ffffff; }
   @media (prefers-color-scheme: light){ .btn.primary { color: #ffffff; } }
@@ -327,7 +335,10 @@
   .card {
     background: var(--bg-raised); border: 1px solid var(--line); border-radius: var(--r);
     padding: 22px; display: flex; flex-direction: column; gap: 10px;
+    transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
   }
+  .card:hover, .metric:hover { transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--signal) 40%, var(--line)); box-shadow: var(--shadow); }
   .card .kicker { font-family: var(--font-mono); font-size: 0.71875rem; letter-spacing: .12em; text-transform: uppercase; color: var(--text-faint); }
   .card p { color: var(--text-dim); font-size: 0.9375rem; line-height: 1.55; }
   .card code { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--signal-ink); background: var(--signal-wash); padding: 1px 5px; border-radius: 5px; }
@@ -381,7 +392,8 @@
   .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
   @media (max-width: 820px){ .metrics { grid-template-columns: repeat(2,1fr); } }
   @media (max-width: 460px){ .metrics { grid-template-columns: 1fr; } }
-  .metric { border: 1px solid var(--line); border-radius: var(--r); padding: 18px; background: var(--bg-raised); }
+  .metric { border: 1px solid var(--line); border-radius: var(--r); padding: 18px; background: var(--bg-raised);
+    transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease; }
   .metric .val { font-family: var(--font-mono); font-size: clamp(1.8rem, 3.4vw, 2.35rem); font-weight: 640; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
   .metric .val.win { color: var(--signal-ink); }
   :root[data-theme="dark"] .metric .val.win { color: var(--signal); }
@@ -433,6 +445,39 @@
   .tool { font-family: var(--font-mono); font-size: 0.78125rem; border: 1px solid var(--line-strong); border-radius: 8px; padding: 6px 10px; color: var(--text-dim); }
   .tool b { color: var(--text); font-weight: 600; }
 
+  /* ---- hero stat strip: instrument counters ---- */
+  .statline { display: flex; flex-wrap: wrap; gap: 0; margin-top: 22px;
+    border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; background: var(--bg-raised); width: fit-content; max-width: 100%; }
+  .statline span { font-family: var(--font-mono); font-size: 0.71875rem; color: var(--text-faint);
+    padding: 9px 14px; border-right: 1px solid var(--line); display: inline-flex; gap: 6px; align-items: baseline; }
+  .statline span:last-child { border-right: 0; }
+  .statline b { color: var(--text); font-weight: 640; font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+  .statline .sig { color: var(--signal-ink); }
+  :root[data-theme="dark"] .statline .sig { color: var(--signal); }
+
+  /* ---- the verified library ---- */
+  .lib-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(24px, 4vw, 48px); align-items: start; }
+  @media (max-width: 900px){ .lib-grid { grid-template-columns: 1fr; } }
+  .kindbars { display: grid; gap: 7px; }
+  .kindbar { display: grid; grid-template-columns: 132px 1fr 2.4em; gap: 10px; align-items: center;
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); }
+  .kindbar .track { height: 10px; border-radius: 5px; background: var(--bg-inset); overflow: hidden; }
+  .kindbar .fill { height: 100%; border-radius: 5px; width: 0;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--signal) 55%, var(--bg-inset)), var(--signal));
+    transition: width .9s cubic-bezier(.2,.7,.2,1); }
+  .kindbar.lit .fill { width: var(--w); }
+  /* No JS (or reduced motion, where the snap script never marks js-snap): the distribution renders
+     complete rather than waiting for an observer that will never fire. */
+  html:not(.js-snap) .kindbar .fill { width: var(--w); }
+  @media (prefers-reduced-motion: reduce) { .kindbar .fill { width: var(--w); transition: none; } }
+  .kindbar .n { text-align: right; color: var(--text); font-variant-numeric: tabular-nums; font-weight: 600; }
+  .lanecard { position: relative; }
+  .lanecard .new { position: absolute; top: 16px; right: 16px; font-family: var(--font-mono);
+    font-size: 0.625rem; letter-spacing: .1em; text-transform: uppercase; color: var(--signal-ink);
+    border: 1px solid color-mix(in srgb, var(--signal) 50%, var(--line)); border-radius: 999px; padding: 3px 8px;
+    background: var(--signal-wash); }
+  :root[data-theme="dark"] .lanecard .new { color: var(--signal); }
+
   /* ---- footer ---- */
   footer { border-top: 1px solid var(--line); padding: 40px 0 60px; color: var(--text-faint); }
   footer .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: baseline; font-family: var(--font-mono); font-size: 0.78125rem; }
@@ -447,7 +492,7 @@
   <div class="wrap row">
     <div class="brand"><span class="glyph" aria-hidden="true"></span> SemanticCompute</div>
     <nav>
-      <span class="pill sig">v1.9.3</span>
+      <span class="pill sig">v1.13.0</span>
       <a class="pill" href="pricing.html">Commercial</a>
       <a class="ghost-link" href="#get">Get it →</a>
     </nav>
@@ -484,6 +529,11 @@
           <span class="pf"><b>macOS</b> — universal, signed + notarised</span>
           <span class="pf"><b>Linux</b> — prebuilt x86-64 + arm64 binaries, tests green</span>
           <span class="pf">emits <b>Metal · portable C · WebGPU · CUDA&nbsp;(hardware-verified runner)</b></span>
+        </div>
+        <div class="statline" role="list" aria-label="The verification surface, as of v1.13.0">
+          <span role="listitem"><b>151</b> verified families</span>
+          <span role="listitem"><b>1,137</b> tests · <b>245</b> suites</span>
+          <span role="listitem"><b>352</b> kernels · <b>211</b> lowerings · <b class="sig">0 failed</b></span>
         </div>
       </div>
       <div class="scope" aria-label="Divergence scope: a reference corridor and a candidate trace, with four classified divergences — FMA contraction, denormal flush, a NaN gap, and ULP drift">
@@ -699,7 +749,7 @@
           <span class="kicker">Proven, not asserted</span>
           <h3>Passes are on-device parity tests</h3>
           <p>The compiler's optimisation passes are verified semantics-preserving by running before/after on the
-            GPU and comparing bit-for-bit. 878 tests across 199 suites, green on macOS &amp; Linux; three executed
+            GPU and comparing bit-for-bit. 1,137 tests across 245 suites, green on macOS &amp; Linux; three executed
             backends in-core (Metal, C, WebGPU) plus the CUDA runner's on-device matrix — 17 tests per GPU,
             run on two boards, evidence committed.</p>
         </div>
@@ -756,8 +806,79 @@
     </div>
   </section>
 
+
+  <!-- LIBRARY -->
+  <section id="library" class="band-tint">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">The substrate · grown by consumer demand</p>
+        <h2>151 kernel families — each one carrying its own proof.</h2>
+        <p class="lead">A family is not a kernel in a zip: it is a CPU reference, a stated contract, and a GPU
+          lowering that must agree — under a tolerance that is <em>measured and justified</em>, never inherited.
+          Four gates hold the library honest: a symbol index in which every kernel-emitting implementation is
+          claimed exactly once, a compile sweep across all 352 programs, a catalogue pin a new family cannot
+          dodge, and the parity suite itself. A family lands only when a real pipeline measured the need —
+          and ships only when every gate passes.</p>
+      </div>
+
+      <div class="lib-grid">
+        <div>
+          <div class="kindbars" aria-label="Family count by kind, 151 total">
+            <div class="kindbar" style="--w:100%"><span>signal &amp; DSP</span><span class="track"><span class="fill"></span></span><span class="n">48</span></div>
+            <div class="kindbar" style="--w:44%"><span>linear algebra</span><span class="track"><span class="fill"></span></span><span class="n">21</span></div>
+            <div class="kindbar" style="--w:40%"><span>reduction</span><span class="track"><span class="fill"></span></span><span class="n">19</span></div>
+            <div class="kindbar" style="--w:31%"><span>pointwise</span><span class="track"><span class="fill"></span></span><span class="n">15</span></div>
+            <div class="kindbar" style="--w:25%"><span>stencil</span><span class="track"><span class="fill"></span></span><span class="n">12</span></div>
+            <div class="kindbar" style="--w:21%"><span>morphology</span><span class="track"><span class="fill"></span></span><span class="n">10</span></div>
+            <div class="kindbar" style="--w:17%"><span>sampling</span><span class="track"><span class="fill"></span></span><span class="n">8</span></div>
+            <div class="kindbar" style="--w:10%"><span>indexing</span><span class="track"><span class="fill"></span></span><span class="n">5</span></div>
+            <div class="kindbar" style="--w:10%"><span>interpolation</span><span class="track"><span class="fill"></span></span><span class="n">5</span></div>
+            <div class="kindbar" style="--w:6%"><span>data movement</span><span class="track"><span class="fill"></span></span><span class="n">3</span></div>
+            <div class="kindbar" style="--w:6%"><span>normalisation</span><span class="track"><span class="fill"></span></span><span class="n">3</span></div>
+            <div class="kindbar" style="--w:4%"><span>scan</span><span class="track"><span class="fill"></span></span><span class="n">2</span></div>
+          </div>
+          <p style="margin-top:18px;color:var(--text-dim);font-size: 0.8125rem;max-width:52ch">Counts are the
+            shipped catalogue at v1.13.0, pinned by a test — the page cannot claim families the binary does not
+            carry. Browse them from any MCP client: <code style="font-family:var(--font-mono);font-size:.9em">sc_list_families</code>
+            returns each family's reference, contract and lowering signatures.</p>
+        </div>
+
+        <div class="grid cols-2" style="gap:14px">
+          <div class="card lanecard">
+            <span class="kicker">Medical imaging · 3D</span>
+            <h3>From decode to detection geometry</h3>
+            <p>Surface distance (HD/HD95/ASSD), marching cubes, affine resample, mutual information,
+              3D IoU/ROIAlign, and a fused labelwise scatter whose bbox is <em>contractually</em> in absolute
+              volume coordinates — because a consumer lost a day to a crop origin that wasn't.</p>
+          </div>
+          <div class="card lanecard">
+            <span class="kicker">Convolution inference</span>
+            <h3>A ported trunk that stays ported</h3>
+            <p>Conv3D, transposed conv, instance norm and LeakyReLU in PyTorch's exact conventions —
+              eps-inside-sqrt and cross-correlation pinned by tests chosen so no tolerance can blur which
+              convention is implemented. Checkpoints drop in without a transpose pass.</p>
+          </div>
+          <div class="card lanecard">
+            <span class="kicker">Estimation &amp; tracking</span>
+            <h3>Filters that stay positive-definite</h3>
+            <p>Batched EKF in Joseph form, IMM mixing with the spread term, RTS smoothing, particle
+              resampling with the ESS gate that decides <em>whether</em> to resample at all.</p>
+          </div>
+          <div class="card lanecard">
+            <span class="new">new · v1.13.0</span>
+            <span class="kicker">Audio &amp; onset</span>
+            <h3>Percussion that stops lying</h3>
+            <p>Constant-Q/Variable-Q spectrograms with per-bin Q-matched windows, and the five phase-aware
+              onset functions — built after two independent drum models failed the same kick/conga
+              discrimination and the defect turned out to be the spectrogram, not the models.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- GET IT -->
-  <section id="get" class="band-tint">
+  <section id="get">
     <div class="wrap">
       <div class="grid cols-2" style="align-items:start">
         <div>
@@ -791,6 +912,8 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
             <span class="tool"><b>sc_list_families</b></span>
             <span class="tool"><b>sc_emit_kernel</b></span>
             <span class="tool"><b>sc_suggest_families</b></span>
+            <span class="tool"><b>sc_detect_in_code</b></span>
+            <span class="tool"><b>sc_version</b></span>
           </div>
           <p style="color:var(--text-dim); font-size: 0.8125rem; margin-top:12px">
             Plus MCP <b>resources</b> — the family catalogue and the failure lab as browsable context
@@ -828,7 +951,7 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
 <footer>
   <div class="wrap row">
     <span>© 2026 Douglas Horner (Entertrainment) · commercial licence</span>
-    <span>SemanticCompute v1.9.3 · Metal · Portable&nbsp;C · WebGPU · CUDA&nbsp;(verified runner)</span>
+    <span>SemanticCompute v1.13.0 · Metal · Portable&nbsp;C · WebGPU · CUDA&nbsp;(verified runner)</span>
   </div>
 </footer>
 
@@ -944,8 +1067,9 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
     document.querySelectorAll('.metric .val').forEach(function (el) { mObs.observe(el); });
   }
 
-  // ---- 3. Verdict lamps light as their card enters view -------------------------------------------
-  var targets = document.querySelectorAll('.target');
+  // ---- 3. Verdict lamps light as their card enters view (the library's kind-bars join the same
+  //         choreography: fill staggered by row, so the distribution draws itself once, on arrival) ----
+  var targets = document.querySelectorAll('.target, .kindbar');
   if (reduced || !('IntersectionObserver' in window)) {
     targets.forEach(function (el) { el.classList.add('lit'); });
   } else {
@@ -970,7 +1094,9 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
    pace; this replaces the LANDING only: after a scroll ends near a section seam, glide to it on an
    ease-out curve. Three rules, in priority order:
      1. the user always wins — any wheel / touch / key input cancels the glide instantly;
-     2. engage only near a seam (±38% of the viewport) — mid-section reading is never hijacked;
+     2. engage only when a scroll ENDS close to a seam (±14% of the viewport, and never on
+        viewports under 700px of height, where a text panel needs every pixel it can get) —
+        mid-section reading is never hijacked and a deliberate stop is never overridden;
      3. anyone preferring reduced motion gets none of this (the CSS fallback is disabled too). */
 (function () {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -1019,6 +1145,7 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
 
   function settle() {
     if (animating) return;
+    if (window.innerHeight < 700) return;    // small screens: the text owns the viewport, no braking
     var y = window.pageYOffset;
     var maxY = doc.scrollHeight - window.innerHeight;
     if (y >= maxY - 4) return;               // resting at the document end is always allowed
@@ -1027,7 +1154,7 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
       var d = Math.abs(seams[i] - y);
       if (d < bestD) { bestD = d; best = seams[i]; }
     }
-    if (best !== null && bestD > 2 && bestD < window.innerHeight * 0.38) glideTo(Math.min(best, maxY));
+    if (best !== null && bestD > 2 && bestD < window.innerHeight * 0.14) glideTo(Math.min(best, maxY));
   }
 
   if ('onscrollend' in window) {
