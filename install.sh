@@ -44,9 +44,26 @@ tar -xzf "$tmp/mcp.tar.gz" -C "$tmp"
 bin="$(find "$tmp" -type f -name 'semanticcompute-mcp' 2>/dev/null | head -1)"
 [ -n "$bin" ] || { echo "SemanticCompute: could not find semanticcompute-mcp in the archive." >&2; exit 1; }
 
+if [ "$os" = "Darwin" ]; then
+  lipo "$bin" -verify_arch arm64 x86_64 >/dev/null 2>&1 \
+    || { echo "SemanticCompute: the macOS archive is not universal arm64 + x86_64." >&2; exit 1; }
+  codesign --verify --strict --all-architectures "$bin" >/dev/null 2>&1 \
+    || { echo "SemanticCompute: the downloaded Developer ID signature is invalid; refusing to install." >&2; exit 1; }
+  signature_details="$(codesign -dv --verbose=4 "$bin" 2>&1)"
+  printf '%s\n' "$signature_details" | grep -Fq 'Authority=Developer ID Application: D Horner (8L92D9V3J6)' \
+    || { echo "SemanticCompute: the binary is not signed by the expected Developer ID; refusing to install." >&2; exit 1; }
+  printf '%s\n' "$signature_details" | grep -Fq 'TeamIdentifier=8L92D9V3J6' \
+    || { echo "SemanticCompute: the binary has an unexpected signing team; refusing to install." >&2; exit 1; }
+  echo "    verified: universal Developer ID signature"
+fi
+
 mkdir -p "$BINDIR"
 install -m 0755 "$bin" "$DEST"
 [ "$os" = "Darwin" ] && xattr -d com.apple.quarantine "$DEST" 2>/dev/null || true
+if [ "$os" = "Darwin" ]; then
+  codesign --verify --strict --all-architectures "$DEST" >/dev/null 2>&1 \
+    || { echo "SemanticCompute: signature changed during installation; refusing the installed copy." >&2; exit 1; }
+fi
 echo "==> Installed: $DEST"
 
 if printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"install","version":"1"}}}' \
@@ -57,9 +74,14 @@ else
 fi
 
 if command -v claude >/dev/null 2>&1; then
-  if claude mcp get semanticcompute >/dev/null 2>&1; then
+  claude_registration="$(claude mcp get semanticcompute 2>/dev/null || true)"
+  if printf '%s\n' "$claude_registration" | grep -Fq "Command: $DEST"; then
     echo "==> Claude Code: semanticcompute is already registered"
   else
+    if [ -n "$claude_registration" ]; then
+      echo "==> Claude Code: replacing an older semanticcompute registration"
+      claude mcp remove semanticcompute -s user >/dev/null 2>&1 || true
+    fi
     echo "==> Registering with Claude Code (user scope)"
     if claude mcp add semanticcompute -s user -- "$DEST" 2>/dev/null; then
       echo "    registered. Restart Claude Code, then run /mcp to confirm."
@@ -72,9 +94,14 @@ else
 fi
 
 if command -v codex >/dev/null 2>&1; then
-  if codex mcp get semanticcompute >/dev/null 2>&1; then
+  codex_registration="$(codex mcp get semanticcompute 2>/dev/null || true)"
+  if printf '%s\n' "$codex_registration" | grep -Fq "command: $DEST"; then
     echo "==> Codex: semanticcompute is already registered"
   else
+    if [ -n "$codex_registration" ]; then
+      echo "==> Codex: replacing an older semanticcompute registration"
+      codex mcp remove semanticcompute >/dev/null 2>&1 || true
+    fi
     echo "==> Registering with Codex"
     if codex mcp add semanticcompute -- "$DEST" 2>/dev/null; then
       echo "    registered. Restart Codex, then confirm with: codex mcp get semanticcompute"
@@ -87,9 +114,15 @@ else
 fi
 
 if command -v gemini >/dev/null 2>&1; then
-  if gemini mcp list 2>/dev/null | grep -q 'semanticcompute'; then
+  gemini_registration="$(gemini mcp list 2>/dev/null || true)"
+  if printf '%s\n' "$gemini_registration" | grep -Fq 'semanticcompute' \
+     && printf '%s\n' "$gemini_registration" | grep -Fq "$DEST"; then
     echo "==> Gemini CLI: semanticcompute is already registered"
   else
+    if printf '%s\n' "$gemini_registration" | grep -Fq 'semanticcompute'; then
+      echo "==> Gemini CLI: replacing an older semanticcompute registration"
+      gemini mcp remove semanticcompute --scope user >/dev/null 2>&1 || true
+    fi
     echo "==> Registering with Gemini CLI (user scope)"
     if gemini mcp add semanticcompute "$DEST" --scope user 2>/dev/null; then
       echo "    registered. Restart Gemini CLI, then confirm with: gemini mcp list"

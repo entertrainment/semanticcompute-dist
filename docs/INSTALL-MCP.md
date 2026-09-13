@@ -13,8 +13,9 @@ one file, no config.)
 
 ## One command (macOS / Linux)
 
-Installs the signed, notarised server to `~/.local/bin`, verifies its release checksum and MCP handshake, and
-registers it with Claude Code, Codex, and Gemini CLI when their CLIs are present:
+Installs the signed, notarised server to `~/.local/bin`, verifies its release checksum, universal Developer ID
+signature and MCP handshake, and registers it with Claude Code, Codex, and Gemini CLI when their CLIs are
+present. Existing registrations that point at an older binary are upgraded to the stable installed path:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/entertrainment/semanticcompute-dist/main/install.sh | bash

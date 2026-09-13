@@ -11,8 +11,8 @@ The source is closed (commercial licence; source review under NDA). The current 
 verified families and 11 MCP tools, including complete-MSL texture validation, FDN reverb, and twelve bounded
 structured-data/CBOR-LD families.
 
-- **Install (one command)** — the signed MCP server, checksum-verified and registered with Claude Code, Codex,
-  and Gemini CLI when their CLIs are present:
+- **Install (one command)** — the MCP server, checksum and Developer ID signature verified, then registered with
+  Claude Code, Codex, and Gemini CLI when their CLIs are present; stale registrations are upgraded:
   ```bash
   curl -fsSL https://raw.githubusercontent.com/entertrainment/semanticcompute-dist/main/install.sh | bash
   ```
