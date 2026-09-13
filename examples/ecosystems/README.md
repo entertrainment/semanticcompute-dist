@@ -18,7 +18,7 @@ a PyTorch reference vs a generated kernel, diagnosed and fixed in a loop.)
 
 ## Run
 Download the released `semanticcompute-parity` binary from the [Releases](../../releases) page (macOS universal,
-signed + notarised; or the Linux x86-64 tarball), then point `SC_PARITY` at it:
+signed + notarised; or the native Linux x86-64/AArch64 tarball), then point `SC_PARITY` at it:
 ```bash
 SC_PARITY=/path/to/semanticcompute-parity  python3 examples/ecosystems/verify_output.py
 ```
@@ -38,4 +38,3 @@ divergence mapped by cause) — a shareable audit artifact, no source or browser
 [vllm#11526]: https://github.com/vllm-project/vllm/issues/11526
 [#581]: https://github.com/Dao-AILab/flash-attention/issues/581
 [#1772]: https://github.com/Dao-AILab/flash-attention/issues/1772
-

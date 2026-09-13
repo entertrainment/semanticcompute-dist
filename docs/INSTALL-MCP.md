@@ -1,8 +1,9 @@
-# Add SemanticCompute to your assistant (MCP)
+# Add SemanticCompute to Claude, Codex, Gemini, Cursor, VS Code, or Windsurf
 
-SemanticCompute ships an MCP server (`semanticcompute-mcp`) that gives Claude — and any MCP client — nine
-verification tools (`sc_check_parity`, `sc_diagnose_divergence`, `sc_list_families`, …) plus resources and
-prompts. Pick the path for your client; all three take under a minute.
+SemanticCompute ships a local stdio MCP server (`semanticcompute-mcp`) that gives compatible agents eleven
+verification tools (`sc_check_parity`, `sc_validate_metal_texture`, `sc_diagnose_divergence`,
+`sc_list_families`, …) plus resources and
+prompts. Pick the path for your client; each takes under a minute.
 
 ## Claude Desktop — double-click, no JSON
 
@@ -12,8 +13,8 @@ one file, no config.)
 
 ## One command (macOS / Linux)
 
-Installs the signed, notarised server to `~/.local/bin`, verifies it, and registers it with Claude Code if the
-`claude` CLI is present:
+Installs the signed, notarised server to `~/.local/bin`, verifies its release checksum and MCP handshake, and
+registers it with Claude Code, Codex, and Gemini CLI when their CLIs are present:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/entertrainment/semanticcompute-dist/main/install.sh | bash
@@ -38,9 +39,90 @@ Or add it to a project `.mcp.json` (or `~/.claude.json`) yourself:
 ```
 
 Use an **absolute** path (config files don't expand `~`). Restart Claude Code, then `/mcp` should list
-`semanticcompute` with 9 tools.
+`semanticcompute` with 11 tools. Call `sc_version` and require `1.22.1`, a non-`unknown` build commit, and 183
+families before relying on a newly installed process; existing MCP processes retain the executable they started.
 
-## Any other MCP client (Cursor, Windsurf, …)
+## Codex — one line
+
+If you have the `codex` CLI:
+
+```bash
+codex mcp add semanticcompute -- /Users/YOU/.local/bin/semanticcompute-mcp
+```
+
+The one-command installer runs this automatically when Codex is present. The equivalent manual entry in
+`~/.codex/config.toml` is:
+
+```toml
+[mcp_servers.semanticcompute]
+command = "/Users/YOU/.local/bin/semanticcompute-mcp"
+```
+
+Use an absolute path, restart the Codex app or CLI session, then confirm the saved registration with
+`codex mcp get semanticcompute`. In a new Codex task, call `sc_version` and require `1.22.1`, build commit
+`f7dcfa2cda82b81edb4474ff3d0d0b8e6defad1d`, and 183 families. This identifies the released process instead of
+an older MCP process that was already running.
+
+## Gemini CLI — one line
+
+Gemini CLI has its own user-scope registration command:
+
+```bash
+gemini mcp add semanticcompute /Users/YOU/.local/bin/semanticcompute-mcp --scope user
+```
+
+The one-command installer runs it automatically when `gemini` is present. Restart Gemini CLI and confirm with
+`gemini mcp list`.
+
+## VS Code / GitHub Copilot — one line
+
+Current VS Code accepts a user-profile MCP server through its CLI:
+
+```bash
+code --add-mcp '{"name":"semanticcompute","command":"/Users/YOU/.local/bin/semanticcompute-mcp"}'
+```
+
+If the `code` shell command is unavailable, run **MCP: Add Server** from the Command Palette, choose a local
+command/stdio server, and enter the absolute binary path. VS Code asks you to review and trust a local server the
+first time it starts.
+
+## Cursor — global `mcp.json`
+
+Open **Customize ▸ MCPs**, or add this entry to `~/.cursor/mcp.json` for all projects:
+
+```json
+{
+  "mcpServers": {
+    "semanticcompute": {
+      "type": "stdio",
+      "command": "/Users/YOU/.local/bin/semanticcompute-mcp"
+    }
+  }
+}
+```
+
+Restart Cursor. Cursor CLI users can then inspect the exposed schema with
+`agent mcp list-tools semanticcompute`.
+
+## Windsurf / Cascade — global `mcp_config.json`
+
+Open **Windsurf Settings ▸ Cascade ▸ MCP Servers**, or add the same stdio entry to
+`~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "semanticcompute": {
+      "command": "/Users/YOU/.local/bin/semanticcompute-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+Refresh the MCP list after saving, then enable the tools you want Cascade to use.
+
+## Any other MCP client
 
 It's a plain stdio JSON-RPC server. Point the client at the binary as the `command`; no arguments needed:
 
@@ -50,7 +132,7 @@ command: /absolute/path/to/semanticcompute-mcp
 
 ## If it doesn't show up
 
-- **Restart the client** — MCP servers load at startup, not live.
+- **Restart the client** — Claude and Codex load stdio MCP servers when a session starts.
 - **Use an absolute path** in any JSON config; `~` and relative paths are the usual culprit.
 - **macOS "cannot be opened"** — the binaries are Developer-ID-signed and notarised, so this is rare; if a
   browser download was quarantined, clear it: `xattr -d com.apple.quarantine ~/.local/bin/semanticcompute-mcp`.

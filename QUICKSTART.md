@@ -2,12 +2,12 @@
 
 Prove your GPU/CUDA/ported result matches a reference you trust under a tolerance **you** state — the doctor
 compares any two arrays, whatever produced them — and, where you have a higher-precision reference, measure how
-*accurate* it is. You run a signed, notarised macOS binary (universal: Intel + Apple Silicon) or the prebuilt
-x86-64 Linux binary — both on the Releases page (the CLI/MCP build and pass their full suite on both). The
+*accurate* it is. You run a signed, notarised macOS binary (universal: Intel + Apple Silicon) or a native
+x86-64/AArch64 Linux binary — all on the Releases page (the CLI/MCP build and pass their full suite on both). The
 source stays closed. Verification is the product — it is deliberately narrow (not a GPU framework, not a
 Swift→GPU transpiler).
 
-## Option A — the MCP server (for agents / Claude Code / any MCP client)
+## Option A — the MCP server (for Claude / Codex / Gemini / editor agents)
 
 1. Download `semanticcompute-mcp.mcpb` from the latest release, or the raw binary:
    ```bash
@@ -15,15 +15,22 @@ Swift→GPU transpiler).
      https://github.com/entertrainment/semanticcompute-dist/releases/latest/download/semanticcompute-mcp-macos-universal.tar.gz
    tar xzf semanticcompute-mcp.tar.gz            # → ./semanticcompute-mcp   (universal: Intel + Apple Silicon)
    ```
-2. Register it (Claude Code shown; any MCP client works):
+2. Register it with the agents you use (the install script does the first three automatically when present):
    ```bash
-   claude mcp add semanticcompute -- /ABSOLUTE/PATH/TO/semanticcompute-mcp
+   claude mcp add semanticcompute -s user -- /ABSOLUTE/PATH/TO/semanticcompute-mcp
+   codex mcp add semanticcompute -- /ABSOLUTE/PATH/TO/semanticcompute-mcp
+   gemini mcp add semanticcompute /ABSOLUTE/PATH/TO/semanticcompute-mcp --scope user
+   code --add-mcp '{"name":"semanticcompute","command":"/ABSOLUTE/PATH/TO/semanticcompute-mcp"}'
    ```
+   Cursor and Windsurf use the global JSON locations documented in [docs/INSTALL-MCP.md](docs/INSTALL-MCP.md).
 3. Use the tools — no source, no build:
    - `sc_check_parity` — does a candidate match a reference under `exact | default | ulp | absrel`?
    - `sc_diagnose_divergence` — *why* did it diverge (FMA drift, denormal flush, NaN, ±∞ overflow…)?
    - `sc_zoo` — run a canonical silent-divergence specimen to see it in action.
    - `sc_list_families` / `sc_suggest_families` — what compute is already covered.
+   - `sc_validate_metal_texture` — execute complete consumer-owned MSL and compare its RGBA texture with an
+     independent CPU reference, with explicit status for compile, dispatch, readback, and parity.
+   - `sc_version` — confirm version `1.22.1`, exact build commit, 183 families, backends, and feature flags.
 
 ## Option B — the CLI (for CI / scripts / a quick check)
 
