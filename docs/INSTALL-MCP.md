@@ -151,6 +151,9 @@ env: SEMANTICCOMPUTE_LICENCE_KEY=sc_lic_…
 - **Use an absolute path** in any JSON config; `~` and relative paths are the usual culprit.
 - **macOS "cannot be opened"** — the binaries are Developer-ID-signed and notarised, so this is rare; if a
   browser download was quarantined, clear it: `xattr -d com.apple.quarantine ~/.local/bin/semanticcompute-mcp`.
+- **Licence service cannot be reached** — allow the `semanticcompute-mcp` executable outbound HTTPS access to
+  `semanticcompute-trial.douglas-57d.workers.dev`. Process-aware firewalls such as Little Snitch can allow a
+  browser or `curl` while separately blocking the MCP process.
 - **Verify the server itself** is fine, independent of any client:
   ```bash
   echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"t","version":"1"}}}' | ~/.local/bin/semanticcompute-mcp
