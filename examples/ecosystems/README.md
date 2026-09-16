@@ -17,10 +17,11 @@ anywhere. On a real case, feed the actual output tensor (`out.detach().cpu().num
 a PyTorch reference vs a generated kernel, diagnosed and fixed in a loop.)
 
 ## Run
-Download the released `semanticcompute-parity` binary from the [Releases](../../releases) page (macOS universal,
-signed + notarised; or the native Linux x86-64/AArch64 tarball), then point `SC_PARITY` at it:
+Request a signed, licence-gated `semanticcompute-parity` build and bounded trial or paid key, then point
+`SC_PARITY` at it:
 ```bash
-SC_PARITY=/path/to/semanticcompute-parity  python3 examples/ecosystems/verify_output.py
+SEMANTICCOMPUTE_LICENCE_KEY=sc_lic_... \
+SC_PARITY=/path/to/semanticcompute-parity python3 examples/ecosystems/verify_output.py
 ```
 (With a source licence, `BIN="$(swift build -c release --product semanticcompute-parity --show-bin-path)/…"` builds it instead.)
 

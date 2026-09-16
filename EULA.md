@@ -10,12 +10,14 @@
 SemanticCompute binary artefacts (the `semanticcompute-mcp` server, the `semanticcompute-parity`
 CLI, and any distributed `.xcframework`), excluding source code.
 
-1. **Grant (evaluation).** Subject to these terms, Licensor grants you a non-exclusive,
-   non-transferable, revocable licence to download and run the Product for evaluation and
-   non-production use, plus a **7-day production trial**.
-2. **Production use.** Continued production use after the trial requires a paid commercial
+1. **Grant (evaluation).** Subject to these terms and an active entitlement issued by Licensor,
+   Licensor grants you a non-exclusive, non-transferable, revocable licence to run the Product
+   for the duration, installation limit, and execution allowance shown by that entitlement. An
+   evaluation or production trial exists only when Licensor issues a trial key for it.
+2. **Production use.** Production use outside an issued trial requires an active paid commercial
    licence (see pricing). A per-developer subscription covers individual production use;
-   enterprise terms cover teams, SLA, and indemnification.
+   enterprise terms cover teams, SLA, and indemnification. Expiry, cancellation, or revocation
+   of the entitlement ends the right to run new Product operations.
 3. **Restrictions.** You may not: (a) redistribute, sublicense, rent, or host the Product as a
    service to third parties; (b) reverse-engineer, decompile, or disassemble the Product, except
    to the extent this restriction is prohibited by applicable law; (c) remove or alter notices.
@@ -29,8 +31,8 @@ CLI, and any distributed `.xcframework`), excluding source code.
    aggregate liability is limited to the fees paid in the 12 months preceding the claim; no
    liability for indirect or consequential loss. (Nothing excludes liability that cannot be
    excluded by law, e.g. for death/personal injury caused by negligence, or fraud.)
-7. **Term & termination.** This licence terminates automatically on breach or at the end of an
-   unpaid trial; on termination you must cease use and delete the Product.
+7. **Term & termination.** This licence terminates automatically on breach, entitlement expiry,
+   cancellation, or the end of an issued trial; on termination you must cease use and delete the Product.
 8. **Governing law.** England and Wales. [confirm with your solicitor]
 
 *Commercial licensing: douglas@entertrainment.co.uk*

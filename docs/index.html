@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SemanticCompute — prove your kernel agrees with your reference, to the ULP</title>
-<meta name="description" content="Your kernel and your reference disagree — SemanticCompute tells you where, by how many ULPs, and the likely cause (FMA, reduction order, denormal flush, NaN), classified with evidence, and whether a tolerance makes sense. It classifies the cause, prescribes the fix, and re-verifies yours worked — diagnose → prescribe → re-verify — without rewriting your kernel. Any two arrays, whatever produced them: CPU↔GPU, GPU↔GPU, kernel↔reference, backend↔backend. macOS and Linux; free to evaluate.">
+<meta name="description" content="Your kernel and your reference disagree — SemanticCompute tells you where, by how many ULPs, and the likely cause. Signed licence-gated macOS and Linux builds are available by request.">
 
 <style>
   :root {
@@ -584,7 +584,7 @@
           legitimate approximation, it prescribes a stated tolerance, not a change.
         </p>
         <div class="cta-row">
-          <a class="btn primary" href="https://github.com/entertrainment/semanticcompute-dist/releases/latest">Download 1.22.1 →</a>
+          <a class="btn primary" href="mailto:douglas@entertrainment.co.uk?subject=SemanticCompute%20licensed%20beta">Request a licensed build →</a>
           <a class="btn ghost" href="https://github.com/entertrainment/semanticcompute-dist/blob/main/RELEASE_NOTES_1.22.1.md">Release notes →</a>
           <a class="btn ghost" href="#contract">The parity contract →</a>
         </div>
@@ -624,7 +624,7 @@
             binaries, checksums, SBOM and evidence now travel together.</p>
         </div>
         <div class="release-actions">
-          <a class="btn copy" href="https://github.com/entertrainment/semanticcompute-dist/releases/tag/v1.22.1">View all 12 assets →</a>
+          <a class="btn copy" href="https://github.com/entertrainment/semanticcompute-dist/releases/tag/v1.22.1">View the 1.22.1 record →</a>
           <a class="btn ghost" href="https://github.com/entertrainment/semanticcompute-dist/blob/main/CHANGELOG.md">Changelog →</a>
         </div>
       </div>
@@ -679,7 +679,7 @@
 
       <div class="release-proof" role="list" aria-label="SemanticCompute 1.22.1 release proof">
         <span role="listitem"><b class="ok">TAGGED</b>source f7dcfa2</span>
-        <span role="listitem"><b class="ok">12 ASSETS</b>complete public cut</span>
+        <span role="listitem"><b>LEGACY CUT</b>executables being withdrawn</span>
         <span role="listitem"><b>MACOS</b>universal · signed · notarised</span>
         <span role="listitem"><b>LINUX</b>native x86-64 + AArch64</span>
         <span role="listitem"><b>SUPPLY CHAIN</b>SHA-256 · SBOM · notice</span>
@@ -698,7 +698,7 @@
           ULPs, and the <em>likely cause</em> (classified, with evidence), and which tolerance tolerates what.
           Four canonical culprits — and the classification is not a heuristic left unexamined: it is tested
           against a failure lab of engineered specimens, each with a <em>declared</em> cause the doctor must
-          recover (<code>--zoo all</code>), in CI and in the free binary on your machine:</p>
+          recover (<code>--zoo all</code>), in CI and in the licensed binary on your machine:</p>
       </div>
 
       <div class="card" style="max-width:var(--prose); margin:0 0 20px; border-left:3px solid var(--diverge)">
@@ -1029,21 +1029,22 @@
       <div class="grid cols-2" style="align-items:start">
         <div>
           <div class="sec-head" style="margin-bottom:24px">
-            <p class="eyebrow">Release artifacts · free to evaluate</p>
+            <p class="eyebrow">Release artifacts · licence controlled</p>
             <h2>Give every serious coding agent the same numerical proof tools.</h2>
             <p class="lead">The complete 1.22.1 distribution ships the MCP server and CLI as signed, notarised
               universal macOS binaries and native x86-64 + AArch64 Linux archives. Every binary carries the exact
               tagged source commit; the release also includes checksums, an SBOM, licence notice and CUDA evidence.
-              Free to evaluate and for non-production use, plus a 7-day production trial; production
-              beyond that needs a commercial licence. The source is closed; serious evaluators can review it
-              under NDA. A hosted verification service — parity CI against your own kernels — is in early access.</p>
+              The published 1.22.1 binaries predate technical entitlement enforcement, so new installation is
+              paused while the signed, licence-gated 1.23 distribution is prepared. Its CLI, MCP, and Live compute
+              operations require an expiring, revocable trial or subscription key. The source is closed; serious
+              evaluators can review it under NDA.</p>
           </div>
           <div class="code-block">
-<span class="c"># One command: verify + install + register with Claude Code, Codex and Gemini CLI</span>
-curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcompute-dist</span>/main/install.sh | bash
-<span class="c"># Claude Desktop: just double-click semanticcompute-mcp.mcpb (Settings ▸ Extensions)</span></div>
+<span class="c"># Request a bounded trial or paid key; legacy downloads are paused</span>
+douglas@entertrainment.co.uk
+<span class="c"># Subject: SemanticCompute licensed beta</span></div>
           <p style="color:var(--text-dim); font-size: 0.8125rem; margin-top:10px">
-            Prefer a manual binary? Grab one from <a href="https://github.com/entertrainment/semanticcompute-dist/releases" style="color:var(--diverge)">Releases</a>.
+            Release history and non-executable evidence remain in <a href="https://github.com/entertrainment/semanticcompute-dist/releases" style="color:var(--diverge)">Releases</a>.
             Read the <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/RELEASE_NOTES_1.22.1.md" style="color:var(--diverge)">detailed 1.22.1 notes</a>
             or the <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/CHANGELOG.md" style="color:var(--diverge)">complete changelog</a>.
             Per-client setup (Claude Desktop · Claude Code · Codex · Gemini · VS Code · Cursor · Windsurf) is in the
@@ -1080,14 +1081,14 @@ curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcomp
               checksum-and-signature-verified executable with Claude Code, Codex and Gemini CLI, replacing stale
               registrations that point at an older version; Claude Desktop uses the bundled MCPB, while VS Code,
               Cursor and Windsurf use their native local-MCP setup paths.
-              Free to evaluate; a commercial licence for production; source review under NDA.</p>
+              New distributions require an active bounded trial or subscription key; source review is available under NDA.</p>
           </div>
           <div class="card">
             <span class="kicker">Something to break</span>
             <h3>The failure lab</h3>
-            <p>A runnable catalogue of the canonical silent CPU↔GPU divergences — ships in the free download,
-              no licence needed: <code>--zoo</code> reproduces each one, so you can confirm what the doctor
-              catches on your own machine, without the source.</p>
+            <p>A runnable catalogue of the canonical silent CPU↔GPU divergences. An active trial or subscription
+              key lets <code>--zoo</code> reproduce each one so you can confirm what the doctor catches on your own
+              machine, without the source.</p>
           </div>
           <div class="card">
             <span class="kicker">Early access</span>

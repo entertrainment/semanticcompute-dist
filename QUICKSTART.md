@@ -3,24 +3,21 @@
 Prove your GPU/CUDA/ported result matches a reference you trust under a tolerance **you** state — the doctor
 compares any two arrays, whatever produced them — and, where you have a higher-precision reference, measure how
 *accurate* it is. You run a signed, notarised macOS binary (universal: Intel + Apple Silicon) or a native
-x86-64/AArch64 Linux binary — all on the Releases page (the CLI/MCP build and pass their full suite on both). The
+x86-64/AArch64 Linux binary. New installation is paused while licence-gated 1.23 artifacts replace the ungated
+1.22.1 and earlier executables. Request a bounded trial or paid build at douglas@entertrainment.co.uk. The
 source stays closed. Verification is the product — it is deliberately narrow (not a GPU framework, not a
 Swift→GPU transpiler).
 
 ## Option A — the MCP server (for Claude / Codex / Gemini / editor agents)
 
-1. Download `semanticcompute-mcp.mcpb` from the latest release, or the raw binary:
+1. Receive the signed gated `semanticcompute-mcp.mcpb` or native archive and its `sc_lic_…` key through the
+   licensed distribution channel. Public legacy downloads are paused.
+2. Export the key and register the binary with the agents you use:
    ```bash
-   curl -L -o semanticcompute-mcp.tar.gz \
-     https://github.com/entertrainment/semanticcompute-dist/releases/latest/download/semanticcompute-mcp-macos-universal.tar.gz
-   tar xzf semanticcompute-mcp.tar.gz            # → ./semanticcompute-mcp   (universal: Intel + Apple Silicon)
-   ```
-2. Register it with the agents you use (the install script does the first three automatically when present):
-   ```bash
-   claude mcp add semanticcompute -s user -- /ABSOLUTE/PATH/TO/semanticcompute-mcp
-   codex mcp add semanticcompute -- /ABSOLUTE/PATH/TO/semanticcompute-mcp
-   gemini mcp add semanticcompute /ABSOLUTE/PATH/TO/semanticcompute-mcp --scope user
-   code --add-mcp '{"name":"semanticcompute","command":"/ABSOLUTE/PATH/TO/semanticcompute-mcp"}'
+   export SEMANTICCOMPUTE_LICENCE_KEY="sc_lic_…"
+   claude mcp add semanticcompute -s user -e SEMANTICCOMPUTE_LICENCE_KEY="$SEMANTICCOMPUTE_LICENCE_KEY" -- /ABSOLUTE/PATH/TO/semanticcompute-mcp
+   codex mcp add semanticcompute --env SEMANTICCOMPUTE_LICENCE_KEY="$SEMANTICCOMPUTE_LICENCE_KEY" -- /ABSOLUTE/PATH/TO/semanticcompute-mcp
+   gemini mcp add semanticcompute /ABSOLUTE/PATH/TO/semanticcompute-mcp --scope user --env SEMANTICCOMPUTE_LICENCE_KEY="$SEMANTICCOMPUTE_LICENCE_KEY"
    ```
    Cursor and Windsurf use the global JSON locations documented in [docs/INSTALL-MCP.md](docs/INSTALL-MCP.md).
 3. Use the tools — no source, no build:
@@ -35,9 +32,7 @@ Swift→GPU transpiler).
 ## Option B — the CLI (for CI / scripts / a quick check)
 
 ```bash
-curl -L -o semanticcompute-parity \
-  https://github.com/entertrainment/semanticcompute-dist/releases/latest/download/semanticcompute-parity-macos-universal
-chmod +x semanticcompute-parity
+export SEMANTICCOMPUTE_LICENCE_KEY="sc_lic_…"
 
 # Prove two arrays agree under a stated tolerance (exit 0 agree / 1 diverged / 2 error):
 echo '{"reference":[100],"candidate":[0]}' | ./semanticcompute-parity --tolerance ulp:1
@@ -52,5 +47,5 @@ Point it at *your own* reference/candidate data — the tolerance is explicit, t
 reproducible, and you can drop it in an audit trail. (The cause classifier gives leads, not
 proofs. It carries no certification or regulatory approval — it produces evidence, not compliance.)
 
-> Pre-adoption, single author. The binaries are free to evaluate; commercial production use is
-> licensed (see the EULA / pricing). Source is available under commercial terms / audit under NDA.
+> Pre-adoption, single author. Bounded trial and paid distribution keys are issued under the EULA / pricing.
+> Source review is available under commercial terms / audit under NDA.

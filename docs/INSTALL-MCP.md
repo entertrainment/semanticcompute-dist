@@ -5,11 +5,15 @@ verification tools (`sc_check_parity`, `sc_validate_metal_texture`, `sc_diagnose
 `sc_list_families`, …) plus resources and
 prompts. Pick the path for your client; each takes under a minute.
 
+> **Distribution pause:** the published v1.22.1 and earlier binaries predate online entitlement enforcement.
+> New installation is paused while the signed, licence-gated 1.23 distribution is prepared. The installer exits
+> before downloading or changing client configuration. Request a bounded trial or paid key at
+> **douglas@entertrainment.co.uk**. The commands below apply to the gated distribution once issued.
+
 ## Claude Desktop — double-click, no JSON
 
-Download **`semanticcompute-mcp.mcpb`** from the [Releases](../../releases) page and double-click it. Claude
-Desktop installs it under Settings ▸ Extensions. That's it. (`.mcpb` is Anthropic's Desktop-extension bundle —
-one file, no config.)
+The gated `semanticcompute-mcp.mcpb` asks for the issued `sc_lic_…` key as a required masked setting and passes
+it only through `SEMANTICCOMPUTE_LICENCE_KEY`. Do not place the key in command arguments or a repository.
 
 ## One command (macOS / Linux)
 
@@ -18,6 +22,7 @@ signature and MCP handshake, and registers it with Claude Code, Codex, and Gemin
 present. Existing registrations that point at an older binary are upgraded to the stable installed path:
 
 ```bash
+export SEMANTICCOMPUTE_LICENCE_KEY="sc_lic_…"
 curl -fsSL https://raw.githubusercontent.com/entertrainment/semanticcompute-dist/main/install.sh | bash
 ```
 
@@ -26,7 +31,7 @@ curl -fsSL https://raw.githubusercontent.com/entertrainment/semanticcompute-dist
 If you have the `claude` CLI:
 
 ```bash
-claude mcp add semanticcompute -s user -- ~/.local/bin/semanticcompute-mcp
+claude mcp add semanticcompute -s user -e SEMANTICCOMPUTE_LICENCE_KEY="$SEMANTICCOMPUTE_LICENCE_KEY" -- ~/.local/bin/semanticcompute-mcp
 ```
 
 Or add it to a project `.mcp.json` (or `~/.claude.json`) yourself:
@@ -34,7 +39,11 @@ Or add it to a project `.mcp.json` (or `~/.claude.json`) yourself:
 ```json
 {
   "mcpServers": {
-    "semanticcompute": { "type": "stdio", "command": "~/.local/bin/semanticcompute-mcp" }
+    "semanticcompute": {
+      "type": "stdio",
+      "command": "/Users/YOU/.local/bin/semanticcompute-mcp",
+      "env": { "SEMANTICCOMPUTE_LICENCE_KEY": "sc_lic_…" }
+    }
   }
 }
 ```
@@ -48,7 +57,7 @@ families before relying on a newly installed process; existing MCP processes ret
 If you have the `codex` CLI:
 
 ```bash
-codex mcp add semanticcompute -- /Users/YOU/.local/bin/semanticcompute-mcp
+codex mcp add semanticcompute --env SEMANTICCOMPUTE_LICENCE_KEY="$SEMANTICCOMPUTE_LICENCE_KEY" -- /Users/YOU/.local/bin/semanticcompute-mcp
 ```
 
 The one-command installer runs this automatically when Codex is present. The equivalent manual entry in
@@ -57,6 +66,7 @@ The one-command installer runs this automatically when Codex is present. The equ
 ```toml
 [mcp_servers.semanticcompute]
 command = "/Users/YOU/.local/bin/semanticcompute-mcp"
+env = { SEMANTICCOMPUTE_LICENCE_KEY = "sc_lic_…" }
 ```
 
 Use an absolute path, restart the Codex app or CLI session, then confirm the saved registration with
@@ -69,7 +79,8 @@ an older MCP process that was already running.
 Gemini CLI has its own user-scope registration command:
 
 ```bash
-gemini mcp add semanticcompute /Users/YOU/.local/bin/semanticcompute-mcp --scope user
+gemini mcp add semanticcompute /Users/YOU/.local/bin/semanticcompute-mcp --scope user \
+  --env SEMANTICCOMPUTE_LICENCE_KEY="$SEMANTICCOMPUTE_LICENCE_KEY"
 ```
 
 The one-command installer runs it automatically when `gemini` is present. Restart Gemini CLI and confirm with
@@ -80,7 +91,7 @@ The one-command installer runs it automatically when `gemini` is present. Restar
 Current VS Code accepts a user-profile MCP server through its CLI:
 
 ```bash
-code --add-mcp '{"name":"semanticcompute","command":"/Users/YOU/.local/bin/semanticcompute-mcp"}'
+code --add-mcp '{"name":"semanticcompute","command":"/Users/YOU/.local/bin/semanticcompute-mcp","env":{"SEMANTICCOMPUTE_LICENCE_KEY":"sc_lic_…"}}'
 ```
 
 If the `code` shell command is unavailable, run **MCP: Add Server** from the Command Palette, choose a local
@@ -96,7 +107,8 @@ Open **Customize ▸ MCPs**, or add this entry to `~/.cursor/mcp.json` for all p
   "mcpServers": {
     "semanticcompute": {
       "type": "stdio",
-      "command": "/Users/YOU/.local/bin/semanticcompute-mcp"
+      "command": "/Users/YOU/.local/bin/semanticcompute-mcp",
+      "env": { "SEMANTICCOMPUTE_LICENCE_KEY": "sc_lic_…" }
     }
   }
 }
@@ -115,7 +127,8 @@ Open **Windsurf Settings ▸ Cascade ▸ MCP Servers**, or add the same stdio en
   "mcpServers": {
     "semanticcompute": {
       "command": "/Users/YOU/.local/bin/semanticcompute-mcp",
-      "args": []
+      "args": [],
+      "env": { "SEMANTICCOMPUTE_LICENCE_KEY": "sc_lic_…" }
     }
   }
 }
@@ -129,6 +142,7 @@ It's a plain stdio JSON-RPC server. Point the client at the binary as the `comma
 
 ```
 command: /absolute/path/to/semanticcompute-mcp
+env: SEMANTICCOMPUTE_LICENCE_KEY=sc_lic_…
 ```
 
 ## If it doesn't show up

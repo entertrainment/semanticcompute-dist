@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SemanticCompute — licence-service privacy</title>
+<meta name="description" content="Data handled by the SemanticCompute binary licence checkout service.">
+<style>:root{color-scheme:light dark;font-family:system-ui,sans-serif;line-height:1.55}body{max-width:720px;margin:0 auto;padding:3rem 1.25rem}h1,h2{line-height:1.2}code{font-family:ui-monospace,monospace}a{color:#0c9a88}</style>
+</head>
+<body>
+<p><a href="index.html">← SemanticCompute</a></p>
+<h1>Licence-service privacy</h1>
+<p>The signed SemanticCompute CLI, MCP, and Live distribution binaries contact the SemanticCompute licence
+service before a compute operation. The request contains the licence key, executable name, operation name, full
+release commit, a random persistent installation identifier, and an idempotency key.</p>
+<h2>Storage</h2>
+<p>The service stores a peppered SHA-256 hash of the licence key and a SHA-256 hash of the installation identifier.
+It stores entitlement state, device first/last-seen timestamps, operation checkout state, the build commit, and
+the resulting bounded licence receipt. It does not receive numerical inputs, candidate/reference arrays, emitted
+kernels, file paths, source code, or parity results.</p>
+<h2>Purpose and retention</h2>
+<p>This data is used to enforce expiry, trial credits, subscription access, installation ceilings, retry safety,
+and revocation. Entitlement and checkout records are retained for licensing, support, abuse prevention, and audit
+needs. Contact <a href="mailto:douglas@entertrainment.co.uk">douglas@entertrainment.co.uk</a> for an access or
+deletion request.</p>
+<h2>Local identity</h2>
+<p>The default installation identifier is randomly generated and stored at <code>~/.semanticcompute/device-id</code>
+with mode <code>0600</code>. It is not derived from hardware serial numbers. Removing it creates a new installation
+identity and may consume another device allowance.</p>
+</body>
+</html>

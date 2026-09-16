@@ -14,10 +14,11 @@ softmax missing its max‑shift, one of the most common generated‑kernel mista
 CUDA kernel's output copied to the host (`out.detach().cpu().numpy()`).
 
 ## Run
-Download the released `semanticcompute-parity` binary from the [Releases](../../releases) page, then point
+Request a signed, licence-gated `semanticcompute-parity` build and bounded trial or paid key, then point
 `SC_PARITY` at it (omit it if `semanticcompute-parity` is on `PATH`):
 ```bash
-SC_PARITY=/path/to/semanticcompute-parity  python3 examples/kernelbench-loop/demo.py
+SEMANTICCOMPUTE_LICENCE_KEY=sc_lic_... \
+SC_PARITY=/path/to/semanticcompute-parity python3 examples/kernelbench-loop/demo.py
 ```
 (With a source licence, `BIN="$(swift build -c release --product semanticcompute-parity --show-bin-path)/…"` builds it instead.)
 
@@ -27,7 +28,8 @@ Add `--html report.html` to also write a self‑contained **verification report*
 per‑element cause map (v1 diverged → v2 verified), an audit artifact you can open in any browser or attach to a
 compliance record. No source, no browser tooling; renders in light and dark. ([sample report](../../verification-report.html).)
 ```bash
-SC_PARITY=/path/to/semanticcompute-parity  python3 examples/kernelbench-loop/demo.py --html report.html
+SEMANTICCOMPUTE_LICENCE_KEY=sc_lic_... \
+SC_PARITY=/path/to/semanticcompute-parity python3 examples/kernelbench-loop/demo.py --html report.html
 ```
 
 ## The agent version — `demo_mcp.py` (structured MCP output)
@@ -35,10 +37,10 @@ SC_PARITY=/path/to/semanticcompute-parity  python3 examples/kernelbench-loop/dem
 stdlib MCP client, reading the typed `structuredContent`: the agent branches on the `causeHistogram` and
 `compatible` **fields**, not on prose.
 ```bash
-SC_MCP=/path/to/semanticcompute-mcp  python3 examples/kernelbench-loop/demo_mcp.py
+SEMANTICCOMPUTE_LICENCE_KEY=sc_lic_... \
+SC_MCP=/path/to/semanticcompute-mcp python3 examples/kernelbench-loop/demo_mcp.py
 ```
-(The `semanticcompute-mcp` server ships on the [Releases](../../releases) page as an `.mcpb` bundle and a raw binary.)
+(The gated `semanticcompute-mcp` server is issued as an `.mcpb` bundle or native archive.)
 Output: `[diagnose] causeHistogram={"nanGeneration":14,…} → [decide] apply max‑shift → [verify] compatible=True → loop closed`.
 This is the closed loop as an MCP workflow — the shape KernelBench / SOL‑ExecBench are moving toward. (`demo.py`
 above is the CLI variant, via the stdlib wrapper `sc_verify.py`.)
-
