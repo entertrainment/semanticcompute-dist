@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SemanticCompute — prove your kernel agrees with your reference, to the ULP</title>
-<meta name="description" content="Your kernel and your reference disagree — SemanticCompute tells you where, by how many ULPs, and the likely cause. Signed licence-gated macOS and Linux builds are available by request.">
+<meta name="description" content="Your kernel and your reference disagree — SemanticCompute tells you where, by how many ULPs, and the likely cause (FMA, reduction order, denormal flush, NaN), classified with evidence, and whether a tolerance makes sense. It classifies the cause, prescribes the fix, and re-verifies yours worked — diagnose → prescribe → re-verify — without rewriting your kernel. Any two arrays, whatever produced them: CPU↔GPU, GPU↔GPU, kernel↔reference, backend↔backend. macOS and Linux; bounded evaluation keys available.">
 
 <style>
   :root {
@@ -551,9 +551,11 @@
   <div class="wrap row">
     <div class="brand"><span class="glyph" aria-hidden="true"></span> SemanticCompute</div>
     <nav>
-      <span class="pill sig">v1.22.1</span>
+      <span class="pill sig">v1.23.0</span>
       <a class="ghost-link section-link" href="#new">What’s new</a>
+      <a class="ghost-link section-link" href="#live">Live status</a>
       <a class="ghost-link section-link" href="#contract">Proof</a>
+      <a class="ghost-link section-link" href="#visual-proof">Visual lab</a>
       <a class="ghost-link section-link" href="#library">Families</a>
       <a class="pill" href="pricing.html">Commercial</a>
       <a class="ghost-link" href="#get">Get it →</a>
@@ -585,18 +587,19 @@
         </p>
         <div class="cta-row">
           <a class="btn primary" href="mailto:douglas@entertrainment.co.uk?subject=SemanticCompute%20licensed%20beta">Request a licensed build →</a>
-          <a class="btn ghost" href="https://github.com/entertrainment/semanticcompute-dist/blob/main/RELEASE_NOTES_1.22.1.md">Release notes →</a>
+          <a class="btn ghost" href="#live">Live verification →</a>
+          <a class="btn ghost" href="https://github.com/entertrainment/semanticcompute-dist/blob/main/RELEASE_NOTES_1.23.0.md">Release notes →</a>
           <a class="btn ghost" href="#contract">The parity contract →</a>
         </div>
         <div class="platforms" aria-label="Platforms and availability">
-          <span class="pf"><b>macOS 1.22.1</b> — universal Intel + Apple Silicon; Developer-ID signed and notarised</span>
-          <span class="pf"><b>Linux 1.22.1</b> — native x86-64 + AArch64 binaries from the tagged CI build</span>
+          <span class="pf"><b>macOS 1.23.0</b> — universal Intel + Apple Silicon; Developer-ID signed and notarised</span>
+          <span class="pf"><b>Linux 1.23.0</b> — native x86-64 + AArch64 binaries from the tagged CI build</span>
           <span class="pf">emits <b>Metal · portable C · WebGPU · CUDA&nbsp;(recorded device parity)</b></span>
         </div>
-        <div class="statline" role="list" aria-label="The verification surface, as of v1.22.1">
-          <span role="listitem"><b>183</b> verified families</span>
-          <span role="listitem"><b>1,335</b> tests · <b>286</b> suites</span>
-          <span role="listitem"><b>384</b> kernels · <b>242</b> lowerings · <b class="sig">0 failed</b></span>
+        <div class="statline" role="list" aria-label="The current source verification surface">
+          <span role="listitem"><b>188</b> verified families</span>
+          <span role="listitem"><b>1,385</b> tests total · <b>294</b> Swift Testing suites + XCTest</span>
+          <span role="listitem"><b>391</b> kernels · <b>249</b> lowerings · <b class="sig">0 failed</b></span>
         </div>
       </div>
       <div class="scope" aria-label="Divergence scope: a reference corridor and a candidate trace, with four classified divergences — FMA contraction, denormal flush, a NaN gap, and ULP drift">
@@ -617,50 +620,49 @@
     <div class="wrap">
       <div class="release-mast">
         <div class="sec-head">
-          <p class="eyebrow">Current release · everything shipped since 1.20</p>
-          <h2>Texture truth. Stateful reverb. Bounded document compute.</h2>
-          <p class="lead">Version 1.22.1 turns three consumer requests into complete, parity-gated lanes and
-            repairs the public distribution around them. The catalogue moves from 170 to 183 families; the
-            binaries, checksums, SBOM and evidence now travel together.</p>
+          <p class="eyebrow">Current release · licensed, exact, agent-ready</p>
+          <h2>Verification you can distribute without giving away the engine.</h2>
+          <p class="lead">Version 1.23.0 grows the catalogue to 188 families, adds exact storage and checkout
+            evidence, exposes 20 bounded MCP tools, and puts every native commercial executable behind the same
+            expiring, revocable entitlement. CPU reference truth, contracts, lowering, and parity remain aligned.</p>
         </div>
         <div class="release-actions">
-          <a class="btn copy" href="https://github.com/entertrainment/semanticcompute-dist/releases/tag/v1.22.1">View the 1.22.1 record →</a>
+          <a class="btn copy" href="https://github.com/entertrainment/semanticcompute-dist/releases/tag/v1.23.0">View all 15 assets →</a>
           <a class="btn ghost" href="https://github.com/entertrainment/semanticcompute-dist/blob/main/CHANGELOG.md">Changelog →</a>
         </div>
       </div>
 
       <div class="grid cols-3">
         <article class="card release-card">
-          <span class="release-no">01 · METAL TEXTURES</span>
-          <h3>Validate the complete shader, then inspect every stage.</h3>
-          <p><code>sc_validate_metal_texture</code> compiles consumer-owned MSL, dispatches it, reads back
-            RGBA16Float or RGBA32Float pixels and compares them with an independent CPU reference.</p>
-          <p>Generic pointwise2D <code>texture2D&lt;Float4&gt;</code> reads and writes also pass through the normal
-            semantic IR and Metal lowering path. Preflight, compile, dispatch, readback and parity keep separate
-            executed, skipped, unavailable and failed states.</p>
+          <span class="release-no">01 · LICENSED DISTRIBUTION</span>
+          <h3>Every native compute path fails closed.</h3>
+          <p>The parity CLI, MCP server, and Live service check a stamped build, entitlement expiry, credits, and
+            device ceiling before paid work executes. Help, version, discovery, and health remain available.</p>
+          <p>The service stores only peppered key hashes and hashed installation IDs. Administrators can inspect,
+            renew, revoke, or reset devices, with every mutation recorded in an audit ledger.</p>
         </article>
         <article class="card release-card">
-          <span class="release-no">02 · FDN LATE REVERB</span>
-          <h3>Block boundaries become part of the proof.</h3>
-          <p>A configurable feedback-delay network ships with Householder feedback, per-line decay, one-pole
-            damping, wet/dry mix and explicit state across processing blocks.</p>
-          <p>The family carries its CPU reference, semantic contract, legality, effects, Metal lowering,
-            catalogue entry and split-block parity tests. It extends the existing DSP substrate without adding
-            a second audio engine.</p>
+          <span class="release-no">02 · EXACT AUDIT / STORAGE</span>
+          <h3>Large evidence sets stay exact and inspectable.</h3>
+          <p>APFS checksum validation, variable-span overlap, CSR components, stable sparse assignment, growth
+            evidence, lexical scans, segmented UInt64 ranks, and bounded span search avoid Float/JSON precision
+            loss and return explicit refusal states.</p>
+          <p>Filesystem traversal, normalisation, persistence, deletion policy, and UI virtualisation stay with
+            the host. SemanticCompute accelerates bounded evidence, never the decision to delete or merge.</p>
         </article>
         <article class="card release-card">
-          <span class="release-no">03 · CBOR-LD / STRUCTURED DATA</span>
-          <h3>Freeze recursive work before the device sees it.</h3>
-          <p>Twelve exact-integer families accelerate bounded spans, scans, codecs and flat validation plans.
-            Recursive loading, mutable contexts, allocation policy and rich diagnostics remain with the CPU
-            reference where their semantics can be inspected.</p>
-          <p>The flat CDDL benchmark processes 32K documents at 136.0M elements/s and 4.93× its matching CPU
-            oracle on the release machine. That result applies to the bounded plan, not arbitrary document I/O.</p>
+          <span class="release-no">03 · MCP / LIVE / DOCKER</span>
+          <h3>The same proof surface reaches every serious agent.</h3>
+          <p>One validated MCPB manifest advertises all 20 tools to Claude, Codex, Gemini, and editor agents. A
+            licensed non-root Docker MCP image carries the exact source commit, a persistent device identity, SBOM,
+            provenance, and a signed multi-architecture digest.</p>
+          <p>The bounded Live service and D1 control plane are runtime-tested locally. The public browser remains
+            disabled until a pinned hosted runner produces its own canary receipt.</p>
         </article>
       </div>
 
-      <div class="family-panel" aria-label="The twelve structured-data families in SemanticCompute 1.22.1">
-        <p class="label">All 12 structured-data families</p>
+      <div class="family-panel" aria-label="Selected verified additions in SemanticCompute 1.23.0">
+        <p class="label">1.23 evidence and distribution additions</p>
         <div class="family-cloud" role="list">
           <span role="listitem">SHA-256 variable spans</span>
           <span role="listitem">byte diff + first mismatch</span>
@@ -674,16 +676,70 @@
           <span role="listitem">frozen context/type probe</span>
           <span role="listitem">whole-document plan</span>
           <span role="listitem">CDDL flat validation VM</span>
+          <span role="listitem">APFS metadata checksum</span>
+          <span role="listitem">variable-span overlap</span>
+          <span role="listitem">CSR graph components</span>
+          <span role="listitem">irregular growth evidence</span>
+          <span role="listitem">commercial entitlement gate</span>
+          <span role="listitem">bounded Live byte parity</span>
+          <span role="listitem">licensed Docker MCP</span>
         </div>
       </div>
 
-      <div class="release-proof" role="list" aria-label="SemanticCompute 1.22.1 release proof">
-        <span role="listitem"><b class="ok">TAGGED</b>source f7dcfa2</span>
-        <span role="listitem"><b>LEGACY CUT</b>executables unavailable</span>
+      <div class="release-proof" role="list" aria-label="SemanticCompute 1.23.0 release proof">
+        <span role="listitem"><b class="ok">TAGGED</b>exact source commit stamped</span>
+        <span role="listitem"><b class="ok">15 ASSETS</b>native cut + evidence</span>
         <span role="listitem"><b>MACOS</b>universal · signed · notarised</span>
         <span role="listitem"><b>LINUX</b>native x86-64 + AArch64</span>
         <span role="listitem"><b>SUPPLY CHAIN</b>SHA-256 · SBOM · notice</span>
       </div>
+    </div>
+  </section>
+
+  <!-- SEMANTICCOMPUTE LIVE -->
+  <section id="live">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Public control plane · execution gate closed pending hosted runner</p>
+        <h2>The trial front door is live. It will not imply that the runner is.</h2>
+        <p class="lead"><code>semanticcompute-live</code> exposes a bounded, bearer-protected
+          <code>POST /v1/check/bytes</code> endpoint. It runs the exact Compatibility Doctor, returns the first
+          differing byte, and records service, engine and build identity in a versioned receipt. A Cloudflare
+          Worker/D1 front door now issues bounded trial tokens, reserves one credit, forwards to that Swift
+          process, and returns the receipt. The complete local Worker → D1 → runner path passes; the public browser
+          stays disabled until a hosted runner has produced its own canary receipt.</p>
+      </div>
+      <div class="grid cols-3">
+        <article class="card release-card">
+          <span class="release-no">01 · LOCAL E2E EXECUTED</span>
+          <h3>Exact byte evidence from a real request.</h3>
+          <p>The client supplies canonical Base64 reference and candidate bytes. The service refuses unknown
+            fields and oversized input, then reports compatibility, compared bytes, mismatch count and first
+            mismatch offset.</p>
+        </article>
+        <article class="card release-card">
+          <span class="release-no">02 · IDENTIFIED</span>
+          <h3>The service and engine keep separate identities.</h3>
+          <p>Every receipt carries <code>serviceVersion</code>, <code>engineVersion</code>,
+            <code>engineBuildCommit</code>, execution target and request digest, so a deployment cannot silently
+            redefine the engine result.</p>
+        </article>
+        <article class="card release-card">
+          <span class="release-no">03 · CONTROL PLANE DEPLOYED</span>
+          <h3>Hash-only trial tokens and idempotent credits.</h3>
+          <p>D1 stores token hashes and expiring limits. Executed compatible and incompatible results both cost one credit;
+            unavailable or malformed runner responses are refunded. Cloudflare's permissive rate limiter is used
+            for abuse control, while the durable ledger remains the accounting source.</p>
+        </article>
+      </div>
+      <div class="code-block"><span class="c"># Public status — execution remains gated</span>
+curl https://semanticcompute-trial.douglas-57d.workers.dev/v1/health</div>
+      <p style="color:var(--text-dim); font-size:0.875rem; margin-top:14px">
+        The Worker, secrets and migrated D1 ledger are publicly deployed. Health reports
+        <code>control-plane-only</code>: Cloudflare refused the CPU Container rollout because Containers require
+        Workers Paid. No public runner execution or chargeable public receipt is claimed. Signed receipts and
+        controlled GPU runners remain later gates.
+      </p>
     </div>
   </section>
 
@@ -823,6 +879,76 @@
     </script>
   </section>
 
+  <!-- VISUAL PROOF -->
+  <section id="visual-proof" class="band-tint">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Proof in pictures · recorded, illustrative and pending states stay distinct</p>
+        <h2>See the divergence, its cause, and the re-verification.</h2>
+        <p class="lead">A plausible image can still violate its numerical contract. These labs expose the
+          reference, candidate, residual, boundary rule and tolerance together. Each page identifies whether
+          it is replaying a deterministic illustration, reporting a captured local run, or waiting for a
+          consumer execution receipt.</p>
+      </div>
+
+      <div class="grid cols-3">
+        <article class="card">
+          <span class="kicker">Interactive illustration</span>
+          <h3>Inspect every channel and tolerance.</h3>
+          <p>Switch between candidate, reference and deviation views; compare exact, ULP and mixed tolerance
+            policies; then download the deterministic fixture statistics. This browser lab demonstrates the
+            reporting model and does not assert that a GPU ran.</p>
+          <div class="cta-row" style="margin-top:18px">
+            <a class="btn primary" href="image-parity-lab.html">Open image parity lab →</a>
+          </div>
+        </article>
+
+        <article class="card" style="border-left:3px solid var(--signal)">
+          <span class="kicker">Recorded 1.20.0 statistics · deterministic replay</span>
+          <h3>One boundary defect: 368 failures → 0.</h3>
+          <p>A 48 × 48 SeparableConv2D fixture makes implicit zero padding visible against the declared
+            clamp-to-edge contract. The page preserves the historical engine version and separates its
+            recorded family/MCP statistics from the explanatory browser canvases.</p>
+          <div class="release-proof" aria-label="Recorded image parity result">
+            <span><b>Before</b>368 failing pixels</span>
+            <span><b>After</b><span class="ok">0 failing pixels</span></span>
+            <span><b>Max |Δ|</b>0.212988 → 1.192e−7</span>
+            <span><b>Boundary</b>zero → clamp</span>
+            <span><b>Scope</b>correctness, not speed</span>
+          </div>
+          <div class="cta-row" style="margin-top:18px">
+            <a class="btn primary" href="image-parity-case-study.html">Open recorded case study →</a>
+            <a class="btn ghost" href="receipts/image-boundary-1.20.0.json">Receipt JSON →</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="kicker">Consumer protocol · receipt pending</span>
+          <h3>DICOM morphology without a clinical claim.</h3>
+          <p>A public synthetic mask specifies the CPU reference, requested Metal route, exact binary residual,
+            fallback disclosure and timing scope. It remains visibly pending until AssistantApp exports the
+            first completed runtime receipt.</p>
+          <div class="cta-row" style="margin-top:18px">
+            <a class="btn primary" href="dicom-parity-lab.html">Open DICOM protocol →</a>
+            <a class="btn ghost" href="receipts/dicom-morphology-receipt-template.json">Blank receipt →</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="card" style="margin-top:18px; border-left:3px solid var(--diverge)">
+        <span class="kicker">Local engineering evidence · not 1.23 release proof</span>
+        <h3>Keep the wins, losses and unrun consumer fields together.</h3>
+        <p>The extended ledger reports release-mode local family measurements from <code>HEAD 55ae773</code>
+          plus a recorded dirty-source digest, including faster, slower and parity-preserving outcomes. Its
+          MacResilience after-column remains empty until the same 36-checkout fixture is replayed against an
+          identified build.</p>
+        <div class="cta-row" style="margin-top:18px">
+          <a class="btn ghost" href="engineering-evidence.html">Open local evidence ledger →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- KILL SHOT -->
   <section id="contract" class="band-ink">
     <div class="wrap">
@@ -835,10 +961,10 @@
           the target is chosen only at the final emit. The parity contract, by target: <b>Metal and portable C</b> execute the full family suite on-host,
           diffed against the CPU truth; <b>WGSL/WebGPU</b> is validated on every specimen by a real WebGPU front end
           and executed on-device for the affine and matmul kernels (full-family WGSL execution in progress);
-          <b>CUDA</b> is emitted by the core and <em>executed by the optional NVIDIA runner</em> — 16 on-device
-          parity comparisons per board (odd extents, the folded-4D dispatch, branches, NaN/±∞ semantics, uint
-          marshalling, loops, and the float-vector layer with an association-discriminating dot), run twice on
-          independent GPUs under a stated no-fast-math contract, with the
+          <b>CUDA</b> is emitted by the core and <em>executed by the optional NVIDIA runner</em> — 17 tests across
+          three suites on an RTX 4070 Ti SUPER at source checkpoint <code>f183b0d</code>, covering odd extents,
+          folded-4D dispatch, branches, NaN/±∞ semantics, uint marshalling, loops, and the float-vector layer under
+          a stated no-fast-math contract. Earlier RTX 5080 and RTX 5060 Ti runs provide historical device breadth. The
           <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/docs/cuda-parity-evidence.txt" style="color:inherit">evidence log published</a>
           (and the GPU-free <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/docs/cuda-compile-gate.txt" style="color:inherit">NVRTC compile-gate log</a> beside it). Verified for
           the covered specimens on recorded configurations — the core itself ships no CUDA runtime, and says so.</p>
@@ -887,9 +1013,10 @@
           <span class="kicker">Proven, not asserted</span>
           <h3>Passes are on-device parity tests</h3>
           <p>The compiler's optimisation passes are verified semantics-preserving by running before/after on the
-            GPU and comparing bit-for-bit. 1,335 tests across 286 suites, green on macOS; three executed
-            backends in-core (Metal, C, WebGPU) plus the CUDA runner's historical on-device matrix — 16 tests per
-            GPU, run on two boards. A fresh NVIDIA run is still required for the 1.22 release.</p>
+            GPU and comparing bit-for-bit. 1,385 tests are green on macOS (1,374 across 294 Swift Testing suites,
+            plus 11 XCTest cases); three backends execute in-core (Metal, C, WebGPU). The optional CUDA runner has 17 tests across three suites recorded green on
+            an RTX 4070 Ti SUPER at source checkpoint <code>f183b0d</code>. Source added after that checkpoint must
+            receive its own NVIDIA run before 1.23 is cut.</p>
         </div>
       </div>
 
@@ -950,34 +1077,34 @@
     <div class="wrap">
       <div class="sec-head">
         <p class="eyebrow">The substrate · grown by consumer demand</p>
-        <h2>183 kernel families — each one carrying its own proof.</h2>
+        <h2>188 kernel families — each one carrying its own proof.</h2>
         <p class="lead">A family is not a kernel in a zip: it is a CPU reference, a stated contract, and a GPU
           lowering that must agree — under a tolerance that is <em>measured and justified</em>, never inherited.
           Four gates hold the library honest: a symbol index in which every kernel-emitting implementation is
-          claimed exactly once, a compile sweep across all 384 programs, a catalogue pin a new family cannot
+          claimed exactly once, a compile sweep across all 391 programs, a catalogue pin a new family cannot
           dodge, and the parity suite itself. A family lands only when a real pipeline measured the need —
           and ships only when every gate passes.</p>
       </div>
 
       <div class="lib-grid">
         <div>
-          <div class="kindbars" aria-label="Family count by kind, 183 total">
+          <div class="kindbars" aria-label="Family count by kind, 188 total">
             <div class="kindbar" style="--w:100%"><span>signal &amp; DSP</span><span class="track"><span class="fill"></span></span><span class="n">61</span></div>
-            <div class="kindbar" style="--w:39%"><span>reduction</span><span class="track"><span class="fill"></span></span><span class="n">24</span></div>
+            <div class="kindbar" style="--w:41%"><span>reduction</span><span class="track"><span class="fill"></span></span><span class="n">25</span></div>
             <div class="kindbar" style="--w:41%"><span>linear algebra</span><span class="track"><span class="fill"></span></span><span class="n">22</span></div>
             <div class="kindbar" style="--w:26%"><span>pointwise</span><span class="track"><span class="fill"></span></span><span class="n">16</span></div>
             <div class="kindbar" style="--w:25%"><span>stencil</span><span class="track"><span class="fill"></span></span><span class="n">13</span></div>
             <div class="kindbar" style="--w:19%"><span>morphology</span><span class="track"><span class="fill"></span></span><span class="n">11</span></div>
             <div class="kindbar" style="--w:17%"><span>sampling</span><span class="track"><span class="fill"></span></span><span class="n">9</span></div>
-            <div class="kindbar" style="--w:11%"><span>indexing</span><span class="track"><span class="fill"></span></span><span class="n">7</span></div>
+            <div class="kindbar" style="--w:15%"><span>indexing</span><span class="track"><span class="fill"></span></span><span class="n">9</span></div>
             <div class="kindbar" style="--w:10%"><span>interpolation</span><span class="track"><span class="fill"></span></span><span class="n">5</span></div>
             <div class="kindbar" style="--w:10%"><span>data movement</span><span class="track"><span class="fill"></span></span><span class="n">6</span></div>
             <div class="kindbar" style="--w:6%"><span>normalisation</span><span class="track"><span class="fill"></span></span><span class="n">3</span></div>
-            <div class="kindbar" style="--w:10%"><span>scan</span><span class="track"><span class="fill"></span></span><span class="n">6</span></div>
+            <div class="kindbar" style="--w:13%"><span>scan</span><span class="track"><span class="fill"></span></span><span class="n">8</span></div>
 
           </div>
           <p style="margin-top:18px;color:var(--text-dim);font-size: 0.8125rem;max-width:52ch">Counts are the
-            shipped catalogue at v1.22.1, pinned by a test — the page cannot claim families the binary does not
+            1.23.0 catalogue, pinned by a test — the page cannot claim families the source does not
             carry. Browse them from any MCP client: <code style="font-family:var(--font-mono);font-size:.9em">sc_list_families</code>
             returns each family's reference, contract and lowering signatures.</p>
         </div>
@@ -1004,12 +1131,21 @@
               resampling with the ESS gate that decides <em>whether</em> to resample at all.</p>
           </div>
           <div class="card lanecard">
-            <span class="new">current · v1.22</span>
+            <span class="new">carried forward · v1.22</span>
             <span class="kicker">CBOR-LD &amp; structured data</span>
             <h3>Recursive documents, bounded before dispatch</h3>
             <p>Twelve exact-integer families flatten recursive values under explicit limits, validate UTF-8 and
               CBOR structure, order canonical keys, hash bytes, encode varints and run bounded CDDL checks — while
               context loading, dynamic maps and diagnostic construction stay with the CPU reference.</p>
+          </div>
+          <div class="card lanecard">
+            <span class="new">current · v1.23</span>
+            <span class="kicker">Storage &amp; code evidence</span>
+            <h3>Exact candidates, with refusal built in</h3>
+            <p>Variable-span set overlap keeps exact numerators and denominators; sparse assignment keeps each
+              UInt64 cost component explainable; CSR analysis exposes WCC/SCC, cycles and topological strata;
+              irregular-time growth detection abstains when coverage, identity, timing or counters stop being
+              comparable. These are evidence surfaces, never deletion or merge decisions.</p>
           </div>
           <div class="card lanecard">
             <span class="kicker">Audio &amp; onset</span>
@@ -1031,21 +1167,23 @@
           <div class="sec-head" style="margin-bottom:24px">
             <p class="eyebrow">Release artifacts · licence controlled</p>
             <h2>Give every serious coding agent the same numerical proof tools.</h2>
-            <p class="lead">The complete 1.22.1 distribution ships the MCP server and CLI as signed, notarised
+            <p class="lead">The complete 1.23.0 distribution ships the MCP server, parity CLI, and Live service as signed, notarised
               universal macOS binaries and native x86-64 + AArch64 Linux archives. Every binary carries the exact
               tagged source commit; the release also includes checksums, an SBOM, licence notice and CUDA evidence.
-              The published 1.22.1 binaries predate technical entitlement enforcement, so new installation is
-              paused while the signed, licence-gated 1.23 distribution is prepared. Its CLI, MCP, and Live compute
-              operations require an expiring, revocable trial or subscription key. The source is closed; serious
-              evaluators can review it under NDA.</p>
+              This release checks an expiring, revocable entitlement before CLI, MCP, or Live
+              compute operations. Bounded trial keys can carry job and installation limits; paid keys follow their
+              subscription. The source is closed; serious evaluators can review it under NDA. Earlier downloaded
+              artifacts predate this gate and remain governed by their licence terms.</p>
           </div>
           <div class="code-block">
-<span class="c"># Request a bounded trial or paid key; legacy downloads are paused</span>
-douglas@entertrainment.co.uk
-<span class="c"># Subject: SemanticCompute licensed beta</span></div>
+<span class="c"># Licensed distribution: set the key delivered after trial approval or purchase</span>
+export SEMANTICCOMPUTE_LICENCE_KEY=<span class="s">sc_lic_…</span>
+<span class="c"># Then verify + install + register with Claude Code, Codex and Gemini CLI</span>
+curl -fsSL raw.githubusercontent.com/entertrainment/<span class="s">semanticcompute-dist</span>/main/install.sh | bash
+<span class="c"># Claude Desktop: just double-click semanticcompute-mcp.mcpb (Settings ▸ Extensions)</span></div>
           <p style="color:var(--text-dim); font-size: 0.8125rem; margin-top:10px">
-            Release history and non-executable evidence remain in <a href="https://github.com/entertrainment/semanticcompute-dist/releases" style="color:var(--diverge)">Releases</a>.
-            Read the <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/RELEASE_NOTES_1.22.1.md" style="color:var(--diverge)">detailed 1.22.1 notes</a>
+            Prefer a manual binary? Grab one from <a href="https://github.com/entertrainment/semanticcompute-dist/releases" style="color:var(--diverge)">Releases</a>.
+            Read the <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/RELEASE_NOTES_1.23.0.md" style="color:var(--diverge)">detailed 1.23.0 notes</a>
             or the <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/CHANGELOG.md" style="color:var(--diverge)">complete changelog</a>.
             Per-client setup (Claude Desktop · Claude Code · Codex · Gemini · VS Code · Cursor · Windsurf) is in the
             <a href="https://github.com/entertrainment/semanticcompute-dist/blob/main/docs/INSTALL-MCP.md" style="color:var(--diverge)">install guide</a>.</p>
@@ -1055,6 +1193,7 @@ douglas@entertrainment.co.uk
             the fix and re-verifies; a generate → verify → prescribe → re-verify loop closes automatically:</p>
           <div class="tools">
             <span class="tool"><b>sc_check_parity</b></span>
+            <span class="tool"><b>sc_check_integer_parity</b></span>
             <span class="tool"><b>sc_validate_metal_texture</b></span>
             <span class="tool"><b>sc_diagnose_divergence</b></span>
             <span class="tool"><b>sc_verification_report</b></span>
@@ -1065,6 +1204,14 @@ douglas@entertrainment.co.uk
             <span class="tool"><b>sc_suggest_families</b></span>
             <span class="tool"><b>sc_detect_in_code</b></span>
             <span class="tool"><b>sc_version</b></span>
+            <span class="tool"><b>sc_set_overlap</b></span>
+            <span class="tool"><b>sc_match_assignment</b></span>
+            <span class="tool"><b>sc_graph_components</b></span>
+            <span class="tool"><b>sc_graph_layout</b></span>
+            <span class="tool"><b>sc_growth_anomalies</b></span>
+            <span class="tool"><b>sc_cbor_preflight</b></span>
+            <span class="tool"><b>sc_validate_cddl</b></span>
+            <span class="tool"><b>sc_apfs_checksum</b></span>
           </div>
           <p style="color:var(--text-dim); font-size: 0.8125rem; margin-top:12px">
             Plus MCP <b>resources</b> — the family catalogue and the failure lab as browsable context
@@ -1075,13 +1222,12 @@ douglas@entertrainment.co.uk
         <div class="grid" style="gap:16px">
           <div class="card">
             <span class="kicker">Claude · Codex · Gemini · editor agents</span>
-            <h3>One server, eleven proof tools</h3>
+            <h3>One server, twenty bounded evidence tools</h3>
             <p>The published verification substrate as signed, notarised macOS binaries (+ x86-64 &amp; arm64 Linux) — the parity doctor, the cause classifier, ULP
               tolerance, and measured accuracy vs a higher-precision truth. The installer registers the same
-              checksum-and-signature-verified executable with Claude Code, Codex and Gemini CLI, replacing stale
-              registrations that point at an older version; Claude Desktop uses the bundled MCPB, while VS Code,
-              Cursor and Windsurf use their native local-MCP setup paths.
-              New distributions require an active bounded trial or subscription key; source review is available under NDA.</p>
+              checksum-verified executable with Claude Code, Codex and Gemini CLI; Claude Desktop uses the bundled
+              MCPB, while VS Code, Cursor and Windsurf use their native local-MCP setup paths.
+              New distribution builds require an active trial or subscription key; source review is available under NDA.</p>
           </div>
           <div class="card">
             <span class="kicker">Something to break</span>
@@ -1105,7 +1251,7 @@ douglas@entertrainment.co.uk
 <footer>
   <div class="wrap row">
     <span>© 2026 Douglas Horner (Entertrainment) · commercial licence</span>
-    <span>SemanticCompute v1.22.1 · Metal · Portable&nbsp;C · WebGPU · CUDA&nbsp;(recorded device parity)</span>
+    <span>SemanticCompute v1.23.0 · Metal · Portable&nbsp;C · WebGPU · CUDA&nbsp;(recorded device parity)</span>
   </div>
 </footer>
 
@@ -1123,9 +1269,9 @@ douglas@entertrainment.co.uk
     // [css-class, text] — every line verbatim from the published log.
     var LINES = [
       ['head', '=== provenance ==='],
-      ['dim',  'git: 9a56c72 · NVRTC: --fmad=false --prec-sqrt=true --prec-div=true --ftz=false'],
+      ['dim',  'git: f183b0d · source-free Linux test payload'],
       ['head', '=== GPU / driver ==='],
-      ['dim',  'GPU 0: NVIDIA GeForce RTX 5080    GPU 1: NVIDIA GeForce RTX 5080'],
+      ['dim',  'GPU 0: NVIDIA GeForce RTX 4070 Ti SUPER · driver 610.43.02 · compute 8.9'],
       ['dim',  'CUDA-BOUND-DEVICE: ordinal 0'],
       ['pass', '✔ affine: CPU↔CUDA parity is bit-exact (.exact)'],
       ['pass', '✔ 4D 3×4×2×5: the depth×time fold recovers the RIGHT (z,t) for all 120 elements (.exact)'],
@@ -1134,9 +1280,6 @@ douglas@entertrainment.co.uk
       ['pass', '✔ fmin/fmax skip NaN operands on device exactly as the CPU reference does (.exact)'],
       ['pass', '✔ float3 dot association is pinned ON DEVICE: 2²⁴+1+1 discriminates fused/reassociated evaluation (.exact)'],
       ['pass', '✔ float3 normalize on device: v/sqrtf(dot(v,v)) is bit-exact — every op correctly rounded (.exact)'],
-      ['pass', '✔ Test run with 17 tests in 3 suites'],
-      ['head', '=== independent second-device check: full matrix again on ordinal 1 of 2 ==='],
-      ['dim',  'CUDA-BOUND-DEVICE: ordinal 1'],
       ['pass', '✔ Test run with 17 tests in 3 suites'],
       ['final','=== CUDA parity EXECUTED on device ===']
     ];

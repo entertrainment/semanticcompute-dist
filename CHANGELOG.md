@@ -6,6 +6,85 @@ All notable changes to SemanticCompute are recorded here. The format follows
 governance test (`GovernanceGateTests`) and the CI doc-sync step both enforce it, so version notes can never
 ship out of step with the code.
 
+## [1.23.0] — 2026-09-17
+
+### Added
+
+- **Fail-closed licensing for commercial distribution binaries.** The release builds of `semanticcompute-parity`,
+  `semanticcompute-mcp`, and `semanticcompute-live` now require an active online licence checkout before executing
+  paid operations. A D1 entitlement ledger stores only peppered key and device hashes, enforces expiry, plan,
+  credits and device ceilings, makes retries idempotent, and supports immediate administrative revocation. Source
+  builds remain available for development under the repository licence. Release scripts and tag CI compile the
+  gate with `SC_COMMERCIAL_DISTRIBUTION` and run a negative smoke test that proves every shipped executable fails
+  closed when `SEMANTICCOMPUTE_LICENCE_KEY` is absent. This controls new distribution builds; it cannot revoke
+  copies of the legacy 1.22.1 and earlier binaries that have already been downloaded.
+
+- **Complete sales-assisted entitlement lifecycle.** The Cloudflare control plane can now inspect an entitlement,
+  extend its expiry, add bounded execution credits, change its plan or device ceiling, explicitly reactivate it,
+  and reset hashed device bindings for a replacement machine. Issue, renewal, disable, and device-reset actions
+  are written as administrative audit events. The API never returns the stored key hash and still
+  cannot recover a plaintext key after its one-time issue response.
+
+- **Licensed agent distribution through MCPB and Docker MCP.** Both MCPB build paths now render one schema-0.3
+  manifest, declare the sensitive required licence-key input, enumerate the complete 20-tool MCP surface, and
+  validate the archive before release. The Docker MCP image is compiled with the commercial distribution gate,
+  stamps the exact 40-character source commit, persists only a random installation identity in its named volume,
+  sends it only to the licence service where it is hashed, and grants outbound
+  access only to the licence-checkout host through the Docker MCP catalog entry.
+
+- **Token-metered Cloudflare trial control plane.** Added a Worker/D1 front door for the bounded Live byte-parity
+  service: hash-only trial-token storage, expiring credit limits, atomic credit reservation, idempotent replay,
+  per-token abuse rate limiting, strict fixture limits, one-time administration token issuance, and a same-origin
+  browser client. Visitor tokens are replaced with a separate runner credential before forwarding; failed or
+  malformed runner responses refund their reservation, while compatible and incompatible executed receipts both
+  consume one credit. Twenty isolated Worker tests and a real local Wrangler + D1 + Swift-runner test pass. The
+  Worker, secrets and migrated D1 ledger are publicly deployed with execution visibly gated off; Cloudflare rejected
+  the CPU Container rollout because the account is not on Workers Paid, so no hosted execution or charging claim is made.
+
+- **Three exact complete-audit families with real Metal execution.** Added a batched source-line lexical
+  evidence scan over explicit byte-rule tables, segmented stable UInt64 ordering ranks with deterministic path
+  and input-order tie breaks, and batched exact search over host-normalised byte spans. Every lane reports
+  malformed spans or tables explicitly, carries an exact-integer semantic contract, is registered in family
+  discovery and the compile sweep, and has bit-exact CPU-versus-Metal parity coverage. Filesystem traversal,
+  Unicode normalisation, persistence, deletion decisions and UI virtualisation remain explicit host work.
+
+- **MacResilience exact-evidence family and typed MCP lane.** Added exact variable-span sorted-set overlap with
+  CPU/Metal UInt32 parity; a sparse host-only LinearAssignment variant with ordered UInt64 cost components and an
+  exhaustive small-graph oracle; stable CSR WCC/SCC, condensation, topological strata and cycle witnesses; and an
+  irregular-time growth-burst evidence analysis with explicit coverage/identity/gap/decrease abstentions.
+  GraphAdjacencyCSR adds exact UInt32 degree and neighbor APIs, contracts, and Metal lowerings while preserving
+  the shipped Float API and binding layout. MCP adds bounded typed adapters for overlap, assignment, graph components/layout, growth evidence,
+  CBOR preflight, CDDL validation and APFS checksum inspection. `sc_detect_in_code` now carries rule-set digest,
+  version/build, exact matched line, family symbols and an explicit abstention reason.
+
+- **SemanticCompute Live local beta and first independent consumer gate.** Added the `semanticcompute-live`
+  executable with a loopback-default, bearer-protected, bounded `POST /v1/check/bytes` endpoint. It strictly
+  validates the JSON/Base64 envelope, runs the existing exact byte comparator, localises the first mismatch, and
+  returns the versioned `semanticcompute.live.byte-parity-receipt/1` schema with service/engine/build identity and
+  a deterministic digest-only attestation. The published Swift-CBORLD opt-in live test now passes end to end
+  against the real process. Digest-only is deliberately not described as authentication; hosted signing,
+  GitHub identity, queues, metering, GPU orchestration, and deployment remain separate gates. See
+  `LIVE_VERIFICATION.md`.
+- **Exact APFS metadata Fletcher-64 validation for MacResilience.** Added a deterministic CPU reference and a
+  batched Metal lowering that exclude the stored eight-byte checksum field, consume little-endian UInt32 words,
+  emit the computed checksum as exact low/high words, and return explicit valid, mismatch, invalid-span, or
+  invalid-length status for every object block. The semantic contract is exact-integer and the catalogue entry is
+  wired through discovery, symbol indexing, compile sweep, and CPU/Metal parity tests.
+- **An exact UInt64-pair evidence boundary.** `SLUInt64Pair` gives storage tooling a stable two-UInt32 ABI, the
+  compatibility doctor compares pair arrays bit-for-bit, and MCP exposes `sc_check_integer_parity`. Checksums,
+  byte counts, and disk offsets no longer need to pass through JSON/Double or inherit a floating-point tolerance.
+  See `MACRESILIENCE_AGENT_NOTE.md` for the consumer recipe and the performance gates on future interval/tree work.
+
+### Fixed
+
+- **Batched correlation now exposes the same canonical binding names at discovery and execution.** The family
+  symbol index mirrors `ref`, `signals`, `refLength`, `signalLength`, `numLags`, and `batchCount`, matching the
+  perfusion-safe CPU reference and Metal lowering. Correlation roles remain explicit, so a DICOM perfusion caller
+  cannot silently reverse the reference curve and signal batch.
+
+- **Whole-token family discovery is catalogue complete.** `sc_list_families` now carries the complete token
+  classification needed by consumer agents instead of omitting the registered family from discovery output.
+
 ## [1.22.1] — 2026-09-13
 
 ### Changed
@@ -1876,7 +1955,8 @@ stated tolerance (`SLCompatibilityDoctor`).
   `normalize` the `SLIntrinsic` mirrors, and Apple APIs (`vDSP.hanningDenormalized`, `String.capitalized`,
   `JSONSerialization`).
 
-[Unreleased]: https://github.com/entertrainment/semanticcompute/compare/v1.22.1...HEAD
+[Unreleased]: https://github.com/entertrainment/semanticcompute/compare/v1.23.0...HEAD
+[1.23.0]: https://github.com/entertrainment/semanticcompute/compare/v1.22.1...v1.23.0
 [1.22.1]: https://github.com/entertrainment/semanticcompute/compare/v1.22.0...v1.22.1
 [1.22.0]: https://github.com/entertrainment/semanticcompute/compare/v1.21.1...v1.22.0
 [1.21.1]: https://github.com/entertrainment/semanticcompute/compare/v1.21.0...v1.21.1
@@ -1891,8 +1971,8 @@ stated tolerance (`SLCompatibilityDoctor`).
 ---
 
 <!-- FINDER-STATUS:BEGIN (auto) -->
-> 📊 **Doc status:** 🟢 Complete · **100%** complete · top = 1.22.1; links and SLVersion are governance-aligned
-> <sub>Finder tags: `Complete`, `▓▓▓▓ 75–100%` · auto-assessed 2026-09-13</sub>
+> 📊 **Doc status:** 🟢 Complete · **100%** complete · Unreleased entitlement service and fail-closed distribution gate are recorded.
+> <sub>Finder tags: `Complete`, `▓▓▓▓ 75–100%` · auto-assessed 2026-09-16</sub>
 <!-- AGENTS: after materially changing this module, refresh status+tag → `python3 Tools/MarkdownStatusQuickLook/tagkit.py set <THIS_FILE> <status> <percent> "<note>"` (status: complete|complete_improvable|in_progress|not_done|superseded|irrelevant). Protocol: Tools/MarkdownStatusQuickLook/DOC-STATUS-AGENTS.md -->
-<!-- FS-HASH:9da99c6b -->
+<!-- FS-HASH:bf6d5c1a -->
 <!-- FINDER-STATUS:END -->

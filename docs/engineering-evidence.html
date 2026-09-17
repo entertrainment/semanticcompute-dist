@@ -1,0 +1,2338 @@
+<!doctype html>
+<html lang="en" data-visualize-standalone>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>SemanticCompute — Local Engineering Evidence Ledger</title>
+<style>:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --icon-size: 16px;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --corner-shape: round;
+  --radius: var(--border-radius-lg, 10px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Cpath d='M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z'/%3E%3C/svg%3E");
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html > body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: var(--visualize-paint-gutter, 0px);
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans) !important;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive > .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align="right"]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align="center"]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: var(--corner-shape);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget > :not(.card, .progress) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+hr {
+  width: 100%;
+  height: 1px;
+  margin-block: 6px;
+  border: 0;
+  background: var(--border);
+}
+
+.nav {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.progress {
+  display: flex;
+  height: 8px;
+  margin-block: calc((var(--line-height-normal, 1.5em) - 8px) / 2);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+}
+
+.progress-bar:only-child {
+  border-radius: var(--radius-full);
+}
+
+.progress-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border: 0;
+  background: var(--viz-series-1);
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls > .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls > .form-label > :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.nav-link,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn,
+.nav-link {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover,
+.nav-link:not(:disabled):not([aria-disabled="true"]):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.nav-pills .nav-link {
+  min-width: 0;
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.nav-justified .nav-link {
+  flex: 1 1 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.nav-pills .nav-link.active {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+.btn:disabled,
+.nav-link:disabled,
+.nav-link[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type="file"] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type="file"]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type="file"]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type="color"] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: var(--corner-shape);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type="checkbox"]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: "";
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type="radio"]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: "";
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+  [aria-pressed="true"],
+  [aria-selected="true"],
+  .is-selected
+) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed="true"], [aria-selected="true"], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible,
+.nav-link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .btn,
+  .nav-link,
+  .form-control,
+  .form-select {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Keep small-screen WebKit from zooming when a text field receives focus. */
+  .form-control,
+  .form-select {
+    font-size: max(16px, var(--font-size-normal));
+  }
+
+  .form-control[type="file"]::file-selector-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control-color[type="color"] {
+    width: 44px;
+    height: 44px;
+  }
+
+  .form-control:is(
+    [type="date"],
+    [type="datetime-local"],
+    [type="month"],
+    [type="time"],
+    [type="week"]
+  ) {
+    min-width: 0;
+    max-width: 100%;
+    padding-block: 8px;
+  }
+
+  .form-check {
+    min-height: 44px;
+    padding-inline: 15px;
+  }
+
+  .form-check-input {
+    position: relative;
+  }
+
+  .form-check-input::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: "";
+    transform: translate(-50%, -50%);
+  }
+
+  .form-check-label {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .form-range {
+    height: 44px;
+    touch-action: pan-y;
+  }
+
+  .form-range::-webkit-slider-runnable-track {
+    height: 44px;
+  }
+
+  .form-range::-moz-range-track {
+    height: 44px;
+  }
+
+  .form-range::-webkit-slider-thumb {
+    margin-top: 12px;
+  }
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget > svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: var(--icon-size) !important;
+  height: var(--icon-size) !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html>body{padding:0}</style>
+
+<style>
+  .sc-site-strip { position: sticky; top: 0; z-index: 1000; display: flex; flex-wrap: wrap;
+    align-items: center; justify-content: space-between; gap: 10px; padding: 10px 18px;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+    background: color-mix(in srgb, Canvas 94%, transparent); color: CanvasText;
+    font: 600 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; backdrop-filter: blur(14px); }
+  .sc-site-strip a { color: inherit; text-decoration: none; }
+  .sc-site-strip a:hover, .sc-site-strip a:focus-visible { text-decoration: underline; }
+  .sc-site-links { display: flex; flex-wrap: wrap; gap: 14px; }
+  .sc-evidence-scope { margin: 14px auto; width: min(1120px, calc(100% - 32px)); padding: 10px 14px;
+    border: 1px solid #d99132; border-radius: 7px; background: color-mix(in srgb, #d99132 11%, Canvas);
+    color: CanvasText; font: 600 12px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; }
+</style>
+</head>
+<body>
+
+<nav class="sc-site-strip" aria-label="SemanticCompute evidence navigation">
+  <a href="index.html#visual-proof">← SemanticCompute</a>
+  <span class="sc-site-links">
+    <a href="image-parity-lab.html">Interactive lab</a>
+    <a href="image-parity-case-study.html">Recorded case study</a>
+    <a href="dicom-parity-lab.html">DICOM protocol</a>
+    <a href="engineering-evidence.html">Engineering evidence</a>
+  </span>
+</nav>
+<aside class="sc-evidence-scope">LOCAL ENGINEERING EVIDENCE · HEAD 55ae773 + DIRTY SNAPSHOT · MCP ENGINE 1.22.1 / BUILD COMMIT UNKNOWN · NOT A CLEAN TAG OR 1.23 RELEASE RECEIPT</aside>
+
+<div id="semanticcompute-parity-lab">
+  <style>
+    #semanticcompute-parity-lab {
+      width: 100%;
+      color: var(--foreground);
+    }
+    #semanticcompute-parity-lab * {
+      box-sizing: border-box;
+    }
+    #semanticcompute-parity-lab h1,
+    #semanticcompute-parity-lab h2,
+    #semanticcompute-parity-lab h3,
+    #semanticcompute-parity-lab p {
+      margin-top: 0;
+    }
+    #semanticcompute-parity-lab .sc-mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    #semanticcompute-parity-lab .sc-header {
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    #semanticcompute-parity-lab .sc-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted-foreground);
+    }
+    #semanticcompute-parity-lab .sc-mark {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      border-radius: 6px;
+      font-weight: 500;
+    }
+    #semanticcompute-parity-lab .sc-header h1 {
+      max-width: 820px;
+      margin: 18px 0 12px;
+    }
+    #semanticcompute-parity-lab .sc-lede {
+      max-width: 820px;
+      margin-bottom: 14px;
+      color: var(--muted-foreground);
+    }
+    #semanticcompute-parity-lab .sc-fixture {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 0;
+      color: var(--muted-foreground);
+    }
+    #semanticcompute-parity-lab .sc-fixture-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--viz-series-2);
+      flex: 0 0 auto;
+    }
+    #semanticcompute-parity-lab .sc-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      flex-wrap: wrap;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    #semanticcompute-parity-lab .sc-toolbar h2 {
+      margin: 4px 0 0;
+    }
+    #semanticcompute-parity-lab .sc-eyebrow {
+      margin-bottom: 0;
+      color: var(--muted-foreground);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    #semanticcompute-parity-lab .sc-comparison {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr);
+      gap: 26px;
+      padding: 26px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    #semanticcompute-parity-lab .sc-image-stage {
+      min-width: 0;
+    }
+    #semanticcompute-parity-lab .sc-view-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    #semanticcompute-parity-lab .sc-view-label h3,
+    #semanticcompute-parity-lab .sc-view-label p {
+      margin-bottom: 0;
+    }
+    #semanticcompute-parity-lab .sc-canvas-frame {
+      border: 1px solid var(--border);
+      background: var(--background);
+      overflow: hidden;
+    }
+    #semanticcompute-parity-lab canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      image-rendering: pixelated;
+    }
+    #semanticcompute-parity-lab .sc-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 10px;
+      color: var(--muted-foreground);
+    }
+    #semanticcompute-parity-lab .sc-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #semanticcompute-parity-lab .sc-swatch {
+      width: 10px;
+      height: 10px;
+      flex: 0 0 auto;
+    }
+    #semanticcompute-parity-lab .sc-swatch-drift {
+      background: var(--viz-series-1);
+    }
+    #semanticcompute-parity-lab .sc-swatch-diverge {
+      background: var(--viz-series-2);
+    }
+    #semanticcompute-parity-lab .sc-swatch-special {
+      background: var(--viz-series-4);
+    }
+    #semanticcompute-parity-lab .sc-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    #semanticcompute-parity-lab .sc-metric-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    #semanticcompute-parity-lab .sc-metric-strip > div {
+      min-width: 0;
+    }
+    #semanticcompute-parity-lab .sc-metric-value {
+      display: block;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      overflow-wrap: anywhere;
+    }
+    #semanticcompute-parity-lab .sc-verdict {
+      margin-top: 16px;
+      padding-left: 14px;
+      border-left: 3px solid var(--viz-series-4);
+    }
+    #semanticcompute-parity-lab .sc-verdict[data-compatible="true"] {
+      border-left-color: var(--viz-series-3);
+    }
+    #semanticcompute-parity-lab .sc-verdict strong {
+      display: block;
+      font-weight: 500;
+    }
+    #semanticcompute-parity-lab .sc-verdict p {
+      margin: 5px 0 0;
+      color: var(--muted-foreground);
+    }
+    #semanticcompute-parity-lab .sc-steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    #semanticcompute-parity-lab .sc-step {
+      padding-top: 12px;
+      border-top: 3px solid var(--border);
+    }
+    #semanticcompute-parity-lab .sc-step-observe {
+      border-top-color: var(--viz-series-2);
+    }
+    #semanticcompute-parity-lab .sc-step-diagnose {
+      border-top-color: var(--viz-series-4);
+    }
+    #semanticcompute-parity-lab .sc-step-verify {
+      border-top-color: var(--viz-series-3);
+    }
+    #semanticcompute-parity-lab .sc-step p:last-child {
+      margin-bottom: 0;
+      color: var(--muted-foreground);
+    }
+    #semanticcompute-parity-lab .sc-section {
+      padding-top: 28px;
+    }
+    #semanticcompute-parity-lab .sc-section > p {
+      max-width: 820px;
+      color: var(--muted-foreground);
+    }
+    #semanticcompute-parity-lab .sc-cause {
+      display: inline-block;
+      font-weight: 500;
+    }
+    #semanticcompute-parity-lab .sc-cause-drift {
+      color: var(--viz-series-1);
+    }
+    #semanticcompute-parity-lab .sc-cause-diverge {
+      color: var(--viz-series-2);
+    }
+    #semanticcompute-parity-lab .sc-cause-special {
+      color: var(--viz-series-4);
+    }
+    #semanticcompute-parity-lab .sc-after {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(250px, .55fr);
+      gap: 26px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    #semanticcompute-parity-lab .sc-pass {
+      align-self: stretch;
+      border-left: 3px solid var(--viz-series-3);
+      padding-left: 18px;
+    }
+    #semanticcompute-parity-lab .sc-pass-number {
+      color: var(--viz-series-3);
+      font-weight: 500;
+    }
+    #semanticcompute-parity-lab .sc-package-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 16px;
+    }
+    #semanticcompute-parity-lab .sc-action {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    #semanticcompute-parity-lab .sc-action p {
+      max-width: 750px;
+      margin-bottom: 0;
+      color: var(--muted-foreground);
+    }
+    #semanticcompute-parity-lab .sc-ledger-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    #semanticcompute-parity-lab .sc-ledger-head > div {
+      max-width: 820px;
+    }
+    #semanticcompute-parity-lab .sc-ledger-head p {
+      color: var(--muted-foreground);
+    }
+    #semanticcompute-parity-lab .sc-receipt-controls {
+      margin: 18px 0 20px;
+    }
+    #semanticcompute-parity-lab .sc-input-cell {
+      min-width: 126px;
+    }
+    #semanticcompute-parity-lab .sc-delta {
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+    #semanticcompute-parity-lab .sc-delta[data-state="match"],
+    #semanticcompute-parity-lab .sc-delta[data-state="better"] {
+      color: var(--viz-series-3);
+    }
+    #semanticcompute-parity-lab .sc-delta[data-state="different"],
+    #semanticcompute-parity-lab .sc-delta[data-state="worse"] {
+      color: var(--viz-series-4);
+    }
+    #semanticcompute-parity-lab .sc-family-heading {
+      margin-top: 28px;
+    }
+    #semanticcompute-parity-lab .sc-receipt-message {
+      min-height: 1.5em;
+      margin: 10px 0 0;
+      color: var(--muted-foreground);
+    }
+    #semanticcompute-parity-lab .sc-boundary {
+      margin: 28px 0 0;
+      padding-left: 14px;
+      border-left: 3px solid var(--border);
+      color: var(--muted-foreground);
+    }
+    @media (max-width: 820px) {
+      #semanticcompute-parity-lab .sc-comparison,
+      #semanticcompute-parity-lab .sc-after {
+        grid-template-columns: 1fr;
+      }
+      #semanticcompute-parity-lab .sc-stat-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 620px) {
+      #semanticcompute-parity-lab .sc-steps,
+      #semanticcompute-parity-lab .sc-stat-grid,
+      #semanticcompute-parity-lab .sc-metric-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <header class="sc-header">
+    <div class="sc-brand sc-mono text-small">
+      <span class="sc-mark" aria-hidden="true">=</span>
+      <span>SEMANTICCOMPUTE / IMAGE PARITY LAB</span>
+    </div>
+    <h1>The image can look right and still be numerically wrong.</h1>
+    <p class="sc-lede">Visual review establishes plausibility. SemanticCompute compares a candidate texture with an independent CPU reference, localises every failed pixel and channel, separates one-ULP drift from material divergence or special values, and rechecks the developer’s correction.</p>
+    <p class="sc-fixture sc-mono text-small"><span class="sc-fixture-dot" aria-hidden="true"></span>DETERMINISTIC ILLUSTRATIVE FIXTURE · NOT A GPU PERFORMANCE RUN</p>
+  </header>
+
+  <section class="sc-toolbar" aria-label="Image parity controls">
+    <div>
+      <p class="sc-eyebrow sc-mono text-small">One RGBA32Float texture · 256 × 144 · 147,456 channels</p>
+      <h2>Candidate output versus CPU reference</h2>
+    </div>
+    <div class="viz-controls">
+      <div>
+        <span class="form-label">Texture view</span>
+        <div class="viz-row" role="group" aria-label="Texture view">
+          <button class="btn" type="button" data-sc-view="candidate" aria-pressed="true">Candidate</button>
+          <button class="btn" type="button" data-sc-view="reference" aria-pressed="false">Reference</button>
+          <button class="btn" type="button" data-sc-view="delta" aria-pressed="false">Deviation map</button>
+        </div>
+      </div>
+      <div>
+        <span class="form-label">Tolerance</span>
+        <div class="viz-row" role="group" aria-label="Comparison tolerance">
+          <button class="btn" type="button" data-sc-tolerance="exact" aria-pressed="false">Exact</button>
+          <button class="btn" type="button" data-sc-tolerance="ulp1" aria-pressed="true">ULP(1)</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-comparison">
+    <div class="sc-image-stage">
+      <div class="sc-view-label">
+        <h3 id="sc-lab-view-title">Candidate output, visually plausible</h3>
+        <p id="sc-lab-view-meta" class="sc-mono text-small text-muted">normal image view</p>
+      </div>
+      <div class="sc-canvas-frame">
+        <canvas id="sc-lab-main-canvas" width="256" height="144" role="img" aria-label="Candidate RGBA texture"></canvas>
+      </div>
+      <div class="sc-legend sc-mono text-small" aria-label="Deviation classes">
+        <span class="sc-legend-item"><span class="sc-swatch sc-swatch-drift" aria-hidden="true"></span>one-ULP drift</span>
+        <span class="sc-legend-item"><span class="sc-swatch sc-swatch-diverge" aria-hidden="true"></span>large finite divergence</span>
+        <span class="sc-legend-item"><span class="sc-swatch sc-swatch-special" aria-hidden="true"></span>NaN / special value</span>
+      </div>
+    </div>
+
+    <aside aria-label="Parity statistics">
+      <div class="sc-stat-grid">
+        <div class="card viz-stat">
+          <span class="text-muted">Break selected contract</span>
+          <span id="sc-lab-failed" class="viz-stat-value tabular-nums">—</span>
+          <span id="sc-lab-policy" class="text-small">under ULP(1)</span>
+        </div>
+        <div class="card viz-stat">
+          <span class="text-muted">Not bit-identical</span>
+          <span id="sc-lab-exact" class="viz-stat-value tabular-nums">—</span>
+          <span class="text-small">all differing channels</span>
+        </div>
+        <div class="card viz-stat">
+          <span class="text-muted">Special failures</span>
+          <span id="sc-lab-specials" class="viz-stat-value tabular-nums">—</span>
+          <span class="text-small">NaN / infinity class</span>
+        </div>
+      </div>
+
+      <div class="sc-metric-strip sc-mono text-small" aria-label="Detailed parity metrics">
+        <div><span class="text-muted">Largest finite distance</span><span id="sc-lab-max-ulp" class="sc-metric-value">—</span></div>
+        <div><span class="text-muted">Maximum absolute delta</span><span id="sc-lab-max-abs" class="sc-metric-value">—</span></div>
+        <div><span class="text-muted">First failed channel</span><span id="sc-lab-first" class="sc-metric-value">—</span></div>
+      </div>
+
+      <div id="sc-lab-verdict" class="sc-verdict" data-compatible="false" aria-live="polite"></div>
+    </aside>
+  </section>
+
+  <section class="sc-steps" aria-label="Verification loop">
+    <article class="sc-step sc-step-observe">
+      <p class="sc-eyebrow sc-mono text-small">01 / WITHOUT SEMANTICCOMPUTE</p>
+      <h3>Inspect the output</h3>
+      <p>The image looks plausible at normal scale. Isolated bad channels, NaNs concealed by rendering and one-step rounding differences have no quantified location or contract verdict.</p>
+    </article>
+    <article class="sc-step sc-step-diagnose">
+      <p class="sc-eyebrow sc-mono text-small">02 / WITH SEMANTICCOMPUTE</p>
+      <h3>Measure and localise</h3>
+      <p>Compilation, dispatch, readback and parity become separate stages. Every channel is checked under a named policy, with the first failure, worst finite error and special-value count exposed.</p>
+    </article>
+    <article class="sc-step sc-step-verify">
+      <p class="sc-eyebrow sc-mono text-small">03 / AFTER THE FIX</p>
+      <h3>Re-verify the correction</h3>
+      <p>SC does not rewrite the shader. The developer applies the remedy, then the corrected candidate is compared against the same reference and policy.</p>
+    </article>
+  </section>
+
+  <section class="sc-section" aria-labelledby="sc-lab-diagnostics-heading">
+    <h2 id="sc-lab-diagnostics-heading">What the numbers differentiate</h2>
+    <p>Exact comparison treats any distinct Float32 bit pattern as a failure. ULP(1) accepts one representable step but never hides a NaN or a material finite divergence.</p>
+    <div class="table-responsive">
+      <table class="table table-sm" aria-label="Image parity diagnostic classes">
+        <thead>
+          <tr>
+            <th scope="col">Classified cause</th>
+            <th scope="col" class="text-end">Observed</th>
+            <th scope="col" class="text-end">Fails exact</th>
+            <th scope="col" class="text-end">Fails ULP(1)</th>
+            <th scope="col">Image reflection</th>
+          </tr>
+        </thead>
+        <tbody id="sc-lab-causes"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sc-after" aria-label="Corrected candidate result">
+    <div>
+      <div class="sc-view-label">
+        <h3>Corrected candidate after developer changes</h3>
+        <p class="sc-mono text-small text-muted">same reference · re-verified</p>
+      </div>
+      <div class="sc-canvas-frame">
+        <canvas id="sc-lab-fixed-canvas" width="256" height="144" role="img" aria-label="Corrected texture matching the CPU reference"></canvas>
+      </div>
+    </div>
+    <div class="sc-pass">
+      <p class="sc-eyebrow sc-mono text-small">RE-VERIFICATION</p>
+      <h2 id="sc-lab-after-count" class="sc-pass-number">0 diverging</h2>
+      <p>The corrected fixture is bit-identical to the trusted reference. A real receipt should also record the SC build identity, backend, precision, texture format, dimensions, tolerance and execution-stage status.</p>
+    </div>
+  </section>
+
+  <section class="sc-section" aria-labelledby="sc-lab-package-heading">
+    <p class="sc-eyebrow sc-mono text-small">CURRENT SOURCE SNAPSHOT</p>
+    <h2 id="sc-lab-package-heading">Package assistance before and after the extras landed locally</h2>
+    <div class="sc-package-facts" aria-label="SemanticCompute source facts">
+      <span class="viz-badge">188 catalogue families</span>
+      <span class="viz-badge">20 MCP tools</span>
+      <span class="viz-badge">Exact UInt64-pair parity</span>
+      <span class="viz-badge">7 new families runtime-validated locally</span>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-sm" aria-label="Current and future SemanticCompute assistance">
+        <thead>
+          <tr>
+            <th scope="col">Lane</th>
+            <th scope="col">Without SC</th>
+            <th scope="col">Current SC</th>
+            <th scope="col">After requested additions</th>
+            <th scope="col">Before/after statistic</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Image parity</td>
+            <td>Plausibility only</td>
+            <td>Location, channel, ULP, absolute error and stage receipt</td>
+            <td>Same verified path; storage/code families do not alter pixels</td>
+            <td>Failed channels, max ULP, max absolute delta</td>
+          </tr>
+          <tr>
+            <td>Disk history</td>
+            <td>Exact raw observations</td>
+            <td>Exact UInt64-pair cross-check</td>
+            <td>Irregular-time growth-onset evidence · local runtime receipt</td>
+            <td>0 mismatches · 2.976 ms median · 9.36 MiB peak RSS</td>
+          </tr>
+          <tr>
+            <td>Dependency overlap</td>
+            <td>Host Set/Jaccard</td>
+            <td>Family discovery only</td>
+            <td>Variable-span exact intersection and union · local runtime receipt</td>
+            <td>0 / 25,000 pair mismatches · 4.618 ms median · 9.75 MiB</td>
+          </tr>
+          <tr>
+            <td>Declaration matching</td>
+            <td>Structural clusters</td>
+            <td>Bounded dense assignment is source-present</td>
+            <td>Sparse lexicographic assignment · exhaustive small-graph oracle</td>
+            <td>0 / 64 solution mismatches · 117.834 ms median for 12,800 solves · 6.23 MiB</td>
+          </tr>
+          <tr>
+            <td>Semantic graph</td>
+            <td>Consumer grouping and layout</td>
+            <td>CSR preparation plus bounded force/spring layout</td>
+            <td>Components, SCC condensation and topological strata · local runtime receipt</td>
+            <td>0 mismatches over 12,000 nodes · 8.330 ms median · 9.42 MiB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 class="sc-family-heading">Matched isolated benchmarks</h3>
+    <div class="table-responsive">
+      <table class="table table-sm" aria-label="Without and with SemanticCompute release-mode benchmark results">
+        <thead>
+          <tr>
+            <th scope="col">Family and identical fixture</th>
+            <th scope="col" class="text-end">Without SC</th>
+            <th scope="col" class="text-end">With SC</th>
+            <th scope="col" class="text-end">Elapsed change</th>
+            <th scope="col" class="text-end">RSS change</th>
+            <th scope="col">Correctness</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Variable-span overlap<br><span class="text-small text-muted">25,000 pairs · Swift Set baseline</span></td>
+            <td class="text-end">16.584 ms<br><span class="text-small text-muted">9.94 MiB</span></td>
+            <td class="text-end">4.618 ms<br><span class="text-small text-muted">9.75 MiB</span></td>
+            <td class="text-end"><span class="sc-delta" data-state="better">−72.2% · 3.59× faster</span></td>
+            <td class="text-end"><span class="sc-delta" data-state="better">−1.9%</span></td>
+            <td><span class="sc-delta" data-state="match">0 / 25,000 mismatches</span></td>
+          </tr>
+          <tr>
+            <td>Sparse lexicographic assignment<br><span class="text-small text-muted">12,800 small solves · exhaustive 3×3 oracle</span></td>
+            <td class="text-end">56.370 ms<br><span class="text-small text-muted">5.92 MiB</span></td>
+            <td class="text-end">117.834 ms<br><span class="text-small text-muted">6.23 MiB</span></td>
+            <td class="text-end"><span class="sc-delta" data-state="worse">+109.0% · 2.09× slower</span></td>
+            <td class="text-end"><span class="sc-delta" data-state="worse">+5.3%</span></td>
+            <td><span class="sc-delta" data-state="match">0 / 64 mismatches</span></td>
+          </tr>
+          <tr>
+            <td>CSR graph components<br><span class="text-small text-muted">12,000 nodes · Set-backed host baseline</span></td>
+            <td class="text-end">9.632 ms<br><span class="text-small text-muted">12.25 MiB</span></td>
+            <td class="text-end">8.330 ms<br><span class="text-small text-muted">9.42 MiB</span></td>
+            <td class="text-end"><span class="sc-delta" data-state="better">−13.5% · 1.16× faster</span></td>
+            <td class="text-end"><span class="sc-delta" data-state="better">−23.1%</span></td>
+            <td><span class="sc-delta" data-state="match">0 mismatches</span></td>
+          </tr>
+          <tr>
+            <td>Irregular-time growth burst<br><span class="text-small text-muted">500,000 evaluated samples · direct host oracle</span></td>
+            <td class="text-end">2.568 ms<br><span class="text-small text-muted">10.17 MiB</span></td>
+            <td class="text-end">2.976 ms<br><span class="text-small text-muted">9.36 MiB</span></td>
+            <td class="text-end"><span class="sc-delta" data-state="worse">+15.9% · 1.16× slower</span></td>
+            <td class="text-end"><span class="sc-delta" data-state="better">−8.0%</span></td>
+            <td><span class="sc-delta" data-state="match">0 mismatches</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sc-action">
+      <p class="text-small">Every paired figure is the median of seven independent release-mode processes with a result-derived DCE barrier. Wins, washes and losses are retained: the small exhaustive assignment oracle beats SC at 3×3, while SC’s exact objective is intended to scale beyond that validation fixture; the growth family trades 15.9% elapsed time for explicit coverage and abstention semantics. The 36-checkout MacResilience fixture has not yet been replayed through these adapters.</p>
+    </div>
+  </section>
+
+  <section class="sc-section" aria-labelledby="sc-lab-ledger-heading">
+    <p class="sc-eyebrow sc-mono text-small">LOCKED FIXTURE · EDITABLE AFTER-RECEIPT</p>
+    <div class="sc-ledger-head">
+      <div>
+        <h2 id="sc-lab-ledger-heading">Before / after benchmark ledger</h2>
+        <p>The before column is the retained MacResilience fixture. The after column stays empty until the same fixture runs against an identified SC build. Count invariants guard against silent omission; resource changes remain unattributed until the evidence gate is runtime-validated.</p>
+      </div>
+      <span id="sc-lab-after-status" class="viz-badge" aria-live="polite">After pending</span>
+    </div>
+
+    <div class="viz-controls sc-receipt-controls" aria-label="After-run receipt identity">
+      <label class="form-label" for="sc-lab-after-build">After SC build
+        <input id="sc-lab-after-build" class="form-control sc-mono" type="text" placeholder="commit or build ID" autocomplete="off">
+      </label>
+      <label class="form-label" for="sc-lab-after-date">Captured
+        <input id="sc-lab-after-date" class="form-control" type="date">
+      </label>
+      <label class="form-label" for="sc-lab-after-evidence">Evidence gate
+        <select id="sc-lab-after-evidence" class="form-select">
+          <option value="planned">Planned</option>
+          <option value="source-present">Source-present</option>
+          <option value="build-validated">Build-validated</option>
+          <option value="runtime-validated">Runtime-validated</option>
+        </select>
+      </label>
+      <label class="form-label" for="sc-lab-receipt-file">Import receipt
+        <input id="sc-lab-receipt-file" class="form-control" type="file" accept="application/json,.json">
+      </label>
+      <button id="sc-lab-download-template" class="btn" type="button">Download blank receipt</button>
+      <button id="sc-lab-export-receipt" class="btn btn-primary" type="button">Export after receipt</button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-sm" aria-label="Before and after core fixture measures">
+        <thead>
+          <tr>
+            <th scope="col">Core fixture measure</th>
+            <th scope="col" class="text-end">Before</th>
+            <th scope="col">After landing</th>
+            <th scope="col">Delta / guard</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Same-repository checkouts included</td>
+            <td class="text-end">36</td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="1" inputmode="numeric" data-sc-core="checkouts" aria-label="After checkouts included"></td>
+            <td><span class="sc-delta" data-sc-delta="checkouts">pending</span></td>
+          </tr>
+          <tr>
+            <td>Declaration records</td>
+            <td class="text-end">311,284</td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="1" inputmode="numeric" data-sc-core="declarations" aria-label="After declaration records"></td>
+            <td><span class="sc-delta" data-sc-delta="declarations">pending</span></td>
+          </tr>
+          <tr>
+            <td>Overlap clusters</td>
+            <td class="text-end">98,291</td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="1" inputmode="numeric" data-sc-core="clusters" aria-label="After overlap clusters"></td>
+            <td><span class="sc-delta" data-sc-delta="clusters">pending</span></td>
+          </tr>
+          <tr>
+            <td>Divergent clusters</td>
+            <td class="text-end">3,563</td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="1" inputmode="numeric" data-sc-core="divergent" aria-label="After divergent clusters"></td>
+            <td><span class="sc-delta" data-sc-delta="divergent">pending</span></td>
+          </tr>
+          <tr>
+            <td>Parent helper peak RSS <span class="text-muted">MiB · lower is better</span></td>
+            <td class="text-end">774</td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="0.1" inputmode="decimal" data-sc-core="peakRSSMiB" aria-label="After parent helper peak RSS in MiB"></td>
+            <td><span class="sc-delta" data-sc-delta="peakRSSMiB">pending</span></td>
+          </tr>
+          <tr>
+            <td>Largest semantic artifact <span class="text-muted">MB · lower is better</span></td>
+            <td class="text-end">48.0</td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="0.1" inputmode="decimal" data-sc-core="largestArtifactMB" aria-label="After largest semantic artifact in MB"></td>
+            <td><span class="sc-delta" data-sc-delta="largestArtifactMB">pending</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="sc-lab-receipt-verdict" class="sc-verdict" data-compatible="false" aria-live="polite"></div>
+
+    <h3 class="sc-family-heading">New-family receipts</h3>
+    <div class="table-responsive">
+      <table class="table table-sm" aria-label="After-run SemanticCompute family receipts">
+        <thead>
+          <tr>
+            <th scope="col">Requested SC family</th>
+            <th scope="col">Correctness mismatch</th>
+            <th scope="col">Elapsed <span class="text-muted">ms</span></th>
+            <th scope="col">Peak RSS <span class="text-muted">MiB</span></th>
+            <th scope="col">Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-sc-family-row="overlap">
+            <td>Variable-span exact set overlap<br><span class="text-small text-muted">25,000 candidate pairs · 7 processes</span></td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="1" inputmode="numeric" data-sc-family="overlap" data-sc-field="mismatches" aria-label="Overlap exact-count mismatches"></td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="0.001" inputmode="decimal" data-sc-family="overlap" data-sc-field="elapsedMs" aria-label="Overlap elapsed milliseconds"></td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="0.01" inputmode="decimal" data-sc-family="overlap" data-sc-field="peakRSSMiB" aria-label="Overlap peak RSS MiB"></td>
+            <td><span class="sc-delta" data-sc-family-result="overlap">pending</span></td>
+          </tr>
+          <tr data-sc-family-row="assignment">
+            <td>Sparse lexicographic assignment<br><span class="text-small text-muted">12,800 solves · exhaustive 64-case oracle · 7 processes</span></td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="1" inputmode="numeric" data-sc-family="assignment" data-sc-field="mismatches" aria-label="Assignment result mismatches"></td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="0.001" inputmode="decimal" data-sc-family="assignment" data-sc-field="elapsedMs" aria-label="Assignment elapsed milliseconds"></td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="0.01" inputmode="decimal" data-sc-family="assignment" data-sc-field="peakRSSMiB" aria-label="Assignment peak RSS MiB"></td>
+            <td><span class="sc-delta" data-sc-family-result="assignment">pending</span></td>
+          </tr>
+          <tr data-sc-family-row="graph">
+            <td>CSR components / SCC / strata<br><span class="text-small text-muted">12,000 nodes · 2,400 SCCs · 7 processes</span></td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="1" inputmode="numeric" data-sc-family="graph" data-sc-field="mismatches" aria-label="Graph membership mismatches"></td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="0.001" inputmode="decimal" data-sc-family="graph" data-sc-field="elapsedMs" aria-label="Graph elapsed milliseconds"></td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="0.01" inputmode="decimal" data-sc-family="graph" data-sc-field="peakRSSMiB" aria-label="Graph peak RSS MiB"></td>
+            <td><span class="sc-delta" data-sc-family-result="graph">pending</span></td>
+          </tr>
+          <tr data-sc-family-row="growth">
+            <td>Irregular-time growth-burst detector<br><span class="text-small text-muted">500,000 evaluated observations · 7 processes</span></td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="1" inputmode="numeric" data-sc-family="growth" data-sc-field="mismatches" aria-label="Growth event-class mismatches"></td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="0.001" inputmode="decimal" data-sc-family="growth" data-sc-field="elapsedMs" aria-label="Growth elapsed milliseconds"></td>
+            <td class="sc-input-cell"><input class="form-control" type="number" min="0" step="0.01" inputmode="decimal" data-sc-family="growth" data-sc-field="peakRSSMiB" aria-label="Growth peak RSS MiB"></td>
+            <td><span class="sc-delta" data-sc-family-result="growth">pending</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p id="sc-lab-receipt-message" class="sc-receipt-message text-small" role="status" aria-live="polite"></p>
+  </section>
+
+  <p class="sc-boundary text-small">The image comparison remains a deterministic browser illustration of <code>sc_validate_metal_texture</code>, not a customer-image or GPU-performance result. The paired family receipts came from release-mode local processes built from HEAD <code>55ae773</code> plus a dirty working tree whose 249-file package-source snapshot has SHA-256 <code>4d5335104514…</code>; the MCP executable still reports version 1.22.1 and buildCommit unknown. The figures establish local source/runtime evidence, not a clean commit, tagged release, or MacResilience 36-checkout integration result.</p>
+
+  <script>
+    (() => {
+      'use strict';
+      const root = document.getElementById('semanticcompute-parity-lab');
+      if (!root) return;
+
+      const width = 256;
+      const height = 144;
+      const channels = 4;
+      const count = width * height * channels;
+      const reference = new Float32Array(count);
+      const candidate = new Float32Array(count);
+      const corrected = new Float32Array(count);
+      const tags = new Array(count).fill('match');
+      const bitBuffer = new ArrayBuffer(4);
+      const bitView = new DataView(bitBuffer);
+      let selectedView = 'candidate';
+      let selectedTolerance = 'ulp1';
+
+      // Keep edits made on the public evidence page separate from portable-artifact previews
+      // that may have used the same browser origin during review.
+      const receiptStorageKey = 'semanticcompute-site-engineering-evidence-v1';
+      const invariantKeys = ['checkouts', 'declarations', 'clusters', 'divergent'];
+      const resourceKeys = ['peakRSSMiB', 'largestArtifactMB'];
+      const familyKeys = ['overlap', 'assignment', 'graph', 'growth'];
+      const beforeCore = Object.freeze({
+        checkouts: 36,
+        declarations: 311284,
+        clusters: 98291,
+        divergent: 3563,
+        peakRSSMiB: 774,
+        largestArtifactMB: 48
+      });
+
+      const blankFamily = () => ({ mismatches: null, elapsedMs: null, peakRSSMiB: null });
+      const blankReceipt = () => ({
+        build: '',
+        capturedAt: '',
+        evidence: 'planned',
+        core: {
+          checkouts: null,
+          declarations: null,
+          clusters: null,
+          divergent: null,
+          peakRSSMiB: null,
+          largestArtifactMB: null
+        },
+        families: {
+          overlap: blankFamily(),
+          assignment: blankFamily(),
+          graph: blankFamily(),
+          growth: blankFamily()
+        }
+      });
+      const measuredReceipt = () => {
+        const receipt = blankReceipt();
+        receipt.build = '1.22.1 · HEAD 55ae773 + dirty · source 4d5335104514';
+        receipt.capturedAt = '2026-09-14';
+        receipt.evidence = 'runtime-validated';
+        receipt.families.overlap = { mismatches: 0, elapsedMs: 4.618, peakRSSMiB: 9.75 };
+        receipt.families.assignment = { mismatches: 0, elapsedMs: 117.834, peakRSSMiB: 6.23 };
+        receipt.families.graph = { mismatches: 0, elapsedMs: 8.330, peakRSSMiB: 9.42 };
+        receipt.families.growth = { mismatches: 0, elapsedMs: 2.976, peakRSSMiB: 9.36 };
+        return receipt;
+      };
+      let afterReceipt = measuredReceipt();
+
+      const specialCases = [
+        { x: 41, y: 19, channel: 0, type: 'special' },
+        { x: 89, y: 28, channel: 1, type: 'special' },
+        { x: 131, y: 46, channel: 2, type: 'special' },
+        { x: 178, y: 63, channel: 0, type: 'special' },
+        { x: 63, y: 94, channel: 3, type: 'special' },
+        { x: 214, y: 111, channel: 1, type: 'special' },
+        { x: 28, y: 126, channel: 2, type: 'special' },
+        { x: 231, y: 22, channel: 3, type: 'special' },
+        { x: 17, y: 72, channel: 1, type: 'diverge' },
+        { x: 116, y: 18, channel: 2, type: 'diverge' },
+        { x: 190, y: 86, channel: 0, type: 'diverge' },
+        { x: 235, y: 132, channel: 2, type: 'diverge' }
+      ];
+
+      const clamp = value => Math.max(0, Math.min(1, value));
+      const index = (x, y, channel) => ((y * width + x) * channels + channel);
+      const bits = value => {
+        bitView.setFloat32(0, value, true);
+        return bitView.getUint32(0, true);
+      };
+      const fromBits = value => {
+        bitView.setUint32(0, value, true);
+        return bitView.getFloat32(0, true);
+      };
+      const nextUp = value => fromBits(bits(value) + 1);
+      const orderedBits = raw => (raw & 0x80000000)
+        ? 0x80000000 - (raw & 0x7fffffff)
+        : 0x80000000 + raw;
+      const ulpDistance = (first, second) => {
+        if (!Number.isFinite(first) || !Number.isFinite(second)) return null;
+        return Math.abs(orderedBits(bits(first)) - orderedBits(bits(second)));
+      };
+
+      for (let y = 0; y < height; y += 1) {
+        for (let x = 0; x < width; x += 1) {
+          const u = x / (width - 1);
+          const v = y / (height - 1);
+          const ring = Math.exp(-18 * ((u - 0.54) ** 2 + (v - 0.46) ** 2));
+          const stripe = 0.5 + 0.5 * Math.sin(u * 18 + v * 5);
+          const base = index(x, y, 0);
+          reference[base] = Math.fround(clamp(0.10 + 0.55 * u + 0.18 * ring));
+          reference[base + 1] = Math.fround(clamp(0.10 + 0.54 * v + 0.16 * stripe));
+          reference[base + 2] = Math.fround(clamp(0.18 + 0.34 * (1 - u) + 0.28 * ring));
+          reference[base + 3] = 1;
+          for (let channel = 0; channel < channels; channel += 1) {
+            candidate[base + channel] = reference[base + channel];
+          }
+          if (((x * 37 + y * 19) % 211) === 0 && x > 2 && y > 2) {
+            const channel = (x + y) % 3;
+            candidate[base + channel] = nextUp(reference[base + channel]);
+            tags[base + channel] = 'drift';
+          }
+        }
+      }
+
+      specialCases.forEach(item => {
+        const offset = index(item.x, item.y, item.channel);
+        candidate[offset] = item.type === 'special'
+          ? Number.NaN
+          : Math.fround(reference[offset] * 0.43);
+        tags[offset] = item.type;
+      });
+      corrected.set(reference);
+
+      function report(tolerance) {
+        const causes = {
+          drift: { total: 0, exact: 0, ulp1: 0 },
+          diverge: { total: 0, exact: 0, ulp1: 0 },
+          special: { total: 0, exact: 0, ulp1: 0 }
+        };
+        let exactDifferences = 0;
+        let failed = 0;
+        let maximumAbsolute = 0;
+        let maximumULP = 0;
+        let specialCount = 0;
+        let firstFailure = null;
+
+        for (let offset = 0; offset < count; offset += 1) {
+          const trusted = reference[offset];
+          const observed = candidate[offset];
+          const different = !Object.is(trusted, observed);
+          if (!different) continue;
+
+          exactDifferences += 1;
+          const tag = tags[offset];
+          if (tag !== 'match') {
+            causes[tag].total += 1;
+            causes[tag].exact += 1;
+          }
+
+          const distance = ulpDistance(trusted, observed);
+          const isSpecial = distance === null;
+          const breaksULP1 = isSpecial || distance > 1;
+          if (tag !== 'match' && breaksULP1) causes[tag].ulp1 += 1;
+          if (isSpecial) specialCount += 1;
+
+          const breaksSelected = tolerance === 'exact' || breaksULP1;
+          if (breaksSelected) {
+            failed += 1;
+            if (!firstFailure) firstFailure = { offset, tag, distance };
+          }
+
+          if (!isSpecial) {
+            maximumAbsolute = Math.max(maximumAbsolute, Math.abs(trusted - observed));
+            maximumULP = Math.max(maximumULP, distance);
+          }
+        }
+
+        return {
+          tolerance,
+          causes,
+          exactDifferences,
+          failed,
+          maximumAbsolute,
+          maximumULP,
+          specialCount,
+          firstFailure
+        };
+      }
+
+      function themeColor(token) {
+        const probe = document.createElement('span');
+        probe.style.color = `var(${token})`;
+        probe.style.display = 'none';
+        root.appendChild(probe);
+        const color = getComputedStyle(probe).color;
+        probe.remove();
+        return color;
+      }
+
+      function rgbaImage(values) {
+        const bytes = new Uint8ClampedArray(width * height * channels);
+        for (let pixel = 0; pixel < width * height; pixel += 1) {
+          const base = pixel * channels;
+          for (let channel = 0; channel < channels; channel += 1) {
+            const value = values[base + channel];
+            bytes[base + channel] = Number.isFinite(value)
+              ? Math.round(clamp(value) * 255)
+              : (channel === 3 ? 255 : 0);
+          }
+        }
+        return new ImageData(bytes, width, height);
+      }
+
+      function drawDeviation(context) {
+        context.fillStyle = themeColor('--background');
+        context.fillRect(0, 0, width, height);
+        const colors = {
+          drift: themeColor('--viz-series-1'),
+          diverge: themeColor('--viz-series-2'),
+          special: themeColor('--viz-series-4')
+        };
+        for (let pixel = 0; pixel < width * height; pixel += 1) {
+          const base = pixel * channels;
+          const pixelTags = tags.slice(base, base + channels);
+          let tag = null;
+          if (pixelTags.includes('special')) tag = 'special';
+          else if (pixelTags.includes('diverge')) tag = 'diverge';
+          else if (pixelTags.includes('drift')) tag = 'drift';
+          if (!tag) continue;
+          context.fillStyle = colors[tag];
+          context.fillRect(pixel % width, Math.floor(pixel / width), 1, 1);
+        }
+      }
+
+      const mainCanvas = root.querySelector('#sc-lab-main-canvas');
+      const fixedCanvas = root.querySelector('#sc-lab-fixed-canvas');
+
+      function drawMain() {
+        const context = mainCanvas.getContext('2d');
+        if (selectedView === 'reference') {
+          context.putImageData(rgbaImage(reference), 0, 0);
+          root.querySelector('#sc-lab-view-title').textContent = 'Trusted independent CPU reference';
+          root.querySelector('#sc-lab-view-meta').textContent = 'reference texture';
+          mainCanvas.setAttribute('aria-label', 'Trusted independent CPU reference texture');
+        } else if (selectedView === 'delta') {
+          drawDeviation(context);
+          root.querySelector('#sc-lab-view-title').textContent = 'Deviation map';
+          root.querySelector('#sc-lab-view-meta').textContent = 'ULP drift · finite divergence · special value';
+          mainCanvas.setAttribute('aria-label', 'Deviation map classifying one ULP drift, finite divergence and special values');
+        } else {
+          context.putImageData(rgbaImage(candidate), 0, 0);
+          root.querySelector('#sc-lab-view-title').textContent = 'Candidate output, visually plausible';
+          root.querySelector('#sc-lab-view-meta').textContent = 'normal image view';
+          mainCanvas.setAttribute('aria-label', 'Candidate RGBA texture, visually plausible despite numerical defects');
+        }
+        root.querySelectorAll('[data-sc-view]').forEach(button => {
+          button.setAttribute('aria-pressed', String(button.dataset.scView === selectedView));
+        });
+      }
+
+      const formatNumber = value => new Intl.NumberFormat('en-GB').format(value);
+      const point = failure => {
+        if (!failure) return 'none';
+        const pixel = Math.floor(failure.offset / channels);
+        const x = pixel % width;
+        const y = Math.floor(pixel / width);
+        const channel = ['R', 'G', 'B', 'A'][failure.offset % channels];
+        return `(${x}, ${y}, ${channel})`;
+      };
+
+      function renderReport() {
+        const result = report(selectedTolerance);
+        const policyName = selectedTolerance === 'exact' ? 'exact' : 'ULP(1)';
+        root.querySelectorAll('[data-sc-tolerance]').forEach(button => {
+          button.setAttribute('aria-pressed', String(button.dataset.scTolerance === selectedTolerance));
+        });
+        root.querySelector('#sc-lab-failed').textContent = formatNumber(result.failed);
+        root.querySelector('#sc-lab-policy').textContent = `under ${policyName}`;
+        root.querySelector('#sc-lab-exact').textContent = formatNumber(result.exactDifferences);
+        root.querySelector('#sc-lab-specials').textContent = formatNumber(result.specialCount);
+        root.querySelector('#sc-lab-max-ulp').textContent = `${formatNumber(result.maximumULP)} ULP`;
+        root.querySelector('#sc-lab-max-abs').textContent = result.maximumAbsolute.toExponential(3);
+        root.querySelector('#sc-lab-first').textContent = point(result.firstFailure);
+
+        const verdict = root.querySelector('#sc-lab-verdict');
+        const compatible = result.failed === 0;
+        verdict.dataset.compatible = String(compatible);
+        if (compatible) {
+          verdict.innerHTML = `<strong class="sc-mono text-small">COMPATIBLE UNDER ${policyName.toUpperCase()}</strong><p>Every channel agrees under the selected contract.</p>`;
+        } else {
+          const firstClass = result.firstFailure?.tag === 'special'
+            ? 'special-value generation'
+            : (result.firstFailure?.tag === 'diverge' ? 'numeric divergence' : 'rounding drift');
+          verdict.innerHTML = `<strong class="sc-mono text-small">PARITY FAILED UNDER ${policyName.toUpperCase()}</strong><p>${formatNumber(result.failed)} channel${result.failed === 1 ? '' : 's'} require attention. First: ${point(result.firstFailure)}, classified as ${firstClass}.</p>`;
+        }
+
+        const rows = [
+          ['drift', 'FMA / one-ULP drift', 'Usually invisible at normal scale; acceptable only when the stated contract permits one representable Float32 step.'],
+          ['diverge', 'Numeric divergence', 'A materially different finite value; it may appear as an isolated hot pixel or expand into visible image structure.'],
+          ['special', 'NaN / special value', 'Rendering may clamp or conceal it, while downstream image arithmetic can propagate the failure.']
+        ];
+        root.querySelector('#sc-lab-causes').innerHTML = rows.map(([key, label, reflection]) => {
+          const cause = result.causes[key];
+          const className = key === 'special' ? 'sc-cause-special' : `sc-cause-${key}`;
+          return `<tr><td><span class="sc-cause ${className}">${label}</span></td><td class="text-end">${formatNumber(cause.total)}</td><td class="text-end">${formatNumber(cause.exact)}</td><td class="text-end">${formatNumber(cause.ulp1)}</td><td>${reflection}</td></tr>`;
+        }).join('');
+      }
+
+      root.querySelectorAll('[data-sc-view]').forEach(button => {
+        button.addEventListener('click', () => {
+          selectedView = button.dataset.scView;
+          drawMain();
+        });
+      });
+      root.querySelectorAll('[data-sc-tolerance]').forEach(button => {
+        button.addEventListener('click', () => {
+          selectedTolerance = button.dataset.scTolerance;
+          renderReport();
+        });
+      });
+
+      const numberOrNull = value => {
+        if (value === '' || value === null || value === undefined) return null;
+        const numeric = Number(value);
+        return Number.isFinite(numeric) && numeric >= 0 ? numeric : null;
+      };
+
+      function normaliseReceipt(payload) {
+        const source = payload && typeof payload === 'object' && payload.after
+          ? payload.after
+          : payload;
+        const receipt = blankReceipt();
+        if (!source || typeof source !== 'object') return receipt;
+        receipt.build = typeof source.build === 'string' ? source.build.slice(0, 200) : '';
+        receipt.capturedAt = typeof source.capturedAt === 'string' ? source.capturedAt.slice(0, 10) : '';
+        receipt.evidence = ['planned', 'source-present', 'build-validated', 'runtime-validated'].includes(source.evidence)
+          ? source.evidence
+          : 'planned';
+        [...invariantKeys, ...resourceKeys].forEach(key => {
+          receipt.core[key] = numberOrNull(source.core?.[key]);
+        });
+        familyKeys.forEach(family => {
+          ['mismatches', 'elapsedMs', 'peakRSSMiB'].forEach(field => {
+            receipt.families[family][field] = numberOrNull(source.families?.[family]?.[field]);
+          });
+        });
+        return receipt;
+      }
+
+      function portableReceipt(receipt) {
+        return {
+          schema: 'semanticcompute-before-after-receipt/v3',
+          fixture: {
+            id: 'semanticcompute-local-family-receipt-2026-09-14',
+            immutableBefore: beforeCore,
+            packageTests: '1361 passed across 292 suites; focused new-family selection 22 passed',
+            sourceSnapshot: 'HEAD 55ae773 plus dirty source SHA-256 4d53351045142aa2fc89591ebf4cf87135fb00f920c11488a3d4763a98c0019e',
+            familyRuns: 'Seven independent release-mode processes per family; elapsed and peak RSS are medians',
+            note: 'Family receipts are runtime-validated; MacResilience core after fields remain pending and the earlier batching reduction is not SC-attributed'
+          },
+          pairedBenchmarks: {
+            overlap: {
+              withoutSC: { elapsedMs: 16.583625, peakRSSMiB: 9.9375 },
+              withSC: { elapsedMs: 4.617709, peakRSSMiB: 9.75 },
+              elapsedPercentChange: -72.15500832899923,
+              rssPercentChange: -1.8867924528301883
+            },
+            assignment: {
+              withoutSC: { elapsedMs: 56.370042, peakRSSMiB: 5.921875 },
+              withSC: { elapsedMs: 117.83375, peakRSSMiB: 6.234375 },
+              elapsedPercentChange: 109.03612241410072,
+              rssPercentChange: 5.277044854881274
+            },
+            graph: {
+              withoutSC: { elapsedMs: 9.632458, peakRSSMiB: 12.25 },
+              withSC: { elapsedMs: 8.33, peakRSSMiB: 9.421875 },
+              elapsedPercentChange: -13.521553896212158,
+              rssPercentChange: -23.086734693877553
+            },
+            growth: {
+              withoutSC: { elapsedMs: 2.567541, peakRSSMiB: 10.171875 },
+              withSC: { elapsedMs: 2.97625, peakRSSMiB: 9.359375 },
+              elapsedPercentChange: 15.918304712563502,
+              rssPercentChange: -7.9877112135176676
+            }
+          },
+          after: receipt
+        };
+      }
+
+      function saveReceipt() {
+        try {
+          localStorage.setItem(receiptStorageKey, JSON.stringify(portableReceipt(afterReceipt)));
+        } catch (_) {
+          // The editable page still works if a browser disables local file storage.
+        }
+      }
+
+      function loadSavedReceipt() {
+        try {
+          const saved = localStorage.getItem(receiptStorageKey);
+          if (saved) afterReceipt = normaliseReceipt(JSON.parse(saved));
+        } catch (_) {
+          // Retain the embedded measured receipt when storage is unavailable.
+        }
+      }
+
+      function syncReceiptControls() {
+        root.querySelector('#sc-lab-after-build').value = afterReceipt.build;
+        root.querySelector('#sc-lab-after-date').value = afterReceipt.capturedAt;
+        root.querySelector('#sc-lab-after-evidence').value = afterReceipt.evidence;
+        root.querySelectorAll('[data-sc-core]').forEach(input => {
+          const value = afterReceipt.core[input.dataset.scCore];
+          input.value = value === null ? '' : String(value);
+        });
+        root.querySelectorAll('[data-sc-family][data-sc-field]').forEach(input => {
+          const value = afterReceipt.families[input.dataset.scFamily][input.dataset.scField];
+          input.value = value === null ? '' : String(value);
+        });
+      }
+
+      function setDelta(node, text, state) {
+        node.textContent = text;
+        node.dataset.state = state;
+      }
+
+      function renderReceipt() {
+        invariantKeys.forEach(key => {
+          const node = root.querySelector(`[data-sc-delta="${key}"]`);
+          const value = afterReceipt.core[key];
+          if (value === null) {
+            setDelta(node, 'pending', 'pending');
+            return;
+          }
+          const difference = value - beforeCore[key];
+          if (difference === 0) {
+            setDelta(node, 'exact count match', 'match');
+          } else {
+            const sign = difference > 0 ? '+' : '';
+            setDelta(node, `${sign}${formatNumber(difference)} · review`, 'different');
+          }
+        });
+
+        resourceKeys.forEach(key => {
+          const node = root.querySelector(`[data-sc-delta="${key}"]`);
+          const value = afterReceipt.core[key];
+          if (value === null) {
+            setDelta(node, 'pending', 'pending');
+            return;
+          }
+          const difference = value - beforeCore[key];
+          const percent = (difference / beforeCore[key]) * 100;
+          const sign = percent > 0 ? '+' : '';
+          const state = difference < 0 ? 'better' : (difference > 0 ? 'worse' : 'match');
+          const label = difference === 0 ? 'unchanged' : `${sign}${percent.toFixed(1)}%`;
+          setDelta(node, label, state);
+        });
+
+        familyKeys.forEach(family => {
+          const node = root.querySelector(`[data-sc-family-result="${family}"]`);
+          const mismatches = afterReceipt.families[family].mismatches;
+          if (mismatches === null) {
+            setDelta(node, 'pending', 'pending');
+          } else if (mismatches === 0) {
+            setDelta(node, 'exact match', 'match');
+          } else {
+            setDelta(node, `${formatNumber(mismatches)} mismatch${mismatches === 1 ? '' : 'es'}`, 'different');
+          }
+        });
+
+        const valuesEntered = [...invariantKeys, ...resourceKeys].some(key => afterReceipt.core[key] !== null)
+          || familyKeys.some(family => Object.values(afterReceipt.families[family]).some(value => value !== null));
+        const coreComplete = invariantKeys.every(key => afterReceipt.core[key] !== null);
+        const coreMatches = coreComplete && invariantKeys.every(key => afterReceipt.core[key] === beforeCore[key]);
+        const familyCorrectnessComplete = familyKeys.every(family => afterReceipt.families[family].mismatches !== null);
+        const familiesMatch = familyCorrectnessComplete
+          && familyKeys.every(family => afterReceipt.families[family].mismatches === 0);
+        const identityComplete = afterReceipt.build.trim().length > 0 && afterReceipt.capturedAt.length === 10;
+        const runtimeValidated = afterReceipt.evidence === 'runtime-validated';
+        const receiptComplete = coreMatches && familiesMatch && identityComplete && runtimeValidated;
+
+        const status = root.querySelector('#sc-lab-after-status');
+        if (!valuesEntered) status.textContent = 'After pending';
+        else if (!coreComplete || !familyCorrectnessComplete || !identityComplete) status.textContent = 'Partial after receipt';
+        else if (!coreMatches || !familiesMatch) status.textContent = 'Difference needs review';
+        else if (!runtimeValidated) status.textContent = 'Awaiting runtime evidence';
+        else status.textContent = 'Runtime receipt complete';
+
+        const verdict = root.querySelector('#sc-lab-receipt-verdict');
+        verdict.dataset.compatible = String(receiptComplete);
+        if (!valuesEntered) {
+          verdict.innerHTML = '<strong class="sc-mono text-small">AFTER RUN NOT RECORDED</strong><p>Import or enter the post-landing receipt. Pending cells are intentionally excluded from every claim.</p>';
+        } else if (!coreComplete) {
+          verdict.innerHTML = '<strong class="sc-mono text-small">CORE INVARIANTS INCOMPLETE</strong><p>Enter all four fixture counts before comparing resource deltas or considering consolidation.</p>';
+        } else if (!coreMatches) {
+          verdict.innerHTML = '<strong class="sc-mono text-small">COUNT DIFFERENCE DETECTED</strong><p>Stop attribution and reconcile the changed fixture coverage. A faster run is not comparable if it examined different material.</p>';
+        } else if (!familyCorrectnessComplete || !familiesMatch) {
+          verdict.innerHTML = familiesMatch
+            ? '<strong class="sc-mono text-small">FAMILY RECEIPTS INCOMPLETE</strong><p>The core fixture matches, but each new family still needs a correctness result against its CPU reference.</p>'
+            : '<strong class="sc-mono text-small">FAMILY PARITY DIFFERENCE DETECTED</strong><p>The core counts match, but at least one SC family disagrees with its reference. Investigate before accepting resource gains.</p>';
+        } else if (!identityComplete || !runtimeValidated) {
+          verdict.innerHTML = '<strong class="sc-mono text-small">MATCH RECORDED, EVIDENCE GATE OPEN</strong><p>Add the exact build identity and capture date, then require runtime validation before treating the after column as measured evidence.</p>';
+        } else {
+          verdict.innerHTML = '<strong class="sc-mono text-small">COMPARABLE RUNTIME RECEIPT</strong><p>Core counts and family reference results match for the identified run. This guards fixture coverage; file hashes, Git provenance and retained receipts remain necessary for a no-data-loss claim.</p>';
+        }
+      }
+
+      function updateReceiptFromControls() {
+        afterReceipt.build = root.querySelector('#sc-lab-after-build').value.trim();
+        afterReceipt.capturedAt = root.querySelector('#sc-lab-after-date').value;
+        afterReceipt.evidence = root.querySelector('#sc-lab-after-evidence').value;
+        root.querySelectorAll('[data-sc-core]').forEach(input => {
+          afterReceipt.core[input.dataset.scCore] = numberOrNull(input.value);
+        });
+        root.querySelectorAll('[data-sc-family][data-sc-field]').forEach(input => {
+          afterReceipt.families[input.dataset.scFamily][input.dataset.scField] = numberOrNull(input.value);
+        });
+        saveReceipt();
+        renderReceipt();
+      }
+
+      function setReceiptMessage(message, isError = false) {
+        const node = root.querySelector('#sc-lab-receipt-message');
+        node.textContent = message;
+        node.classList.toggle('text-destructive', isError);
+        node.setAttribute('role', isError ? 'alert' : 'status');
+      }
+
+      function downloadReceipt(receipt, filename) {
+        const blob = new Blob([JSON.stringify(portableReceipt(receipt), null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = filename;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 0);
+      }
+
+      root.querySelectorAll('#sc-lab-after-build, #sc-lab-after-date, #sc-lab-after-evidence, [data-sc-core], [data-sc-family][data-sc-field]').forEach(control => {
+        control.addEventListener('input', updateReceiptFromControls);
+        control.addEventListener('change', updateReceiptFromControls);
+      });
+
+      const receiptFileControl = root.querySelector('#sc-lab-receipt-file');
+      receiptFileControl?.addEventListener('change', async event => {
+        const file = event.currentTarget.files?.[0];
+        if (!file) return;
+        try {
+          afterReceipt = normaliseReceipt(JSON.parse(await file.text()));
+          syncReceiptControls();
+          saveReceipt();
+          renderReceipt();
+          setReceiptMessage(`Imported ${file.name}. Review the evidence gate before accepting the comparison.`);
+        } catch (_) {
+          setReceiptMessage('The selected file is not a valid SemanticCompute before/after receipt.', true);
+        }
+        event.currentTarget.value = '';
+      });
+
+      const downloadTemplateControl = root.querySelector('#sc-lab-download-template');
+      downloadTemplateControl?.addEventListener('click', () => {
+        downloadReceipt(blankReceipt(), 'semanticcompute-after-receipt-template.json');
+        setReceiptMessage('Blank versioned receipt downloaded. Populate it only from the unchanged fixture run.');
+      });
+
+      const exportReceiptControl = root.querySelector('#sc-lab-export-receipt');
+      exportReceiptControl?.addEventListener('click', () => {
+        updateReceiptFromControls();
+        downloadReceipt(afterReceipt, 'semanticcompute-after-receipt.json');
+        setReceiptMessage('Current after receipt exported with the immutable before snapshot.');
+      });
+
+      const redrawForTheme = () => {
+        drawMain();
+      };
+      const scheme = window.matchMedia?.('(prefers-color-scheme: dark)');
+      scheme?.addEventListener?.('change', redrawForTheme);
+
+      loadSavedReceipt();
+      syncReceiptControls();
+      fixedCanvas.getContext('2d').putImageData(rgbaImage(corrected), 0, 0);
+      drawMain();
+      renderReport();
+      renderReceipt();
+    })();
+  </script>
+</div>
+</body>
+</html>

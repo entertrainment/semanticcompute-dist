@@ -1,0 +1,52 @@
+{
+  "schema": "semanticcompute.image-parity-receipt-summary/1",
+  "evidenceLevel": "recorded-statistics-with-deterministic-visual-replay",
+  "engine": {
+    "version": "1.20.0",
+    "buildCommit": null
+  },
+  "capture": {
+    "sourceStatement": "Statistics reported by the originating SemanticCompute family and MCP parity run.",
+    "rawArrayDigests": null,
+    "limitation": "The public canvases reconstruct the deterministic fixture; this summary is not an authenticated raw-output receipt."
+  },
+  "fixture": {
+    "kind": "deterministic-synthetic-image",
+    "width": 48,
+    "height": 48,
+    "pixels": 2304
+  },
+  "contract": {
+    "family": "SeparableConv2D",
+    "precision": "Float32",
+    "boundary": "clamp-to-edge",
+    "determinism": "deterministic",
+    "absoluteTolerance": 1e-06,
+    "relativeTolerance": 1e-05
+  },
+  "candidateBefore": {
+    "boundary": "implicit-zero",
+    "verdict": "fail",
+    "failingPixels": 368,
+    "meanAbsoluteError": 0.007836,
+    "rmse": 0.02705,
+    "psnrDb": 31.36,
+    "maximumAbsoluteError": 0.212988,
+    "edgeMeanAbsoluteError": 0.04906
+  },
+  "candidateAfter": {
+    "boundary": "clamp-to-edge",
+    "verdict": "pass",
+    "failingPixels": 0,
+    "meanAbsoluteError": 1.249e-08,
+    "rmse": 1.836e-08,
+    "psnrDb": 154.72,
+    "maximumAbsoluteError": 1.192e-07
+  },
+  "claimsExcluded": [
+    "GPU performance",
+    "captured GPU execution",
+    "customer image validation",
+    "clinical validity"
+  ]
+}

@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SemanticCompute Image Parity Lab</title>
+<meta name="description" content="A visual explanation of image parity: visual inspection, numerical divergence diagnosis, and re-verification.">
+<style>
+  :root {
+    --paper: #f4f5f0;
+    --panel: #fbfcf8;
+    --ink: #14201c;
+    --muted: #566660;
+    --line: #cbd5ce;
+    --teal: #087d6d;
+    --teal-soft: #dceee8;
+    --amber: #b66b0b;
+    --amber-soft: #f7ead5;
+    --red: #bd3d31;
+    --red-soft: #f5dfdc;
+    --blue: #246d9e;
+    --blue-soft: #dceaf3;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0d1514;
+      --panel: #14201e;
+      --ink: #e5f0eb;
+      --muted: #9fb1aa;
+      --line: #31423d;
+      --teal: #41c6b1;
+      --teal-soft: #173a34;
+      --amber: #f1b65f;
+      --amber-soft: #443117;
+      --red: #fb8376;
+      --red-soft: #482522;
+      --blue: #73b9e7;
+      --blue-soft: #183447;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 var(--sans); }
+  button { font: inherit; color: inherit; }
+  .shell { width: min(1200px, calc(100% - 40px)); margin: 0 auto; }
+  header { padding: 34px 0 26px; border-bottom: 1px solid var(--line); }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--muted); font: 650 14px var(--mono); }
+  .mark { display: grid; width: 28px; height: 28px; place-items: center; background: var(--teal); color: var(--paper); border-radius: 6px; font-weight: 800; }
+  h1, h2, h3, p { margin: 0; }
+  h1 { max-width: 860px; margin-top: 20px; font-size: clamp(2rem, 5vw, 3.6rem); line-height: 1.03; letter-spacing: 0; }
+  .lede { max-width: 780px; margin-top: 16px; color: var(--muted); font-size: 1.08rem; }
+  .fixture { display: inline-flex; gap: 8px; align-items: center; margin-top: 16px; color: var(--muted); font: 12px var(--mono); }
+  .fixture::before { width: 8px; height: 8px; border-radius: 50%; content: ""; background: var(--amber); }
+  main { padding: 32px 0 72px; }
+  .toolbar { display: flex; justify-content: space-between; gap: 18px; align-items: end; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+  .eyebrow { color: var(--muted); font: 12px var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+  .toolbar h2 { margin-top: 4px; font-size: 1.4rem; }
+  .control-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .segmented { display: inline-flex; border: 1px solid var(--line); background: var(--panel); padding: 3px; border-radius: 7px; }
+  .segmented button { cursor: pointer; border: 0; border-radius: 4px; background: transparent; padding: 7px 10px; font: 12px var(--mono); }
+  .segmented button[aria-pressed="true"] { color: var(--paper); background: var(--ink); }
+  .download { cursor: pointer; border: 1px solid var(--teal); border-radius: 7px; background: transparent; color: var(--teal); padding: 8px 11px; font: 12px var(--mono); }
+  .download:hover { background: var(--teal-soft); }
+  .comparison { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr); gap: 28px; padding: 28px 0; border-bottom: 1px solid var(--line); }
+  .image-stage { min-width: 0; }
+  .view-label { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .view-label h3 { font-size: 1rem; }
+  .view-label span { color: var(--muted); font: 12px var(--mono); }
+  .canvas-wrap { position: relative; border: 1px solid var(--line); background: #101615; overflow: hidden; }
+  canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+  .legend { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; color: var(--muted); font: 12px var(--mono); }
+  .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; vertical-align: -1px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .stat { border: 1px solid var(--line); background: var(--panel); padding: 13px; min-height: 92px; border-radius: 7px; }
+  .stat .value { display: block; font: 650 1.25rem var(--mono); font-variant-numeric: tabular-nums; letter-spacing: 0; }
+  .stat .label { display: block; margin-top: 7px; color: var(--muted); font: 11px var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+  .stat.bad .value { color: var(--red); }
+  .stat.warn .value { color: var(--amber); }
+  .stat.ok .value { color: var(--teal); }
+  .verdict { margin-top: 14px; padding: 14px; border-left: 3px solid var(--red); background: var(--red-soft); }
+  .verdict strong { display: block; font: 700 13px var(--mono); }
+  .verdict p { margin-top: 4px; color: var(--muted); font-size: 14px; }
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; padding: 30px 0; border-bottom: 1px solid var(--line); }
+  .step { border-top: 3px solid var(--line); padding-top: 13px; }
+  .step[data-state="observe"] { border-top-color: var(--amber); }
+  .step[data-state="diagnose"] { border-top-color: var(--red); }
+  .step[data-state="verify"] { border-top-color: var(--teal); }
+  .step .number { color: var(--muted); font: 12px var(--mono); }
+  .step h3 { margin-top: 7px; font-size: 1.05rem; }
+  .step p { margin-top: 8px; color: var(--muted); font-size: 14px; }
+  .table-section { padding-top: 30px; }
+  .table-section h2 { font-size: 1.35rem; }
+  .table-section > p { max-width: 790px; margin-top: 8px; color: var(--muted); }
+  .diagnostics { width: 100%; border-collapse: collapse; margin-top: 18px; font: 13px var(--mono); }
+  .diagnostics th, .diagnostics td { padding: 11px 10px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .diagnostics th { color: var(--muted); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; }
+  .diagnostics td:last-child { color: var(--muted); font-family: var(--sans); }
+  .cause { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+  .cause.drift { background: var(--blue-soft); color: var(--blue); }
+  .cause.nan { background: var(--red-soft); color: var(--red); }
+  .cause.diverge { background: var(--amber-soft); color: var(--amber); }
+  .after { display: grid; grid-template-columns: minmax(0, 1fr) minmax(250px, .55fr); gap: 28px; padding-top: 30px; }
+  .after canvas { border: 1px solid var(--line); }
+  .pass { border: 1px solid var(--teal); border-radius: 7px; align-self: stretch; padding: 20px; background: var(--teal-soft); }
+  .pass h2 { color: var(--teal); font: 700 14px var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+  .pass .big { margin-top: 16px; font: 700 2rem var(--mono); color: var(--teal); }
+  .pass p { margin-top: 10px; color: var(--muted); }
+  .boundary { margin-top: 30px; padding: 15px; border-left: 3px solid var(--line); color: var(--muted); font-size: 14px; }
+  code { padding: 1px 4px; background: var(--panel); border: 1px solid var(--line); font: 12px var(--mono); }
+  @media (max-width: 780px) {
+    .toolbar { align-items: start; flex-direction: column; }
+    .comparison, .after { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; gap: 10px; }
+    .diagnostics { display: block; overflow-x: auto; }
+  }
+</style>
+
+<style>
+  .sc-site-strip { position: sticky; top: 0; z-index: 1000; display: flex; flex-wrap: wrap;
+    align-items: center; justify-content: space-between; gap: 10px; padding: 10px 18px;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+    background: color-mix(in srgb, Canvas 94%, transparent); color: CanvasText;
+    font: 600 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; backdrop-filter: blur(14px); }
+  .sc-site-strip a { color: inherit; text-decoration: none; }
+  .sc-site-strip a:hover, .sc-site-strip a:focus-visible { text-decoration: underline; }
+  .sc-site-links { display: flex; flex-wrap: wrap; gap: 14px; }
+  .sc-evidence-scope { margin: 14px auto; width: min(1120px, calc(100% - 32px)); padding: 10px 14px;
+    border: 1px solid #d99132; border-radius: 7px; background: color-mix(in srgb, #d99132 11%, Canvas);
+    color: CanvasText; font: 600 12px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; }
+</style>
+</head>
+<body>
+
+<nav class="sc-site-strip" aria-label="SemanticCompute evidence navigation">
+  <a href="index.html#visual-proof">← SemanticCompute</a>
+  <span class="sc-site-links">
+    <a href="image-parity-lab.html">Interactive lab</a>
+    <a href="image-parity-case-study.html">Recorded case study</a>
+    <a href="dicom-parity-lab.html">DICOM protocol</a>
+    <a href="engineering-evidence.html">Engineering evidence</a>
+  </span>
+</nav>
+<aside class="sc-evidence-scope">DETERMINISTIC ILLUSTRATIVE FIXTURE · BROWSER-GENERATED · NO GPU EXECUTION OR PERFORMANCE CLAIM</aside>
+
+<header>
+  <div class="shell">
+    <div class="brand"><span class="mark">=</span> SEMANTICCOMPUTE / IMAGE PARITY LAB</div>
+    <h1>The image can look right and still be numerically wrong.</h1>
+    <p class="lede">Visual review tells you whether an output is plausible. SemanticCompute establishes whether a candidate texture agrees with its trusted reference, identifies the pixels and channels that do not, classifies the likely numerical cause, and lets you re-verify the corrected result.</p>
+    <p class="fixture">DETERMINISTIC ILLUSTRATIVE FIXTURE - NOT A GPU PERFORMANCE BENCHMARK</p>
+  </div>
+</header>
+<main class="shell">
+  <section class="toolbar" aria-label="Image parity controls">
+    <div>
+      <p class="eyebrow">One RGBA32Float texture - 256 x 144 - 147,456 channels</p>
+      <h2>Candidate output versus CPU reference</h2>
+    </div>
+    <div class="control-group">
+      <div class="segmented" aria-label="Texture view">
+        <button data-view="candidate" aria-pressed="true">candidate</button>
+        <button data-view="reference" aria-pressed="false">reference</button>
+        <button data-view="delta" aria-pressed="false">deviation map</button>
+      </div>
+      <div class="segmented" aria-label="Comparison tolerance">
+        <button data-tolerance="exact" aria-pressed="false">exact</button>
+        <button data-tolerance="ulp1" aria-pressed="true">ULP(1)</button>
+      </div>
+      <button class="download" id="download">Download fixture stats</button>
+    </div>
+  </section>
+
+  <section class="comparison">
+    <div class="image-stage">
+      <div class="view-label"><h3 id="view-title">Candidate output, visually plausible</h3><span id="view-meta">normal image view</span></div>
+      <div class="canvas-wrap"><canvas id="main-canvas" width="256" height="144" aria-label="Candidate texture"></canvas></div>
+      <div class="legend"><span><i style="background:#246d9e"></i>one-ULP drift</span><span><i style="background:#b66b0b"></i>large numeric divergence</span><span><i style="background:#bd3d31"></i>special-value failure</span></div>
+    </div>
+    <aside>
+      <div class="stat-grid" id="stats"></div>
+      <div class="verdict" id="verdict"></div>
+    </aside>
+  </section>
+
+  <section class="steps" aria-label="Verification loop">
+    <article class="step" data-state="observe"><p class="number">01 / WITHOUT SEMANTICCOMPUTE</p><h3>Inspect the output</h3><p>The candidate is plausible at normal scale. A few isolated bad channels and rounding differences are easy to miss, especially in a large texture or a long render sequence.</p></article>
+    <article class="step" data-state="diagnose"><p class="number">02 / WITH SEMANTICCOMPUTE</p><h3>Measure and localise</h3><p>Apply a stated tolerance, count every mismatch, locate the first and worst pixel/channel, and distinguish small ULP drift from a NaN or a genuine algorithmic divergence.</p></article>
+    <article class="step" data-state="verify"><p class="number">03 / AFTER THE FIX</p><h3>Re-verify the result</h3><p>The package does not edit a shader. It makes the failure inspectable, supplies a likely remedy, and checks the developer's corrected output against the same trusted reference.</p></article>
+  </section>
+
+  <section class="table-section">
+    <h2>What the numbers differentiate</h2>
+    <p>Switch between exact comparison and ULP(1). The tolerance policy matters: a one-step Float32 rounding difference may be acceptable in a stated contract; a NaN or a large numerical change is not hidden by that choice.</p>
+    <table class="diagnostics">
+      <thead><tr><th>Classified cause</th><th>Channels</th><th>Under exact</th><th>Under ULP(1)</th><th>How it reflects in an image</th></tr></thead>
+      <tbody id="causes"></tbody>
+    </table>
+  </section>
+
+  <section class="after">
+    <div>
+      <div class="view-label"><h3>Corrected candidate after the prescribed changes</h3><span>same reference, re-verified</span></div>
+      <canvas id="fixed-canvas" width="256" height="144" aria-label="Corrected texture"></canvas>
+    </div>
+    <article class="pass">
+      <h2>Re-verification</h2>
+      <p class="big" id="after-count">0 diverging</p>
+      <p id="after-copy">The corrected candidate is bit-identical to the fixture reference. In a real workflow, the same report records the backend, precision, texture format, dimensions, tolerance and run status.</p>
+    </article>
+  </section>
+
+  <p class="boundary">This page is a product visualisation, generated from a deterministic illustrative texture fixture in the browser. It demonstrates the reporting model behind <code>sc_check_metal_texture_parity</code>; it does not claim a Metal kernel ran, a GPU benchmark was performed, or a customer image was verified. Replace the fixture with a real reference/candidate pair when publishing run evidence.</p>
+</main>
+<script>
+(() => {
+  "use strict";
+  const width = 256, height = 144, channels = 4, count = width * height * channels;
+  const ref = new Float32Array(count);
+  const candidate = new Float32Array(count);
+  const fixed = new Float32Array(count);
+  const tags = new Array(count).fill("match");
+  const specialCases = [
+    { x: 41, y: 19, c: 0, type: "nan" }, { x: 89, y: 28, c: 1, type: "nan" },
+    { x: 131, y: 46, c: 2, type: "nan" }, { x: 178, y: 63, c: 0, type: "nan" },
+    { x: 63, y: 94, c: 3, type: "nan" }, { x: 214, y: 111, c: 1, type: "nan" },
+    { x: 28, y: 126, c: 2, type: "nan" }, { x: 231, y: 22, c: 3, type: "nan" },
+    { x: 17, y: 72, c: 1, type: "diverge" }, { x: 116, y: 18, c: 2, type: "diverge" },
+    { x: 190, y: 86, c: 0, type: "diverge" }, { x: 235, y: 132, c: 2, type: "diverge" }
+  ];
+  const bitsBuffer = new ArrayBuffer(4);
+  const bitsView = new DataView(bitsBuffer);
+  const index = (x, y, c) => ((y * width + x) * channels + c);
+  const bits = value => { bitsView.setFloat32(0, value, true); return bitsView.getUint32(0, true); };
+  const fromBits = value => { bitsView.setUint32(0, value, true); return bitsView.getFloat32(0, true); };
+  const nextUp = value => fromBits(bits(value) + 1);
+  const ulp = (a, b) => {
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
+    const order = raw => (raw & 0x80000000) ? 0x80000000 - (raw & 0x7fffffff) : 0x80000000 + raw;
+    return Math.abs(order(bits(a)) - order(bits(b)));
+  };
+  const clamp = value => Math.max(0, Math.min(1, value));
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const u = x / (width - 1), v = y / (height - 1);
+      const ring = Math.exp(-18 * ((u - .54) ** 2 + (v - .46) ** 2));
+      const stripe = .5 + .5 * Math.sin(u * 18 + v * 5);
+      const base = index(x, y, 0);
+      ref[base] = Math.fround(clamp(.10 + .55 * u + .18 * ring));
+      ref[base + 1] = Math.fround(clamp(.10 + .54 * v + .16 * stripe));
+      ref[base + 2] = Math.fround(clamp(.18 + .34 * (1 - u) + .28 * ring));
+      ref[base + 3] = 1;
+      for (let c = 0; c < channels; c++) candidate[base + c] = ref[base + c];
+      if (((x * 37 + y * 19) % 211) === 0 && x > 2 && y > 2) {
+        const c = (x + y) % 3;
+        candidate[base + c] = nextUp(ref[base + c]);
+        tags[base + c] = "drift";
+      }
+    }
+  }
+  for (const item of specialCases) {
+    const i = index(item.x, item.y, item.c);
+    if (item.type === "nan") candidate[i] = NaN;
+    else candidate[i] = Math.fround(ref[i] * .43);
+    tags[i] = item.type;
+  }
+  fixed.set(ref);
+
+  function report(tolerance) {
+    const causes = { drift: { total: 0, failed: 0 }, nan: { total: 0, failed: 0 }, diverge: { total: 0, failed: 0 } };
+    let exact = 0, failed = 0, maxAbs = 0, maxUlp = 0, specials = 0, first = null, worst = null;
+    for (let i = 0; i < count; i++) {
+      const a = ref[i], b = candidate[i], tag = tags[i];
+      const different = !Object.is(a, b);
+      if (!different) continue;
+      exact++;
+      if (tag !== "match") causes[tag].total++;
+      const distance = ulp(a, b);
+      const isSpecial = distance === null;
+      const breaks = tolerance === "exact" || isSpecial || distance > 1;
+      if (breaks) {
+        failed++;
+        if (tag !== "match") causes[tag].failed++;
+        if (!first) first = { i, tag, distance };
+      }
+      if (isSpecial) specials++;
+      else {
+        const absolute = Math.abs(a - b);
+        if (absolute > maxAbs) maxAbs = absolute;
+        if (distance > maxUlp) maxUlp = distance;
+        if (!worst || distance > worst.distance) worst = { i, tag, distance, absolute };
+      }
+    }
+    return { tolerance, exact, failed, maxAbs, maxUlp, specials, first, worst, causes };
+  }
+
+  const asImage = (values, map) => {
+    const data = new Uint8ClampedArray(width * height * 4);
+    for (let p = 0; p < width * height; p++) {
+      const src = p * 4;
+      const r = values[src], g = values[src + 1], b = values[src + 2], a = values[src + 3];
+      data[src] = Number.isFinite(r) ? Math.round(clamp(r) * 255) : 0;
+      data[src + 1] = Number.isFinite(g) ? Math.round(clamp(g) * 255) : 0;
+      data[src + 2] = Number.isFinite(b) ? Math.round(clamp(b) * 255) : 0;
+      data[src + 3] = Number.isFinite(a) ? Math.round(clamp(a) * 255) : 255;
+    }
+    if (map) {
+      for (let p = 0; p < width * height; p++) {
+        const out = p * 4;
+        const allTags = tags.slice(out, out + 4);
+        if (allTags.includes("nan")) { data[out] = 255; data[out + 1] = 70; data[out + 2] = 60; }
+        else if (allTags.includes("diverge")) { data[out] = 255; data[out + 1] = 174; data[out + 2] = 34; }
+        else if (allTags.includes("drift")) { data[out] = 58; data[out + 1] = 145; data[out + 2] = 202; }
+        else { data[out] = 14; data[out + 1] = 22; data[out + 2] = 21; }
+        data[out + 3] = 255;
+      }
+    }
+    return new ImageData(data, width, height);
+  };
+
+  const main = document.getElementById("main-canvas");
+  const fixedCanvas = document.getElementById("fixed-canvas");
+  fixedCanvas.getContext("2d").putImageData(asImage(fixed, false), 0, 0);
+  const stats = document.getElementById("stats"), verdict = document.getElementById("verdict"), causeRows = document.getElementById("causes");
+  const format = value => new Intl.NumberFormat("en-GB").format(value);
+  const point = item => item ? `(${item.i % (width * channels) >> 2}, ${Math.floor(item.i / (width * channels))}, ${["R", "G", "B", "A"][item.i % 4]})` : "none";
+  const viewTitle = document.getElementById("view-title"), viewMeta = document.getElementById("view-meta");
+  function drawMain(view) {
+    const context = main.getContext("2d");
+    if (view === "reference") {
+      context.putImageData(asImage(ref, false), 0, 0);
+      viewTitle.textContent = "Trusted CPU reference";
+      viewMeta.textContent = "reference texture";
+    } else if (view === "delta") {
+      context.putImageData(asImage(ref, true), 0, 0);
+      viewTitle.textContent = "Deviation map";
+      viewMeta.textContent = "blue: one ULP, amber: large finite delta, red: special value";
+    } else {
+      context.putImageData(asImage(candidate, false), 0, 0);
+      viewTitle.textContent = "Candidate output, visually plausible";
+      viewMeta.textContent = "normal image view";
+    }
+    document.querySelectorAll("[data-view]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
+  }
+
+  function render(tolerance) {
+    const r = report(tolerance);
+    document.querySelectorAll("[data-tolerance]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.tolerance === tolerance)));
+    stats.innerHTML = [
+      [format(r.failed), "channels break contract", r.failed ? "bad" : "ok"],
+      [format(r.exact), "not bit-identical", r.exact ? "warn" : "ok"],
+      [r.maxUlp.toLocaleString() + " ULP", "largest finite distance", r.maxUlp ? "warn" : "ok"],
+      [r.specials, "NaN / special failures", r.specials ? "bad" : "ok"],
+      [r.maxAbs.toExponential(3), "largest finite absolute delta", r.maxAbs ? "warn" : "ok"],
+      [point(r.first), "first failed pixel/channel", r.first ? "bad" : "ok"]
+    ].map(([value, label, tone]) => `<div class="stat ${tone}"><span class="value">${value}</span><span class="label">${label}</span></div>`).join("");
+    const firstTag = r.first ? r.first.tag : "match";
+    verdict.innerHTML = r.failed
+      ? `<strong>PARITY FAILED UNDER ${tolerance === "exact" ? "EXACT" : "ULP(1)"}</strong><p>${format(r.failed)} channel${r.failed === 1 ? "" : "s"} require attention. The first failed location is ${point(r.first)} and is classified as ${firstTag === "nan" ? "NaN generation" : firstTag === "diverge" ? "numeric divergence" : "rounding drift"}.</p>`
+      : "<strong>COMPATIBLE</strong><p>Every channel agrees under the selected policy.</p>";
+    const rows = [
+      ["drift", "FMA / one-ULP drift", "One representable Float32 step. Typically invisible in the image; acceptable only when the contract says it is."],
+      ["diverge", "Numeric divergence", "A materially different finite value. It can appear as an isolated hot pixel or grow into visible structure across a real image."],
+      ["nan", "NaN generation", "A special-value failure. A renderer may clamp or conceal it, but downstream image math can propagate it."],
+    ];
+    causeRows.innerHTML = rows.map(([key, label, copy]) => {
+      const c = r.causes[key];
+      const under = tolerance === "exact" ? c.total : c.failed;
+      return `<tr><td><span class="cause ${key}">${label}</span></td><td>${format(c.total)}</td><td>${format(c.total)}</td><td>${format(c.failed)}</td><td>${copy}</td></tr>`;
+    }).join("");
+  }
+  document.querySelectorAll("[data-tolerance]").forEach(button => button.addEventListener("click", () => render(button.dataset.tolerance)));
+  document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => drawMain(button.dataset.view)));
+  document.getElementById("download").addEventListener("click", () => {
+    const r = report("ulp1");
+    const payload = { schema: "semanticcompute.image-parity-lab/1", fixture: "deterministic-illustrative-rgba32float", width, height, channels, comparedChannels: count, tolerance: "ulp(1)", report: r, note: "Illustrative browser fixture. Not a GPU execution report." };
+    const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }));
+    const link = Object.assign(document.createElement("a"), { href: url, download: "semanticcompute-image-parity-fixture.json" });
+    link.click(); URL.revokeObjectURL(url);
+  });
+  drawMain("candidate");
+  render("ulp1");
+})();
+</script>
+</body>
+</html>
+
+
+---
+
+<!-- FINDER-STATUS:BEGIN (auto) -->
+> 📊 **Doc status:** 🟢⚪ Complete · Improvable · **95%** complete · Interactive illustrative image-parity fixture; connect a real texture run before publishing evidence
+> <sub>Finder tags: `Complete·Improvable`, `▓▓▓▓ 75–100%` · auto-assessed 2026-09-14</sub>
+<!-- AGENTS: after materially changing this module, refresh status+tag → `python3 Tools/MarkdownStatusQuickLook/tagkit.py set <THIS_FILE> <status> <percent> "<note>"` (status: complete|complete_improvable|in_progress|not_done|superseded|irrelevant). Protocol: Tools/MarkdownStatusQuickLook/DOC-STATUS-AGENTS.md -->
+<!-- FS-HASH:fa06643c -->
+<!-- FINDER-STATUS:END -->

@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A visual introduction to AssistantApp's public DICOM morphology parity fixture.">
+<title>SemanticCompute × DICOM — Parity Lab</title>
+<style>
+  :root {
+    --paper: #f4f5f0;
+    --panel: #fbfcf8;
+    --ink: #14201c;
+    --muted: #566660;
+    --line: #cbd5ce;
+    --teal: #087d6d;
+    --teal-soft: #dceee8;
+    --blue: #246d9e;
+    --blue-soft: #dceaf3;
+    --amber: #b66b0b;
+    --amber-soft: #f7ead5;
+    --red: #bd3d31;
+    --red-soft: #f5dfdc;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0d1514;
+      --panel: #14201e;
+      --ink: #e5f0eb;
+      --muted: #9fb1aa;
+      --line: #31423d;
+      --teal: #41c6b1;
+      --teal-soft: #173a34;
+      --blue: #73b9e7;
+      --blue-soft: #183447;
+      --amber: #f1b65f;
+      --amber-soft: #443117;
+      --red: #fb8376;
+      --red-soft: #482522;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 var(--sans); }
+  button { font: inherit; color: inherit; }
+  .shell { width: min(1200px, calc(100% - 40px)); margin: 0 auto; }
+  header { padding: 34px 0 28px; border-bottom: 1px solid var(--line); }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--muted); font: 650 13px var(--mono); letter-spacing: .04em; }
+  .mark { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 7px; background: var(--teal); color: var(--paper); font-weight: 800; letter-spacing: 0; }
+  h1, h2, h3, p { margin: 0; }
+  h1 { max-width: 970px; margin-top: 20px; font-size: clamp(2.25rem, 5.8vw, 4.4rem); line-height: .98; letter-spacing: -.045em; }
+  .lede { max-width: 800px; margin-top: 18px; color: var(--muted); font-size: 1.12rem; }
+  .fixture { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; color: var(--muted); font: 12px var(--mono); }
+  .fixture::before { width: 8px; height: 8px; content: ""; border-radius: 50%; background: var(--amber); }
+  main { padding: 34px 0 80px; }
+  .eyebrow { color: var(--muted); font: 12px var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+  .lab-head { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+  .lab-head h2 { margin-top: 4px; font-size: 1.45rem; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 7px; }
+  .tabs button { cursor: pointer; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); padding: 8px 10px; font: 12px var(--mono); }
+  .tabs button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr); gap: 30px; padding: 30px 0; border-bottom: 1px solid var(--line); }
+  .stage-label { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .stage-label h3 { font-size: 1rem; }
+  .stage-label span { color: var(--muted); font: 12px var(--mono); }
+  .canvas-wrap { overflow: hidden; border: 1px solid var(--line); background: #101615; }
+  canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; color: var(--muted); font: 12px var(--mono); }
+  .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; vertical-align: -1px; }
+  .intro-stat { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .stat { min-height: 98px; padding: 13px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); }
+  .stat .value { display: block; font: 650 1.15rem var(--mono); font-variant-numeric: tabular-nums; }
+  .stat .label { display: block; margin-top: 7px; color: var(--muted); font: 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+  .pending { margin-top: 14px; padding: 15px; border-left: 3px solid var(--amber); background: var(--amber-soft); }
+  .pending strong { display: block; color: var(--amber); font: 700 13px var(--mono); }
+  .pending p { margin-top: 5px; color: var(--muted); font-size: 14px; }
+  .flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; padding: 30px 0; border-bottom: 1px solid var(--line); }
+  .flow-item { position: relative; min-height: 166px; padding: 16px 0 0; border-top: 3px solid var(--line); }
+  .flow-item:nth-child(1) { border-top-color: var(--blue); }
+  .flow-item:nth-child(2) { border-top-color: var(--amber); }
+  .flow-item:nth-child(3) { border-top-color: var(--teal); }
+  .flow-item:nth-child(4) { border-top-color: var(--red); }
+  .flow-item:not(:last-child)::after { position: absolute; top: -10px; right: -11px; color: var(--muted); content: "→"; font-size: 20px; }
+  .step { color: var(--muted); font: 12px var(--mono); }
+  .flow-item h3 { margin-top: 8px; font-size: 1.02rem; }
+  .flow-item p { margin-top: 8px; color: var(--muted); font-size: 14px; }
+  .evidence { display: grid; grid-template-columns: minmax(0, 1fr) minmax(270px, .55fr); gap: 30px; padding: 30px 0; border-bottom: 1px solid var(--line); }
+  .evidence h2 { margin-top: 4px; font-size: 1.4rem; }
+  .evidence > div > p { max-width: 740px; margin-top: 10px; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; margin-top: 17px; font: 13px var(--mono); }
+  th, td { padding: 11px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { color: var(--muted); font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
+  td:last-child { color: var(--muted); font-family: var(--sans); }
+  .receipt { align-self: center; padding: 20px; border: 1px solid var(--teal); border-radius: 8px; background: var(--teal-soft); }
+  .receipt .tiny { color: var(--muted); font: 12px var(--mono); }
+  .receipt .big { margin-top: 14px; color: var(--teal); font: 700 1.7rem var(--mono); }
+  .receipt p { margin-top: 9px; color: var(--muted); font-size: 14px; }
+  .boundary { margin-top: 30px; padding: 16px; border-left: 3px solid var(--line); color: var(--muted); font-size: 14px; }
+  code { padding: 1px 4px; border: 1px solid var(--line); background: var(--panel); font: 12px var(--mono); }
+  @media (max-width: 800px) {
+    .lab-head { align-items: start; flex-direction: column; }
+    .hero-grid, .evidence { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .flow-item:nth-child(2)::after { display: none; }
+  }
+  @media (max-width: 480px) {
+    .shell { width: min(100% - 26px, 1200px); }
+    .flow, .intro-stat { grid-template-columns: 1fr; }
+    .flow-item::after { display: none; }
+  }
+</style>
+
+<style>
+  .sc-site-strip { position: sticky; top: 0; z-index: 1000; display: flex; flex-wrap: wrap;
+    align-items: center; justify-content: space-between; gap: 10px; padding: 10px 18px;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+    background: color-mix(in srgb, Canvas 94%, transparent); color: CanvasText;
+    font: 600 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; backdrop-filter: blur(14px); }
+  .sc-site-strip a { color: inherit; text-decoration: none; }
+  .sc-site-strip a:hover, .sc-site-strip a:focus-visible { text-decoration: underline; }
+  .sc-site-links { display: flex; flex-wrap: wrap; gap: 14px; }
+  .sc-evidence-scope { margin: 14px auto; width: min(1120px, calc(100% - 32px)); padding: 10px 14px;
+    border: 1px solid #d99132; border-radius: 7px; background: color-mix(in srgb, #d99132 11%, Canvas);
+    color: CanvasText; font: 600 12px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; }
+</style>
+</head>
+<body>
+
+<nav class="sc-site-strip" aria-label="SemanticCompute evidence navigation">
+  <a href="index.html#visual-proof">← SemanticCompute</a>
+  <span class="sc-site-links">
+    <a href="image-parity-lab.html">Interactive lab</a>
+    <a href="image-parity-case-study.html">Recorded case study</a>
+    <a href="dicom-parity-lab.html">DICOM protocol</a>
+    <a href="engineering-evidence.html">Engineering evidence</a>
+  </span>
+</nav>
+<aside class="sc-evidence-scope">ILLUSTRATIVE PUBLIC FIXTURE · FIRST ASSISTANTAPP RUNTIME RECEIPT PENDING · NO MEDICAL IMAGE · NO METAL COMPLETION CLAIM</aside>
+
+  <header>
+    <div class="shell">
+      <div class="brand"><span class="mark">SC</span> ASSISTANTAPP / DICOM EVIDENCE</div>
+      <h1>Make the DICOM compute path inspectable before you trust it.</h1>
+      <p class="lede">A visual introduction to the public morphology fixture that lets AssistantApp show its CPU reference, requested SemanticCompute Metal execution, exact binary residual, and saved evidence record in one place.</p>
+      <div class="fixture">Illustrative public-fixture preview — not a captured run and not a medical image</div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="lab-head" aria-labelledby="lab-title">
+      <div>
+        <div class="eyebrow">DICOM segmentation cleanup primitive</div>
+        <h2 id="lab-title">The parity lab, before the first receipt</h2>
+      </div>
+      <div class="tabs" aria-label="Visualise a fixture stage">
+        <button type="button" data-view="input" aria-pressed="true">Input fixture</button>
+        <button type="button" data-view="cpu" aria-pressed="false">CPU reference</button>
+        <button type="button" data-view="metal" aria-pressed="false">Metal candidate</button>
+        <button type="button" data-view="residual" aria-pressed="false">Exact residual</button>
+      </div>
+    </section>
+
+    <section class="hero-grid">
+      <div>
+        <div class="stage-label">
+          <h3 id="visual-title">Public input mask</h3>
+          <span id="visual-meta">129 × 95 central plane</span>
+        </div>
+        <div class="canvas-wrap"><canvas id="parity-stage" width="516" height="380" role="img" aria-label="Illustrative public binary morphology fixture"></canvas></div>
+        <div class="legend">
+          <span><i style="background:#8bbaf0"></i>input foreground</span>
+          <span><i style="background:#e7e7e3"></i>CPU reference foreground</span>
+          <span><i style="background:#59d8a9"></i>Metal candidate foreground</span>
+          <span><i style="background:#ef4d44"></i>non-zero residual</span>
+        </div>
+      </div>
+      <aside>
+        <div class="intro-stat">
+          <div class="stat"><span class="value">129 × 95 × 47</span><span class="label">fixed fixture dimensions</span></div>
+          <div class="stat"><span class="value">575,985</span><span class="label">voxels to compare</span></div>
+          <div class="stat"><span class="value">3</span><span class="label">warmups excluded</span></div>
+          <div class="stat"><span class="value">20</span><span class="label">alternating measured trials</span></div>
+        </div>
+        <div class="pending">
+          <strong>AWAITING FIRST APP RECEIPT</strong>
+          <p>Timing, Metal completion, exact mismatch count, and any CPU fallback are intentionally blank until the app completes this fixture.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="flow" aria-label="Parity-lab flow">
+      <article class="flow-item"><div class="step">01 / FREEZE</div><h3>Generate one public mask</h3><p>Odd dimensions, a secondary component, bridge, hole, and deterministic speckle exercise the cleanup operation without using a scan.</p></article>
+      <article class="flow-item"><div class="step">02 / EXECUTE</div><h3>Run both routes</h3><p>The CPU reference and requested Metal route apply the same 3 × 3 × 3 clamp-to-edge opening: two erosions and two dilations.</p></article>
+      <article class="flow-item"><div class="step">03 / COMPARE</div><h3>Inspect every voxel</h3><p>Binary outputs use exact equality. The residual cannot be reduced to a visual impression or a tolerance chosen after the fact.</p></article>
+      <article class="flow-item"><div class="step">04 / RECORD</div><h3>Save the evidence</h3><p>The app exports a human-readable lab and JSON receipt with fixture identity, output arrays, backend state, and trial timings.</p></article>
+    </section>
+
+    <section class="evidence">
+      <div>
+        <div class="eyebrow">What a completed receipt must establish</div>
+        <h2>One narrow claim, checked visibly.</h2>
+        <p>The report is intentionally more demanding than “Metal was requested.” A completed candidate route must state whether every morphology pass actually ran on Metal before it can receive a timing or parity verdict.</p>
+        <table>
+          <thead><tr><th>Evidence</th><th>Recorded in the app</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>Fixture identity</td><td>Deterministic mask dimensions and checksum</td><td>Lets an independent reviewer recognise the input without exposing a DICOM study.</td></tr>
+            <tr><td>Backend result</td><td>Fully completed Metal, CPU fallback, or mixed execution</td><td>Separates an attempted GPU route from a completed GPU result.</td></tr>
+            <tr><td>Parity contract</td><td>Exact binary-mask equality</td><td>Makes every changed voxel visible in the residual view.</td></tr>
+            <tr><td>Timing scope</td><td>Preparation, dispatch, synchronization, and readback</td><td>Keeps UI rendering and report generation outside the measurement.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <aside class="receipt">
+        <div class="tiny">EXPORT FROM DICOM → GPU FAMILY LAB</div>
+        <div class="big">HTML + JSON</div>
+        <p><a href="receipts/dicom-morphology-receipt-template.json" download>Download blank receipt template</a></p>
+        <p>The HTML lab is designed for visual review. The adjacent JSON receipt keeps the raw masks, timings, exact residual metrics, and runtime environment together.</p>
+      </aside>
+    </section>
+
+    <aside class="boundary"><strong>Evidence boundary.</strong> This introduction uses a drawn public fixture solely to explain the workflow. A completed parity receipt proves only the recorded binary morphology operation under its captured runtime. It does not establish DICOM decoder accuracy, clinical segmentation validity, diagnostic performance, patient condition, or whole-app performance.</aside>
+  </main>
+
+<script>
+(() => {
+  const canvas = document.getElementById('parity-stage');
+  const context = canvas.getContext('2d');
+  const title = document.getElementById('visual-title');
+  const meta = document.getElementById('visual-meta');
+  const buttons = [...document.querySelectorAll('[data-view]')];
+  const width = canvas.width;
+  const height = canvas.height;
+
+  function field(x, y) {
+    const nx = (x / width) * 2 - 1;
+    const ny = (y / height) * 2 - 1;
+    const body = nx * nx / .64 + ny * ny / .54 < 1;
+    const satellite = (nx + .46) ** 2 / .022 + (ny - .29) ** 2 / .042 < 1;
+    const bridge = Math.abs(ny + .06) < .021 && nx > -.54 && nx < -.18;
+    const hole = (nx - .17) ** 2 + (ny + .06) ** 2 < .014;
+    const speckle = ((x * 17 + y * 31) % 647) < 9;
+    return (body || satellite || bridge || speckle) && !hole;
+  }
+  function cleaned(x, y) {
+    const here = field(x, y);
+    const near = field(Math.max(0, x - 3), y) && field(Math.min(width - 1, x + 3), y) && field(x, Math.max(0, y - 3)) && field(x, Math.min(height - 1, y + 3));
+    return here && (near || ((x + y) % 19 !== 0));
+  }
+  function draw(mode) {
+    const image = context.createImageData(width, height);
+    const colors = {
+      input: [139, 186, 240],
+      cpu: [231, 231, 227],
+      metal: [89, 216, 169],
+      residual: [239, 77, 68]
+    };
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
+        const input = field(x, y);
+        const cpu = cleaned(x, y);
+        const metal = cleaned(x, y);
+        const visible = mode === 'input' ? input : mode === 'cpu' ? cpu : mode === 'metal' ? metal : cpu !== metal;
+        const offset = (y * width + x) * 4;
+        const color = colors[mode];
+        image.data[offset] = visible ? color[0] : 12;
+        image.data[offset + 1] = visible ? color[1] : 18;
+        image.data[offset + 2] = visible ? color[2] : 17;
+        image.data[offset + 3] = 255;
+      }
+    }
+    context.putImageData(image, 0, 0);
+    context.strokeStyle = 'rgba(115, 185, 231, .75)';
+    context.lineWidth = 1;
+    context.beginPath();
+    context.moveTo(width / 2, 0); context.lineTo(width / 2, height);
+    context.moveTo(0, height / 2); context.lineTo(width, height / 2);
+    context.stroke();
+    const copy = {
+      input: ['Public input mask', 'Illustrative central plane'],
+      cpu: ['CPU reference cleanup', 'Illustrative expected binary output'],
+      metal: ['SemanticCompute Metal candidate', 'Illustrative candidate view — backend is not asserted here'],
+      residual: ['Exact residual', 'The illustrated paths match; a completed app run supplies the real residual']
+    }[mode];
+    title.textContent = copy[0];
+    meta.textContent = copy[1];
+    buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.view === mode)));
+  }
+  buttons.forEach(button => button.addEventListener('click', () => draw(button.dataset.view)));
+  draw('input');
+})();
+</script>
+</body>
+</html>

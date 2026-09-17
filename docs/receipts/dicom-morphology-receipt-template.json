@@ -1,0 +1,68 @@
+{
+  "schema": "semanticcompute.dicom-morphology-receipt/1",
+  "status": "pending",
+  "evidenceLevel": "illustrative-public-fixture",
+  "engine": {
+    "version": null,
+    "buildCommit": null,
+    "binarySHA256": null
+  },
+  "consumer": {
+    "name": "AssistantApp DICOM GPU Family Lab",
+    "buildIdentity": null
+  },
+  "fixture": {
+    "kind": "deterministic-synthetic-binary-mask",
+    "width": 129,
+    "height": 95,
+    "depth": 47,
+    "voxelCount": 575985,
+    "sha256": null,
+    "containsMedicalImage": false
+  },
+  "contract": {
+    "family": "Morphology3D",
+    "operation": "opening",
+    "passes": [
+      "erosion",
+      "erosion",
+      "dilation",
+      "dilation"
+    ],
+    "neighborhood": "3x3x3",
+    "boundary": "clamp-to-edge",
+    "comparison": "exact-binary-equality"
+  },
+  "execution": {
+    "requestedBackend": "metal",
+    "completedBackend": null,
+    "device": null,
+    "operatingSystem": null,
+    "cpuFallbackPasses": null,
+    "mixedExecution": null
+  },
+  "measurement": {
+    "warmupsExcluded": 3,
+    "alternatingTrials": 20,
+    "cpuMedianMilliseconds": null,
+    "candidateMedianMilliseconds": null,
+    "preparationIncluded": true,
+    "dispatchIncluded": true,
+    "synchronizationIncluded": true,
+    "readbackIncluded": true,
+    "uiRenderingIncluded": false
+  },
+  "parity": {
+    "mismatchCount": null,
+    "firstMismatch": null,
+    "referenceSHA256": null,
+    "candidateSHA256": null
+  },
+  "claimsExcluded": [
+    "DICOM decoder accuracy",
+    "clinical segmentation validity",
+    "diagnostic performance",
+    "patient condition",
+    "whole-app performance"
+  ]
+}
