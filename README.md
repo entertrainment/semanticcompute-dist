@@ -19,7 +19,7 @@ structured-data/CBOR-LD families.
   subscription. Help, version, MCP discovery, and health remain available for activation diagnosis.
 - **Legacy boundary:** licence terms still apply to v1.22.1 and earlier, but their already-downloaded copies
   cannot be remotely revoked. Release notes, checksums, SBOM, notice, and CUDA evidence remain as historical
-  records while executable assets are withdrawn.
+  records while executable assets are unavailable.
 - **[v1.22.1 release notes](RELEASE_NOTES_1.22.1.md)** — detailed, cumulative changes since 1.20.0, with evidence
   boundaries for texture execution, FDN, CBOR-LD, stress findings, Linux, Metal, and CUDA.
 - **[CHANGELOG.md](CHANGELOG.md)** — the complete version history.
