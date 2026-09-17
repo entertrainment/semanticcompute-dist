@@ -1014,9 +1014,10 @@ curl https://semanticcompute-trial.douglas-57d.workers.dev/v1/health</div>
           <h3>Passes are on-device parity tests</h3>
           <p>The compiler's optimisation passes are verified semantics-preserving by running before/after on the
             GPU and comparing bit-for-bit. 1,385 tests are green on macOS (1,374 across 294 Swift Testing suites,
-            plus 11 XCTest cases); three backends execute in-core (Metal, C, WebGPU). The optional CUDA runner has 17 tests across three suites recorded green on
-            an RTX 4070 Ti SUPER at source checkpoint <code>f183b0d</code>. Source added after that checkpoint must
-            receive its own NVIDIA run before 1.23 is cut.</p>
+            plus 11 XCTest cases); three backends execute in-core (Metal, C, WebGPU). The optional CUDA runner has
+            17 tests across three suites recorded green on an RTX 4070 Ti SUPER at source checkpoint
+            <code>f183b0d</code>. The 1.23.0 tag had no online NVIDIA runner, so families added after that checkpoint
+            are not claimed as freshly NVIDIA-executed in this release.</p>
         </div>
       </div>
 
